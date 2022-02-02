@@ -70,7 +70,7 @@ public class EgovLoginPolicyFilter implements Filter {
 		String userIp = "";
 
 		if (id == null || userSe == null) {
-			((HttpServletResponse) response).sendRedirect(httpRequest.getContextPath() + "/uat/uia/egovLoginUsr.do");
+			((HttpServletResponse) response).sendRedirect(httpRequest.getContextPath() + "/cmm/init/actionLogin.do");
 		}
 
 		// 1. LoginVO를 DB로 부터 가져오는 과정
@@ -101,19 +101,19 @@ public class EgovLoginPolicyFilter implements Filter {
 			} else {
 				String message = URLEncoder.encode(egovMessageSource.getMessage("fail.common.login.ip"),"UTF-8");
 				((HttpServletRequest) request).setAttribute("loginMessage", message);
-				((HttpServletResponse) response).sendRedirect(httpRequest.getContextPath() + "/uat/uia/egovLoginUsr.do?loginMessage="+message);
+				((HttpServletResponse) response).sendRedirect(httpRequest.getContextPath() + "/cmm/init/actionLogin.do?loginMessage="+message);
 			}
 
 		} catch (IOException e) {//KISA 보안약점 조치 (2018-10-29, 윤창원)
 			LOGGER.error("["+ e.getClass() +"] : ", e.getMessage());
-			((HttpServletResponse) response).sendRedirect(httpRequest.getContextPath() + "/uat/uia/egovLoginUsr.do?login_error=1");
+			((HttpServletResponse) response).sendRedirect(httpRequest.getContextPath() + "/cmm/init/actionLogin.do?login_error=1");
 		} catch (Exception e) {
 //			LOGGER.error("Exception: {}", e.getClass().getName());
 //			LOGGER.error("Exception  Message: {}", e.getMessage());
 			// 2017-02-14  이정은          시큐어코딩(ES) - 시큐어코딩 부적절한 예외 처리[CWE-253, CWE-440, CWE-754]
 			LOGGER.error("["+ e.getClass() +"] : ", e.getMessage());
 			
-			((HttpServletResponse) response).sendRedirect(httpRequest.getContextPath() + "/uat/uia/egovLoginUsr.do?login_error=1");
+			((HttpServletResponse) response).sendRedirect(httpRequest.getContextPath() + "/cmm/init/actionLogin.do?login_error=1");
 		}
 	}
 

@@ -24,17 +24,12 @@
  	<security:http pattern="/js/**" security="none"/>
  	<security:http pattern="/resource/**" security="none"/>
  	<security:http pattern="\A/WEB-INF/jsp/.*\Z" request-matcher="regex" security="none"/>
-
- 	<!-- logoutSuccessUrl="/EgovContent.do" -->
- 	<!-- loginFailureUrl="/uat/uia/egovLoginUsr.do?login_error=1" -->
- 	<!-- concurrentExpiredUrl="/EgovContent.do" -->
- 	<!-- defaultTargetUrl="/EgovContent.do" -->
- 	
+	
     <egov-security:config id="securityConfig"
-		loginUrl="/uat/uia/egovLoginUsr.do"
-		logoutSuccessUrl="/index.do"
-		loginFailureUrl="/index.do?login_error=1"
-		accessDeniedUrl="/sec/ram/accessDenied.do"
+		loginUrl="/cmm/init/loginUsr.do"
+		logoutSuccessUrl="/cmm/init/index.do"
+		loginFailureUrl="/cmm/init/index.do?login_error=1"
+		accessDeniedUrl="/cmm/init/accessDenied.do"
 
 		dataSource="egov.dataSource"
 		jdbcUsersByUsernameQuery="SELECT USER_ID, ESNTL_ID AS PASSWORD, 1 ENABLED, USER_NM, USER_ZIP,
@@ -51,10 +46,10 @@
 		hashBase64="false"
 
 		concurrentMaxSessons="1"
-		concurrentExpiredUrl="/index.do"
+		concurrentExpiredUrl="/cmm/init/index.do"
 		errorIfMaximumExceeded="false"
 
-		defaultTargetUrl="/main.do"
+		defaultTargetUrl="/cmm/main.do"
 		alwaysUseDefaultTargetUrl="true"
 
 		sniff="true"
@@ -62,7 +57,6 @@
 		xssProtection="true" 
 		cacheControl="false"
 		csrf="false"
-		csrfAccessDeniedUrl="/egovCSRFAccessDenied.do"
 	/>
 
 	<egov-security:secured-object-config id="securedObjectConfig"

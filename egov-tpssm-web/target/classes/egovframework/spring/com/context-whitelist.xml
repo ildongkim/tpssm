@@ -27,9 +27,8 @@
 	
 	<!-- 실명인증 nextUrl -->
 	<util:list id="egovNextUrlWhitelist" value-type="java.lang.String">
-		<value>/uss/umt/EgovMberSbscrbView.do</value>
-		<value>/uss/umt/EgovEntrprsMberSbscrbView.do</value>
-		<value>/uss/olh/qna/QnaCnRegistView.do</value>
+		<value>/cmm/init/EgovMberSbscrbView.do</value>
+		<value>/cmm/init/EgovEntrprsMberSbscrbView.do</value>
 	</util:list>
 	
 </beans>

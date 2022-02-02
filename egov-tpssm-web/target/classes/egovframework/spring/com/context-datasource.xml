@@ -46,7 +46,6 @@
         <property name="url" value="${Globals.cubrid.Url}" />
         <property name="username" value="${Globals.cubrid.UserName}"/>
         <property name="password" value="#{egovEnvCryptoService.getPassword()}"/>
-        
         <property name="validationQuery" value="select 1"/>
         <property name="testOnBorrow" value="false"/>
     </bean>

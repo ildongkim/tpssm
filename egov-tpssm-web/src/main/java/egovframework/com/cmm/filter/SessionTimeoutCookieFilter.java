@@ -56,7 +56,9 @@ public class SessionTimeoutCookieFilter implements Filter{
 		HttpServletResponse httpResponse = (HttpServletResponse) response;
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         long serverTime = System.currentTimeMillis();
-        long sessionExpireTime = serverTime + httpRequest.getSession().getMaxInactiveInterval() * 1000;
+        //long sessionExpireTime = serverTime + httpRequest.getSession().getMaxInactiveInterval() * 1000;	//10시간
+        //long sessionExpireTime = serverTime + httpRequest.getSession().getMaxInactiveInterval() * 100;	//1시간
+        long sessionExpireTime = serverTime + httpRequest.getSession().getMaxInactiveInterval() * 50; 		//30분
         Cookie cookie = new Cookie("egovLatestServerTime", "" + serverTime);
         //cookie.setSecure(true);
         cookie.setPath("/");

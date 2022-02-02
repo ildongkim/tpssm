@@ -64,13 +64,16 @@ public class AuthenticInterceptor extends HandlerInterceptorAdapter {
 		boolean isAuthenticated = EgovUserDetailsHelper.isAuthenticated();	
 		//미민증사용자 체크
 		if(!isAuthenticated) {
-			ModelAndView modelAndView = new ModelAndView("redirect:/index.do");
+			ModelAndView modelAndView = new ModelAndView("redirect:/cmm/init/index.do");
 			throw new ModelAndViewDefiningException(modelAndView);
 		}
+		
 		//인증된 권한 목록
 		List<String> authList = (List<String>)EgovUserDetailsHelper.getAuthorities();
+		
 		//관리자인증여부
 		boolean adminAuthUrlPatternMatcher = false;
+		
 		//AntPathRequestMatcher
 		AntPathRequestMatcher antPathRequestMatcher = null;
 		
@@ -83,9 +86,10 @@ public class AuthenticInterceptor extends HandlerInterceptorAdapter {
 				adminAuthUrlPatternMatcher = true;
 			}
 		}
+		
 		//관리자 권한 체크
 		if(adminAuthUrlPatternMatcher && !authList.contains("ADMIN")){
-			ModelAndView modelAndView = new ModelAndView("redirect:/uat/uia/egovLoginUsr.do?auth_error=1");
+			ModelAndView modelAndView = new ModelAndView("redirect:/cmm/init/loginUsr.do?auth_error=1");
 			throw new ModelAndViewDefiningException(modelAndView);
 		}
 		return true;

@@ -109,9 +109,9 @@ public class EgovWebApplicationInitializer implements WebApplicationInitializer 
 			//-------------------------------------------------------------
 			FilterRegistration.Dynamic egovSpringSecurityLoginFilter = servletContext.addFilter("egovSpringSecurityLoginFilter", new EgovSpringSecurityLoginFilter());
 			//로그인 실패시 반활 될 URL설정
-			egovSpringSecurityLoginFilter.setInitParameter("loginURL", "/uat/uia/egovLoginUsr.do");
+			egovSpringSecurityLoginFilter.setInitParameter("loginURL", "/com/init/loginUsr.do");
 			//로그인 처리 URL설정
-			egovSpringSecurityLoginFilter.setInitParameter("loginProcessURL", "/uat/uia/actionLogin.do");
+			egovSpringSecurityLoginFilter.setInitParameter("loginProcessURL", "/cmm/init/actionLogin.do");
 			//처리 Url Pattern
 			egovSpringSecurityLoginFilter.addMappingForUrlPatterns(null, false, "*.do");
 			
@@ -119,14 +119,14 @@ public class EgovWebApplicationInitializer implements WebApplicationInitializer 
 			// EgovSpringSecurityLogoutFilter 설정
 			//-------------------------------------------------------------	
 			FilterRegistration.Dynamic egovSpringSecurityLogoutFilter = servletContext.addFilter("egovSpringSecurityLogoutFilter", new EgovSpringSecurityLogoutFilter());
-			egovSpringSecurityLogoutFilter.addMappingForUrlPatterns(null, false, "/uat/uia/actionLogout.do");
+			egovSpringSecurityLogoutFilter.addMappingForUrlPatterns(null, false, "/cmm/init/actionLogout.do");
 		
 		} else if("session".equals(EgovProperties.getProperty("Globals.Auth").trim())) {
 			//-------------------------------------------------------------
 			// EgovLoginPolicyFilter 설정
 			//-------------------------------------------------------------	
 			FilterRegistration.Dynamic egovLoginPolicyFilter = servletContext.addFilter("LoginPolicyFilter", new EgovLoginPolicyFilter());
-			egovLoginPolicyFilter.addMappingForUrlPatterns(null, false, "/uat/uia/actionLogin.do");
+			egovLoginPolicyFilter.addMappingForUrlPatterns(null, false, "/cmm/init/actionLogin.do");
 			
 		}
 

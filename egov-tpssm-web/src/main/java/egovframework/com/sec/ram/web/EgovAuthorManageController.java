@@ -218,15 +218,5 @@ public class EgovAuthorManageController {
     	model.addAttribute("message", egovMessageSource.getMessage("success.common.delete"));
         return "forward:/sec/ram/EgovAuthorList.do";
     }    
-    
-    /**
-	 * 권한제한 화면 이동
-	 * @return String
-	 * @exception Exception
-	 */
-    @RequestMapping("/sec/ram/accessDenied.do")
-    public String accessDenied()
-            throws Exception {
-        return "egovframework/com/sec/accessDenied";
-    } 
+
 }
