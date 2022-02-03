@@ -21,12 +21,14 @@
 		<result property="menuNm" column="menuNm"/>
 		<result property="upperMenuId" column="upperMenuId"/>
 		<result property="menuOrdr" column="menuOrdr"/>
+		<result property="progrmFileNm" column="progrmFileNm"/>
 		<result property="menuDc" column="menuDc"/>
 		<collection property="_children" ofType="egovMap">
 			<id property="menuNo" column="subMenuNo" javaType="int"/>
 			<result property="menuNm" column="subMenuNm"/>
 			<result property="upperMenuId" column="upperMenuId"/>
 			<result property="menuOrdr" column="menuOrdr"/>
+			<result property="progrmFileNm" column="progrmFileNm"/>
 			<result property="menuDc" column="menuDc"/>
 		</collection>
 	</resultMap>
@@ -40,12 +42,10 @@
 				, B.MENU_NM           AS "subMenuNm"
 				, B.UPPER_MENU_NO     AS "upperMenuId"
 				, B.MENU_ORDR         AS "menuOrdr"
+				, B.PROGRM_FILE_NM    AS "progrmFileNm"
 				, B.MENU_DC           AS "menuDc"
 			FROM  COMTNMENUINFO A
-			LEFT  OUTER JOIN COMTNMENUINFO B
-			ON    A.MENU_NO = B.UPPER_MENU_NO
 			WHERE binary(A.MENU_NO) = #{menuNo}
-			AND   A.MENU_NO IS NOT NULL
 			ORDER BY A.MENU_ORDR
 	</select>
 	
@@ -57,8 +57,7 @@
 			     , A.MENU_NO           AS "menuNo"
 				 , A.MENU_NM           AS "menuNm"
 				 , A.MENU_ORDR         AS "menuOrdr"
-				 , B.PROGRM_File_NM    AS "progrmId"
-				 , B.PROGRM_KOREAN_NM  AS "progrmNm"
+				 , A.PROGRM_File_NM    AS "progrmFileNm"
 				 , A.MENU_DC           AS "menuDc"
 				 , A.USE_AT            AS "useAt"
 			FROM  COMTNMENUINFO A

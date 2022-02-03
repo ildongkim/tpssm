@@ -65,7 +65,7 @@ function gridLoader()
 		columns: 
 		[
 			{header:'<spring:message code="tpssmMnu.menuDtl.menuNm" />',   name:'menuNm', align:'center'},
-			{header:'<spring:message code="tpssmMnu.menuDtl.progrmNm" />', name: 'progrmNm', align:'center'},
+			{header:'<spring:message code="tpssmMnu.menuDtl.progrmFileNm" />', name: 'progrmFileNm', align:'center'},
 			{header:'<spring:message code="tpssmMnu.menuDtl.menuOrdr" />', name: 'menuOrdr', align:'center'},
 			{header:'<spring:message code="tpssmMnu.menuDtl.useAt" />', name: 'useAt', align:'center'},
 		]
@@ -126,21 +126,25 @@ function setMenuList(data, unit) {
 		document.menuManageVO.menuNo.value=data["menuNo"];
 		document.menuManageVO.menuNm.value=data["menuNm"];
 		document.menuManageVO.menuOrdr.value=data["menuOrdr"];
+		document.menuManageVO.progrmFileNm.value=data["progrmFileNm"];
 		document.menuManageVO.menuDc.value=data["menuDc"];
+		document.menuManageVO.useAt.value=data["useAt"];
 		
 		switch (unit) {
 		case 1: 
-			$(".wTable input").attr("readonly",true);
-			document.menuManageVO.progrmFileNm.value='';
+			$('.wTable input').attr('readonly',true);
+			$('.btn_b.save').css('pointer-events','none');
+			$('.btn_b.save').css('background','#cccccc');
 			break;
 		case 2: 
+			$('.btn_b.save').css('pointer-events','auto');
+			$('.btn_b.save').css('background','#4688d2');
 			document.menuManageVO.menuNm.readOnly=false;
 			document.menuManageVO.menuOrdr.readOnly=false;
 			document.menuManageVO.menuDc.readOnly=false;
-			document.menuManageVO.progrmFileNm.value=data["progrmNm"];
 			break;
 		default:
-			$(".wTable input").attr("readonly",true);
+			$('.wTable input').attr('readonly',true);
 			break;
 		}
 		
@@ -154,7 +158,7 @@ function insertMenuList(form) {
 	
 	if(confirm("<spring:message code="common.save.msg" />")){	
 		if(validateMenuManageVO(form)){
-			$('.s_btn').attr('disabled',true);
+			$('.btn_b.save').css('pointer-events','none');
 			$.ajax({
 				url : "<c:url value='/cmm/menuinfoinsert.do'/>",
 				method :"POST",
@@ -170,12 +174,10 @@ function insertMenuList(form) {
 					}
 				},
 				error : function(xhr, status) {
-					console.log(xhr);
-					console.log(status);
 					confirm("<spring:message code='fail.common.save' />");
 				},
 				complete : function() {
-					$('.s_btn').attr('disabled',false);
+					$('.btn_b.save').css('pointer-events','auto');
 				}
 			});
 		}
@@ -198,12 +200,20 @@ function insertMenuList(form) {
 			            <option value="<c:out value="${menu.menuNo}"/>"><c:out value="${menu.menuNm}"/></option>
 					</c:forEach>
 				</select>
-				<input type="submit" class="s_btn" value="<spring:message code="button.inquire" />" onclick="searchMenuList(); return false;" title="<spring:message code="title.inquire" /> <spring:message code="input.button" />" /><!-- 조회 -->
+				<span class="btn_b" onclick="searchMenuList(); return false;">
+					<a href="#"><spring:message code="button.inquire" /></a>
+				</span>				
 			</li>
 			<li>
-				<span class="btn_b"><a href="<c:url value='/sym/mnu/mpm/EgovMenuListSelect.do'/>" onclick="initlMenuList(); return false;" title="<spring:message code="button.init" />"><spring:message code="button.init" /></a></span><!-- 초기화 -->
-				<input class="s_btn" type="submit" value='<spring:message code="button.save" />' title='<spring:message code="button.save" />' onclick="insertMenuList(document.forms[0]); return false;" />
-				<span class="btn_b"><a href="#LINK" onclick="deleteMenuList(); return false;" title='<spring:message code="button.delete" />'><spring:message code="button.delete" /></a></span>
+				<span class="btn_b" onclick="initlMenuList(); return false;">
+					<a href="#"><spring:message code="button.init" /></a>
+				</span>
+				<span class="btn_b save" onclick="insertMenuList(document.forms[0]); return false;">
+					<a href="#"><spring:message code="button.save" /></a>
+				</span>
+				<span class="btn_b save" onclick="deleteMenuList(document.forms[0]); return false;">
+					<a href="#"><spring:message code="button.delete" /></a>
+				</span>				
 			</li>
 		</ul>
 	</div>
@@ -266,10 +276,19 @@ function insertMenuList(form) {
 				alt='' width="15" height="15" />(<spring:message code="comSymMnuMpm.menuList.searchFileNm" />)</a>
 				</td>
 			</tr>
-				<tr>
+			<tr>
 				<th><spring:message code="comSymMnuMpm.menuList.menuDc" /></th><!-- 메뉴설명 -->
 				<td width="70%" class="left">
 				<textarea name="menuDc" class="textarea"  cols="45" rows="8"  style="width:350px;" title="<spring:message code="comSymMnuMpm.menuList.menuDc" />"></textarea>
+				</td>
+			</tr>
+			<tr>
+				<th><spring:message code="comSymMnuMpm.menuList.useAt" /></th><!-- 사용여부 -->
+				<td width="70%" class="left">
+				<select name="useAt" title="<spring:message code="input.input" />"/>
+					<option value="Y"  label="<spring:message code="input.yes" />"/>
+					<option value="N"  label="<spring:message code="input.no" />"/>
+				</select>
 				</td>
 			</tr>
 		</table>
