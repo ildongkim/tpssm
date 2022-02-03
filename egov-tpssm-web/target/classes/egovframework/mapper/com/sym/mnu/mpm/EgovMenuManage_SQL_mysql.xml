@@ -3,7 +3,7 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="menuManageDAO">
 
-	<!-- Add Script : Harry 2022-01-31  -->
+    <!-- Add Script : Harry 2022-02-03  -->
 	<select id="selectSubMenuList" parameterType="egovframework.com.sym.mnu.mpm.service.MenuManageVO" resultType="egovMap">
 		
 			SELECT 
@@ -11,11 +11,11 @@
 				, MENU_NM           AS "menuNm"
 			FROM COMTNMENUINFO
 			WHERE MENU_NO != '0'
-			AND UPPER_MENU_NO = #{upperMenuId}
+			AND binary(UPPER_MENU_NO) = #{upperMenuId}
 			ORDER BY MENU_ORDR
 	</select>
 	
-	<!-- Add Script : Harry 2022-02-01  -->
+	<!-- Add Script : Harry 2022-02-03  -->
 	<resultMap id="hierarchyMenuListMap" type="egovframework.com.sym.mnu.mpm.service.MenuManageVO">
 		<id property="menuNo" column="menuNo" javaType="int"/>
 		<result property="menuNm" column="menuNm"/>
@@ -31,7 +31,7 @@
 		</collection>
 	</resultMap>
 	
-	<!-- Add Script : Harry 2022-02-01  -->
+	<!-- Add Script : Harry 2022-02-03  -->
 	<select id="selectHierarchyMenuList" parameterType="egovframework.com.sym.mnu.mpm.service.MenuManageVO" resultMap="hierarchyMenuListMap">
 			SELECT 
 				  A.MENU_NO           AS "menuNo"
@@ -44,12 +44,12 @@
 			FROM  COMTNMENUINFO A
 			LEFT  OUTER JOIN COMTNMENUINFO B
 			ON    A.MENU_NO = B.UPPER_MENU_NO
-			WHERE A.MENU_NO = #{menuNo}
+			WHERE binary(A.MENU_NO) = #{menuNo}
 			AND   A.MENU_NO IS NOT NULL
 			ORDER BY A.MENU_ORDR
 	</select>
 	
-	<!-- Modify Script : Harry 2022-01-31  -->
+	<!-- Modify Script : Harry 2022-02-03  -->
 	<select id="selectMenuManageList_D" parameterType="egovframework.com.sym.mnu.mpm.service.MenuManageVO" resultType="egovMap">
 		
 		 	SELECT
@@ -64,18 +64,20 @@
 			FROM  COMTNMENUINFO A
 			LEFT  OUTER JOIN COMTNPROGRMLIST B
 			ON    A.PROGRM_FILE_NM = B.PROGRM_FILE_NM
-			WHERE A.UPPER_MENU_NO = #{menuNo}
+			WHERE binary(A.UPPER_MENU_NO) = #{menuNo}
 			ORDER BY A.MENU_ORDR
-	</select> 
+	</select>
 
 	<!-- Modify Script : Harry 2022-02-03  -->
 	<insert id="insertMenuManage_S">
 		
-		MERGE INTO COMTNMENUINFO A 
-		USING (SELECT #{menuNo} AS MENU_NO FROM DUAL) B
-		ON (A.MENU_NO = B.MENU_NO)
-		WHEN MATCHED THEN 
-			UPDATE SET 
+			INSERT INTO COMTNMENUINFO 
+				(MENU_NO, MENU_ORDR, MENU_NM, UPPER_MENU_NO, MENU_DC, PROGRM_FILE_NM, USE_AT,
+				FRST_REGIST_PNTTM, FRST_REGISTER_ID, LAST_UPDT_PNTTM, LAST_UPDUSR_ID)
+			VALUES 
+				(#{menuNo}, #{menuOrdr}, #{menuNm}, #{upperMenuId}, #{menuDc}, #{progrmFileNm}, #{useAt}, 
+				sysdate(), #{registerId}, sysdate(), #{registerId})
+			ON DUPLICATE KEY UPDATE
 				MENU_ORDR = #{menuOrdr},
 				MENU_NM = #{menuNm},
 				MENU_DC = #{menuDc},
@@ -83,35 +85,29 @@
 				USE_AT = #{useAt},
 				LAST_UPDT_PNTTM = sysdate(), 
 				LAST_UPDUSR_ID = #{registerId}
-		WHEN NOT MATCHED THEN 
-			INSERT 
-				(MENU_NO, MENU_ORDR, MENU_NM, UPPER_MENU_NO, MENU_DC, PROGRM_FILE_NM, USE_AT,
-				FRST_REGIST_PNTTM, FRST_REGISTER_ID, LAST_UPDT_PNTTM, LAST_UPDUSR_ID)
-			VALUES 
-				(#{menuNo}, #{menuOrdr}, #{menuNm}, #{upperMenuId}, #{menuDc}, #{progrmFileNm}, #{useAt}, 
-				sysdate(), #{registerId}, sysdate(), #{registerId})
 	</insert>
 	
 	<!-- 총건수 조회 -->
 	<select id="selectMenuManageListTotCnt_S" parameterType="comDefaultVO" resultType="int">
 		
-		SELECT COUNT(MENU_NO) AS "totcnt"
+		SELECT COUNT(MENU_NO) AS totcnt
 		  FROM COMTNMENUINFO
-		 WHERE MENU_NM like '%'||#{searchKeyword}||'%'
+		 WHERE binary(MENU_NM) like CONCAT('%', #{searchKeyword}, '%')
 		
 	</select>
+
 
 	<select id="selectMenuManage_D" parameterType="comDefaultVO" resultType="egovframework.com.sym.mnu.mpm.service.MenuManageVO">
 		
 			SELECT 
-				  MENU_NO           AS "menuNo"
-				, MENU_ORDR         AS "menuOrdr"
-				, MENU_NM           AS "menuNm"
-				, UPPER_MENU_NO     AS "upperMenuId"
-				, MENU_DC           AS "menuDc"
-				, RELATE_IMAGE_PATH AS "relateImagePath"
-				, RELATE_IMAGE_NM   AS "relateImageNm"
-				, PROGRM_FILE_NM    AS "progrmFileNm"
+				  MENU_NO AS menuNo
+				, MENU_ORDR AS menuOrdr
+				, MENU_NM AS menuNm
+				, UPPER_MENU_NO AS upperMenuId
+				, MENU_DC AS menuDc
+				, RELATE_IMAGE_PATH AS relateImagePath
+				, RELATE_IMAGE_NM AS relateImageNm
+				, PROGRM_FILE_NM AS progrmFileNm
 			FROM COMTNMENUINFO
 			WHERE MENU_NO = #{searchKeyword}
 		
@@ -141,7 +137,7 @@
 	<!-- 메뉴번호 존재여부 조회 -->
 	<select id="selectMenuNoByPk" parameterType="egovframework.com.sym.mnu.mpm.service.MenuManageVO" resultType="int">
 		
-		SELECT COUNT(MENU_NO) AS "totcnt"
+		SELECT COUNT(MENU_NO) AS totcnt
 		  FROM COMTNMENUINFO
 		 WHERE MENU_NO = #{menuNo}
 		
@@ -159,14 +155,14 @@
 	<select id="selectMenuListT_D" parameterType="comDefaultVO" resultType="egovMap">
 		 
             SELECT
-			      MENU_NO           AS "menuNo"
-				, MENU_ORDR         AS "menuOrdr"
-				, MENU_NM           AS "menuNm"
-				, UPPER_MENU_NO     AS "upperMenuId"
-				, MENU_DC           AS "menuDc"
-				, RELATE_IMAGE_PATH AS "relateImagePath"
-				, RELATE_IMAGE_NM   AS "relateImageNm"
-				, PROGRM_FILE_NM    AS "progrmFileNm"
+			      MENU_NO AS menuNo
+				, MENU_ORDR AS menuOrdr
+				, MENU_NM AS menuNm
+				, UPPER_MENU_NO AS upperMenuId
+				, MENU_DC AS menuDc
+				, RELATE_IMAGE_PATH AS relateImagePath
+				, RELATE_IMAGE_NM AS relateImageNm
+				, PROGRM_FILE_NM AS progrmFileNm
 			FROM COMTNMENUINFO 
 			WHERE Menu_NO > 0 
 			ORDER BY MENU_ORDR

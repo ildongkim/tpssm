@@ -7,13 +7,18 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import org.springmodules.validation.commons.DefaultBeanValidator;
 
-import egovframework.com.cmm.ComDefaultCodeVO;
 import egovframework.com.cmm.EgovMessageSource;
 import egovframework.com.cmm.LoginVO;
 import egovframework.com.cmm.util.EgovUserDetailsHelper;
@@ -48,6 +53,9 @@ public class MenuController {
 	@Resource(name = "meunManageService")
     private EgovMenuManageService menuManageService;
 	
+    @Autowired
+	private DefaultBeanValidator beanValidator;
+    
 	/** log */
 	private static final Logger LOGGER = LoggerFactory.getLogger(MenuController.class);
 
@@ -65,10 +73,10 @@ public class MenuController {
 	
 	/**
 	 * 상위 메뉴 목록을 조회
-	 * @return result - String
+	 * @return result - List
 	 * @exception Exception
 	 */
-	@RequestMapping(value="/cmm/hierarchyMenulist.do")
+	@PostMapping(value="/cmm/hierarchyMenulist.do")
 	public ModelAndView selectHierarchyMenuList(@RequestParam Map<String, Object> commandMap) throws Exception {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("jsonView");
@@ -85,10 +93,10 @@ public class MenuController {
 	
 	/**
 	 * 메뉴 목록을 조회
-	 * @return result - String
+	 * @return result - List
 	 * @exception Exception
 	 */
-	@RequestMapping(value="/cmm/menumanagelist.do")
+	@PostMapping(value="/cmm/menumanagelist.do")
 	public ModelAndView menuManageList(@RequestParam Map<String, Object> commandMap) throws Exception {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("jsonView");
@@ -103,5 +111,41 @@ public class MenuController {
 		modelAndView.addObject(menulist);
 		
 		return modelAndView;
+	}
+	
+    /**
+     * 메뉴정보를 등록한다
+     * 메뉴정보 화면으로 이동한다
+     * @param menuManageVO    MenuManageVO
+	 * @return result - String
+	 * @exception Exception
+	 */
+    @PostMapping(value="/cmm/menuinfoinsert.do")
+    @ResponseBody
+    public ModelAndView insertMenuManage (
+    		@ModelAttribute("menuManageVO") MenuManageVO menuManageVO,
+    		BindingResult bindingResult,
+    		ModelMap model) throws Exception {
+    	
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("jsonView");
+		
+    	beanValidator.validate(menuManageVO, bindingResult); //validation 수행
+    	System.out.println("hasErrors : " + bindingResult.hasErrors());
+		if (bindingResult.hasErrors()) { 
+			modelAndView.addObject("message", egovMessageSource.getMessage("fail.common.save"));
+		} else {
+	    	Boolean isAuthenticated = EgovUserDetailsHelper.isAuthenticated();
+	    	if(!isAuthenticated) {
+	    		modelAndView.addObject("message", egovMessageSource.getMessage("fail.common.save"));
+	    	} else {
+		    	LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
+		    	menuManageVO.setRegisterId((user == null || user.getUniqId() == null) ? "" : user.getUniqId());
+		    	menuManageService.insertMenuManage(menuManageVO);
+		    	modelAndView.addObject("upperMenuId", menuManageVO.getUpperMenuId());	    		
+	    	}
+		}
+		
+    	return modelAndView;
 	}
 }

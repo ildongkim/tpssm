@@ -15,6 +15,7 @@
 			ORDER BY MENU_ORDR
 	</select>
 	
+	<!-- Add Script : Harry 2022-02-01  -->
 	<resultMap id="hierarchyMenuListMap" type="egovframework.com.sym.mnu.mpm.service.MenuManageVO">
 		<id property="menuNo" column="menuNo" javaType="int"/>
 		<result property="menuNm" column="menuNm"/>
@@ -30,6 +31,7 @@
 		</collection>
 	</resultMap>
 	
+	<!-- Add Script : Harry 2022-02-01  -->
 	<select id="selectHierarchyMenuList" parameterType="egovframework.com.sym.mnu.mpm.service.MenuManageVO" resultMap="hierarchyMenuListMap">
 			SELECT 
 				  A.MENU_NO           AS "menuNo"
@@ -66,6 +68,30 @@
 			ORDER BY A.MENU_ORDR
 	</select> 
 
+	<!-- Modify Script : Harry 2022-02-03  -->
+	<insert id="insertMenuManage_S">
+		
+		MERGE INTO COMTNMENUINFO A 
+		USING (SELECT #{menuNo} AS MENU_NO FROM DUAL) B
+		ON (A.MENU_NO = B.MENU_NO)
+		WHEN MATCHED THEN 
+			UPDATE SET 
+				MENU_ORDR = #{menuOrdr},
+				MENU_NM = #{menuNm},
+				MENU_DC = #{menuDc},
+				PROGRM_FILE_NM = #{progrmFileNm},
+				USE_AT = #{useAt},
+				LAST_UPDT_PNTTM = sysdate(), 
+				LAST_UPDUSR_ID = #{registerId}
+		WHEN NOT MATCHED THEN 
+			INSERT 
+				(MENU_NO, MENU_ORDR, MENU_NM, UPPER_MENU_NO, MENU_DC, PROGRM_FILE_NM, USE_AT,
+				FRST_REGIST_PNTTM, FRST_REGISTER_ID, LAST_UPDT_PNTTM, LAST_UPDUSR_ID)
+			VALUES 
+				(#{menuNo}, #{menuOrdr}, #{menuNm}, #{upperMenuId}, #{menuDc}, #{progrmFileNm}, #{useAt}, 
+				sysdate(), #{registerId}, sysdate(), #{registerId})
+	</insert>
+	
 	<!-- 총건수 조회 -->
 	<select id="selectMenuManageListTotCnt_S" parameterType="comDefaultVO" resultType="int">
 		
@@ -91,28 +117,6 @@
 		
 	</select>
 	
-	<insert id="insertMenuManage_S">
-		
-			INSERT INTO COMTNMENUINFO 
-				( MENU_NO
-            , MENU_ORDR
-            , MENU_NM
-            , UPPER_MENU_NO
-            , MENU_DC
-            , RELATE_IMAGE_PATH
-            , RELATE_IMAGE_NM
-            , PROGRM_FILE_NM )
-			VALUES (   #{menuNo}
-                  , #{menuOrdr}
-                  , #{menuNm}  
-                  , #{upperMenuId}
-                  , #{menuDc}
-                  , #{relateImagePath}
-                  , #{relateImageNm}
-                  , #{progrmFileNm} )
-		
-	</insert>
-
 	<update id="updateMenuManage_S">
 		
 			UPDATE COMTNMENUINFO 

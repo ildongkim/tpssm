@@ -2,6 +2,8 @@ package egovframework.com.sym.mnu.mpm.service;
 
 import java.util.List;
 
+import egovframework.com.cmm.DefaultVO;
+
 /** 
  * 메뉴목록관리 처리를 위한 VO 클래스르를 정의한다
  * @author 개발환경 개발팀 이용
@@ -19,7 +21,7 @@ import java.util.List;
  * </pre>
  */
 
-public class MenuManageVO{
+public class MenuManageVO extends DefaultVO {
 
    /** 메뉴정보 */
    /** 메뉴번호 */
@@ -40,8 +42,6 @@ public class MenuManageVO{
    private   String   progrmFileNm;
    /** 프로그램명 */
    private   String   progrmNm;
-   /** 사용여부 */
-   private   String   useAt;
    
    /** 하위메뉴 */
    private List<?> _children;
@@ -371,20 +371,6 @@ public class MenuManageVO{
 	 */	
 	public void setProgrmNm(String progrmNm) {
 		this.progrmNm = progrmNm;
-	}
-	/**
-	 * useAt attribute를 리턴한다.
-	 * @return String
-	 */
-	public String getUseAt() {
-		return useAt;
-	}
-	/**
-	 * useAt attribute 값을 설정한다.
-	 * @param useAt String
-	 */
-	public void setUseAt(String useAt) {
-		this.useAt = useAt;
 	}
 	/**
 	 * _children attribute를 리턴한다.

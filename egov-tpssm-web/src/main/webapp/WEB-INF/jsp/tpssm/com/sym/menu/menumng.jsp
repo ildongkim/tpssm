@@ -19,6 +19,8 @@
     <script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/jquery.js'/>" ></script>
     <script type="text/javascript" src="<c:url value='/modules/tui-grid/dist/tui-grid.min.js'/>" ></script>
     <script type="text/javascript" src="<c:url value='/js/tpssm/com/com.js'/>" ></script>
+    <script type="text/javascript" src="<c:url value="/cmm/init/validator.do"/>"></script>
+    <validator:javascript formName="menuManageVO" staticJavascript="false" xhtml="true" cdata="false"/>
 </head>
 <script>
 let gridMenu
@@ -145,10 +147,45 @@ function setMenuList(data, unit) {
 	}
 }
 
+/* ********************************************************
+ * 메뉴등록 처리 함수
+ ******************************************************** */
+function insertMenuList(form) {
+	
+	if(confirm("<spring:message code="common.save.msg" />")){	
+		if(validateMenuManageVO(form)){
+			$('.s_btn').attr('disabled',true);
+			$.ajax({
+				url : "<c:url value='/cmm/menuinfoinsert.do'/>",
+				method :"POST",
+				data : $("#menuManageVO").serialize(),
+				dataType : "JSON",
+				success : function(result) {
+					if (result['message'] != null) {
+						confirm(result['message']);	
+					} else {
+						if (result['upperMenuId'] != null) {
+							searchMenuMngList(result['upperMenuId'])	
+						}
+					}
+				},
+				error : function(xhr, status) {
+					console.log(xhr);
+					console.log(status);
+					confirm("<spring:message code='fail.common.save' />");
+				},
+				complete : function() {
+					$('.s_btn').attr('disabled',false);
+				}
+			});
+		}
+	}
+}
+
 </script>
 <div id="border" style="width:730px">
 
-<form name="menuManageVO" action ="<c:url value='/sym/mnu/mpm/EgovMenuListInsert.do' />" method="post">
+<form:form commandName="menuManageVO" name="menuManageVO" method="post">
 
 <div class="board">
 	<h1 style="background-position:left 3px"><spring:message code="comSymMnuMpm.menuList.pageTop.title" /></h1><!-- 메뉴 목록 -->
@@ -165,8 +202,7 @@ function setMenuList(data, unit) {
 			</li>
 			<li>
 				<span class="btn_b"><a href="<c:url value='/sym/mnu/mpm/EgovMenuListSelect.do'/>" onclick="initlMenuList(); return false;" title="<spring:message code="button.init" />"><spring:message code="button.init" /></a></span><!-- 초기화 -->
-				<input class="s_btn" type="submit" value='<spring:message code="button.save" />' title='<spring:message code="button.save" />' onclick="insertMenuList(); return false;" />
-				<span class="btn_b"><a href="#LINK" onclick="updateMenuList(); return false;" title='<spring:message code="button.update" />'><spring:message code="button.update" /></a></span>
+				<input class="s_btn" type="submit" value='<spring:message code="button.save" />' title='<spring:message code="button.save" />' onclick="insertMenuList(document.forms[0]); return false;" />
 				<span class="btn_b"><a href="#LINK" onclick="deleteMenuList(); return false;" title='<spring:message code="button.delete" />'><spring:message code="button.delete" /></a></span>
 			</li>
 		</ul>
@@ -239,7 +275,7 @@ function setMenuList(data, unit) {
 		</table>
 	</div>
 </body>
-</form>
+</form:form>
 </div>
 </div>
 </html>
