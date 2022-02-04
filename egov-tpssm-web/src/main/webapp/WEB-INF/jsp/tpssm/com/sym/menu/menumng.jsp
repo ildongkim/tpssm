@@ -16,24 +16,27 @@
     <title>임시출입자 출입신청심의 시스템</title>
     <link href="<c:url value='/modules/tui-grid/dist/tui-grid.min.css' />" rel="stylesheet" type="text/css">
     <link href="<c:url value="/css/egovframework/com/com.css"/>" rel="stylesheet" type="text/css">
+    <link href="<c:url value="/css/egovframework/com/button.css"/>" rel="stylesheet" type="text/css">
+    <link href="<c:url value="/css/egovframework/com/cmm/jqueryui.css"/>" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/jquery.js'/>" ></script>
+    <script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/jqueryui.js'/>" ></script>
     <script type="text/javascript" src="<c:url value='/modules/tui-grid/dist/tui-grid.min.js'/>" ></script>
     <script type="text/javascript" src="<c:url value='/js/tpssm/com/com.js'/>" ></script>
     <script type="text/javascript" src="<c:url value="/cmm/init/validator.do"/>"></script>
     <validator:javascript formName="menuManageVO" staticJavascript="false" xhtml="true" cdata="false"/>
 </head>
 <script>
-let gridMenu
-let gridMenuDtl
+<!--
+let gridMenu;
+let gridMenuDtl;
+let $dialog;
 
-$(document).ready(function() {
-	gridLoader();
-	searchMenuList();
-	initlMenuList();
-});
-
-function gridLoader()
+/* ********************************************************
+ * document.ready 처리 함수
+ ******************************************************** */
+$(document).ready(function() 
 {
+	//1.트리메뉴목록
 	gridMenu = new tui.Grid({
 		el: document.getElementById('gridUpperMenu'), // Container element
 		scrollX: false,
@@ -45,18 +48,20 @@ function gridLoader()
 		},
 		columns: 
 		[
-			{header:'<spring:message code="tpssmMnu.menuDtl.menuNm" />',   name:'menuNm'}
+			{header:'<spring:message code="tpssmMnu.menuMng.menuNm" />',   name:'menuNm'}
 		]
 	});
 	
-	//현재 Row 선택을 위한 이벤트 설정
+	//2.트리메뉴목록의 현재 Row 선택을 위한 이벤트 설정
 	setGridEvent(gridMenu);
 	
+	//3.트리메뉴목록의 Click 이벤트
 	gridMenu.on('click', function (ev) {
 		searchMenuMngList(gridMenu.getValue(ev.rowKey, 'menuNo'));
 		setMenuList(gridMenu.getRow(ev.rowKey), 1);
 	});
 	
+	//4.하위메뉴목록
 	gridMenuDtl = new tui.Grid({
 		el: document.getElementById('gridMenuDtl'), // Container element
 		scrollX: false,
@@ -64,22 +69,41 @@ function gridLoader()
 		bodyHeight: 200,
 		columns: 
 		[
-			{header:'<spring:message code="tpssmMnu.menuDtl.menuNm" />',   name:'menuNm', align:'center'},
-			{header:'<spring:message code="tpssmMnu.menuDtl.progrmFileNm" />', name: 'progrmFileNm', align:'center'},
-			{header:'<spring:message code="tpssmMnu.menuDtl.menuOrdr" />', name: 'menuOrdr', align:'center'},
-			{header:'<spring:message code="tpssmMnu.menuDtl.useAt" />', name: 'useAt', align:'center'},
+			{header:'<spring:message code="tpssmMnu.menuMng.menuNm" />',   name:'menuNm', align:'center'},
+			{header:'<spring:message code="tpssmMnu.menuMng.progrmFileNm" />', name: 'progrmFileNm', align:'center'},
+			{header:'<spring:message code="tpssmMnu.menuMng.menuOrdr" />', name: 'menuOrdr', align:'center'},
+			{header:'<spring:message code="tpssmMnu.menuMng.useAt" />', name: 'useAt', align:'center'},
 		]
 	});
 	
-	//현재 Row 선택을 위한 이벤트 설정
+	//5.하위메뉴목록의 현재 Row 선택을 위한 이벤트 설정
 	setGridEvent(gridMenuDtl);
 	
-	//입력항목에 데이터 바인딩
+	//6.하위메뉴목록의 Click 이벤트
 	gridMenuDtl.on('click', function (ev) {
 		setMenuList(gridMenuDtl.getRow(ev.rowKey), 2);
 	});
-}
+	
+	//7.트리메뉴목록의 데이터검색
+	searchMenuList();
+	
+	//8.폼입력 정보의 초기화
+	initlMenuList(1);
+	
+	//9.파일검색의 Click 이벤트
+	$('#popupProgrmFileNm').click(function (e) {
+		e.preventDefault(); //기본클릭 이벤트 방지
+		const options = {
+			pagetitle : $(this).attr("title"), width: 550, height: 650,
+			pageUrl : "<c:url value='/cmm/programListSearch.do'/>"
+		};
+		settingDialog(options);
+	});
+});
 
+/* ********************************************************
+ * 트리메뉴목록의 데이터검색 처리 함수
+ ******************************************************** */
 function searchMenuList() {
 	const menuNo = $("#searchCondition option:selected").val();
 	$.ajax({
@@ -98,6 +122,58 @@ function searchMenuList() {
 	});
 }
 
+/* ********************************************************
+ * 폼입력 정보의 데이터바인딩 처리 함수
+ ******************************************************** */
+function setMenuList(data, unit) {
+	if (data != null) {
+		document.menuManageVO.upperMenuId.value=data["upperMenuId"];
+		document.menuManageVO.menuNo.value=data["menuNo"];
+		document.menuManageVO.menuNm.value=data["menuNm"];
+		document.menuManageVO.menuOrdr.value=data["menuOrdr"];
+		document.menuManageVO.progrmFileNm.value=data["progrmFileNm"];
+		document.menuManageVO.menuDc.value=data["menuDc"];
+		document.menuManageVO.useAt.value=data["useAt"];
+		
+		switch (unit) {
+		case 1: 
+			initlMenuList();
+			break;
+		case 2: 
+			$('.btn_b.save').css('pointer-events','auto');
+			$('.btn_b.save').css('background','#4688d2');
+			document.menuManageVO.menuNm.readOnly=false;
+			document.menuManageVO.menuOrdr.readOnly=false;
+			document.menuManageVO.menuDc.readOnly=false;
+			$(".wTable select").css('background','#ffffff');
+			$(".wTable select").prop("disabled",false);
+			break;
+		}
+	}
+}
+
+/* ********************************************************
+ * 폼입력 정보의 초기화 처리 함수
+ ******************************************************** */
+function initlMenuList(unit) {
+	switch (unit) {
+	case 1:
+		$('.wTable input').val('');
+		$('.wTable select').val('Y');
+		$('.wTable textarea').val('');
+	default:
+		$(".wTable input").attr("readonly",true);
+		$(".wTable textarea").attr("readonly",true);
+		$(".wTable select").attr("readonly",true);
+		$(".wTable select").prop("disabled",true);
+		$('.btn_b.save').css('pointer-events','none');
+		$('.btn_b.save').css('background','#cccccc');
+	}
+}
+
+/* ********************************************************
+ * 하위메뉴목록의 데이터검색 처리 함수
+ ******************************************************** */
 function searchMenuMngList(menuNo) {
 	$.ajax({
 		url : "<c:url value='/cmm/menumanagelist.do'/>",
@@ -113,49 +189,10 @@ function searchMenuMngList(menuNo) {
 	});
 }
 
-function initlMenuList() {
-	$('.wTable input').val('');
-	$(".wTable input").attr("readonly",true);
-	$('.wTable textarea').val('');
-	$(".wTable textarea").attr("readonly",true);
-}
-
-function setMenuList(data, unit) {
-	if (data != null) {
-		document.menuManageVO.upperMenuId.value=data["upperMenuId"];
-		document.menuManageVO.menuNo.value=data["menuNo"];
-		document.menuManageVO.menuNm.value=data["menuNm"];
-		document.menuManageVO.menuOrdr.value=data["menuOrdr"];
-		document.menuManageVO.progrmFileNm.value=data["progrmFileNm"];
-		document.menuManageVO.menuDc.value=data["menuDc"];
-		document.menuManageVO.useAt.value=data["useAt"];
-		
-		switch (unit) {
-		case 1: 
-			$('.wTable input').attr('readonly',true);
-			$('.btn_b.save').css('pointer-events','none');
-			$('.btn_b.save').css('background','#cccccc');
-			break;
-		case 2: 
-			$('.btn_b.save').css('pointer-events','auto');
-			$('.btn_b.save').css('background','#4688d2');
-			document.menuManageVO.menuNm.readOnly=false;
-			document.menuManageVO.menuOrdr.readOnly=false;
-			document.menuManageVO.menuDc.readOnly=false;
-			break;
-		default:
-			$('.wTable input').attr('readonly',true);
-			break;
-		}
-		
-	}
-}
-
 /* ********************************************************
  * 메뉴등록 처리 함수
  ******************************************************** */
 function insertMenuList(form) {
-	
 	if(confirm("<spring:message code="common.save.msg" />")){	
 		if(validateMenuManageVO(form)){
 			$('.btn_b.save').css('pointer-events','none');
@@ -183,7 +220,7 @@ function insertMenuList(form) {
 		}
 	}
 }
-
+-->
 </script>
 <div id="border" style="width:730px">
 
@@ -193,7 +230,7 @@ function insertMenuList(form) {
 	<h1 style="background-position:left 3px"><spring:message code="comSymMnuMpm.menuList.pageTop.title" /></h1><!-- 메뉴 목록 -->
 	<div class="search_box" title="<spring:message code="common.searchCondition.msg" />"><!-- 이 레이아웃은 하단 정보를 대한 검색 정보로 구성되어 있습니다. -->
 		<ul>
-			<li><div style="line-height:4px;">&nbsp;</div><div><spring:message code="tpssmMnu.menuDtl.upperMenuNm" /> : </div></li><!-- 상위메뉴명 -->
+			<li><div style="line-height:4px;">&nbsp;</div><div><spring:message code="tpssmMnu.menuMng.upperMenuNm" /> : </div></li><!-- 상위메뉴명 -->
 			<li>
 				<select name="searchCondition" id="searchCondition" title="<spring:message code="title.searchCondition" />">
 					<c:forEach var="menu" items="${upperMenuList}">
@@ -272,7 +309,7 @@ function insertMenuList(form) {
 				<th><spring:message code="comSymMnuMpm.menuList.progrmFileNm" /> <span class="pilsu">*</span></th><!-- 파일명 -->
 				<td class="left">
 				<input name="progrmFileNm" type="text" size="30" value=""  maxlength="60" title="<spring:message code="comSymMnuMpm.menuList.progrmFileNm" />" style="width:190px"/>
-				<a id="popupProgrmFileNm" href="/sym/prm/EgovProgramListSearch.do" target="_blank" title="<spring:message code="comSymMnuMpm.menuList.progrmFileNm" />" style="selector-dummy:expression(this.hideFocus=false);"><img src="<c:url value='/images/egovframework/com/cmm/icon/search2.gif' />"
+				<a id="popupProgrmFileNm" href="#" target="_blank" title="<spring:message code="comSymMnuMpm.menuList.progrmFileNm" />" style="selector-dummy:expression(this.hideFocus=false);"><img src="<c:url value='/images/egovframework/com/cmm/icon/search2.gif' />"
 				alt='' width="15" height="15" />(<spring:message code="comSymMnuMpm.menuList.searchFileNm" />)</a>
 				</td>
 			</tr>
@@ -285,7 +322,7 @@ function insertMenuList(form) {
 			<tr>
 				<th><spring:message code="comSymMnuMpm.menuList.useAt" /></th><!-- 사용여부 -->
 				<td width="70%" class="left">
-				<select name="useAt" title="<spring:message code="input.input" />"/>
+				<select name="useAt" title="<spring:message code="input.input" />" >
 					<option value="Y"  label="<spring:message code="input.yes" />"/>
 					<option value="N"  label="<spring:message code="input.no" />"/>
 				</select>

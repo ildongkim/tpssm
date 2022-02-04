@@ -23,6 +23,7 @@
 		<result property="menuOrdr" column="menuOrdr"/>
 		<result property="progrmFileNm" column="progrmFileNm"/>
 		<result property="menuDc" column="menuDc"/>
+		<result property="useAt" column="useAt"/>
 		<collection property="_children" ofType="egovMap">
 			<id property="menuNo" column="subMenuNo" javaType="int"/>
 			<result property="menuNm" column="subMenuNm"/>
@@ -30,6 +31,7 @@
 			<result property="menuOrdr" column="menuOrdr"/>
 			<result property="progrmFileNm" column="progrmFileNm"/>
 			<result property="menuDc" column="menuDc"/>
+			<result property="useAt" column="useAt"/>
 		</collection>
 	</resultMap>
 	
@@ -44,7 +46,10 @@
 				, B.MENU_ORDR         AS "menuOrdr"
 				, B.PROGRM_FILE_NM    AS "progrmFileNm"
 				, B.MENU_DC           AS "menuDc"
+				, B.USE_AT            AS "useAt"
 			FROM  COMTNMENUINFO A
+			LEFT  OUTER JOIN COMTNMENUINFO B
+			ON    A.MENU_NO = B.UPPER_MENU_NO
 			WHERE binary(A.MENU_NO) = #{menuNo}
 			ORDER BY A.MENU_ORDR
 	</select>
@@ -61,8 +66,6 @@
 				 , A.MENU_DC           AS "menuDc"
 				 , A.USE_AT            AS "useAt"
 			FROM  COMTNMENUINFO A
-			LEFT  OUTER JOIN COMTNPROGRMLIST B
-			ON    A.PROGRM_FILE_NM = B.PROGRM_FILE_NM
 			WHERE binary(A.UPPER_MENU_NO) = #{menuNo}
 			ORDER BY A.MENU_ORDR
 	</select>

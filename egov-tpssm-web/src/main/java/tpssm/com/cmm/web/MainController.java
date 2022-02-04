@@ -137,7 +137,7 @@ public class MainController implements ApplicationContextAware, InitializingBean
 		Boolean isAuthenticated = EgovUserDetailsHelper.isAuthenticated();
 		if (!isAuthenticated) {
 			model.addAttribute("loginMessage", egovMessageSource.getMessage("fail.common.login"));
-			return "tpssm/com/init/EgovLoginUsr";
+			return "tpssm/com/init/LoginUsr";
 		}
 		LoginVO user = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
 		

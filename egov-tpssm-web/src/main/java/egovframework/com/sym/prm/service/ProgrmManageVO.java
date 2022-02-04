@@ -1,5 +1,7 @@
 package egovframework.com.sym.prm.service;
 
+import egovframework.com.cmm.DefaultVO;
+
 /** 
  * 프로그램목록 처리를 위한 VO 클래스르를 정의한다
  * @author 개발환경 개발팀 이용
@@ -17,7 +19,7 @@ package egovframework.com.sym.prm.service;
  * </pre>
  */
 
-public class ProgrmManageVO{
+public class ProgrmManageVO extends DefaultVO{
 
 	/** 프로그램파일명 */
 	private String progrmFileNm;

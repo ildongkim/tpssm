@@ -5,6 +5,8 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +21,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springmodules.validation.commons.DefaultBeanValidator;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import egovframework.com.cmm.ComDefaultVO;
 import egovframework.com.cmm.EgovMessageSource;
+import egovframework.com.cmm.JsonUtil;
 import egovframework.com.cmm.LoginVO;
 import egovframework.com.cmm.util.EgovUserDetailsHelper;
 import egovframework.com.sym.mnu.mpm.service.EgovMenuManageService;
 import egovframework.com.sym.mnu.mpm.service.MenuManageVO;
+import egovframework.com.sym.prm.service.EgovProgrmManageService;
 import egovframework.com.utl.fcc.service.EgovStringUtil;
+import egovframework.rte.fdl.property.EgovPropertyService;
+import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 
 /**
  * 메뉴관리 서비스를 처리하는 컨트롤러 클래스
@@ -52,6 +61,14 @@ public class MenuController {
     /** EgovMenuManageService */
 	@Resource(name = "meunManageService")
     private EgovMenuManageService menuManageService;
+	
+	/** EgovPropertyService */
+    @Resource(name = "propertiesService")
+    protected EgovPropertyService propertiesService;
+    
+    /** EgovMenuManageService */
+	@Resource(name = "progrmManageService")
+	private EgovProgrmManageService progrmManageService;
 	
     @Autowired
 	private DefaultBeanValidator beanValidator;
@@ -148,4 +165,50 @@ public class MenuController {
 		
     	return modelAndView;
 	}
+    
+    /**
+     * 프로그램파일명을 조회한다.
+     * @param searchVO ComDefaultVO
+     * @return 출력페이지정보 "/cmm/programListSearch"
+     * @exception Exception
+     */
+    @RequestMapping(value="/cmm/programListSearch.do")
+    public String selectProgrmListSearch(
+    		@ModelAttribute("searchVO") ComDefaultVO searchVO,
+    		ModelMap model)
+            throws Exception {
+    	
+    	// 내역 조회
+        searchVO.setPageUnit(propertiesService.getInt("pageUnit"));
+    	searchVO.setPageSize(propertiesService.getInt("pageSize"));
+
+    	/** pageing */
+    	PaginationInfo paginationInfo = new PaginationInfo();
+		paginationInfo.setCurrentPageNo(searchVO.getPageIndex());
+		paginationInfo.setRecordCountPerPage(searchVO.getPageUnit());
+		paginationInfo.setPageSize(searchVO.getPageSize());
+
+		searchVO.setFirstIndex(paginationInfo.getFirstRecordIndex());
+		searchVO.setLastIndex(paginationInfo.getLastRecordIndex());
+		searchVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
+		
+		List<Map<String, Object>> list_progrmmanage = progrmManageService.selectProgrmList(searchVO);
+		//JSONArray jsonArray = JsonUtil.getJsonArrayFromList(list_progrmmanage);
+		
+		JSONArray jsonArray = new JSONArray();
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("progrmFileNm", "CnsltAnswerListInqire");
+		jsonObject.put("progrmKoreanNm", "상담답변관리");
+		jsonArray.put(jsonObject);
+		model.addAttribute("list_progrmmanage", list_progrmmanage);
+		
+		ObjectMapper mapper = new ObjectMapper();
+        String samString = mapper.writeValueAsString(jsonObject);
+        
+        int totCnt = progrmManageService.selectProgrmListTotCnt(searchVO);
+		paginationInfo.setTotalRecordCount(totCnt);
+        model.addAttribute("paginationInfo", paginationInfo);
+        
+        return "tpssm/com/sym/menu/filenmsearch";
+    }
 }

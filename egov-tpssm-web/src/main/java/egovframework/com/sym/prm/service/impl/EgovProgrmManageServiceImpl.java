@@ -1,6 +1,7 @@
 package egovframework.com.sym.prm.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import egovframework.com.cmm.ComDefaultVO;
 import egovframework.com.sym.prm.service.EgovProgrmManageService;
@@ -53,7 +54,7 @@ public class EgovProgrmManageServiceImpl extends EgovAbstractServiceImpl impleme
 	 * @exception Exception
 	 */
 	@Override
-	public List<?> selectProgrmList(ComDefaultVO vo) throws Exception {
+	public List<Map<String, Object>> selectProgrmList(ComDefaultVO vo) throws Exception {
    		return progrmManageDAO.selectProgrmList(vo);
 	}
 	/**

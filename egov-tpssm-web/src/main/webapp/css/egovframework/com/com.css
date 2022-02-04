@@ -366,7 +366,7 @@ width:100%;
 .pagination ul li.last a { background:url('../../../images/egovframework/com/cmm/paging/pagination_last.gif') 10px 9px no-repeat; text-indent:-10000em; }
 .pagination ul li.first a:hover { background:url('../../../images/egovframework/com/cmm/paging/pagination_first_on.gif') no-repeat; }
 .pagination ul li.prev a:hover { background:url('../../../images/egovframework/com/cmm/paging/pagination_prev_on.gif') no-repeat; }
-.pagination ul li.next a:hover { background:url('../../../images/egovframework/com/cmm/paging/pagination_next_on.gif/') no-repeat; }
+.pagination ul li.next a:hover { background:url('../../../images/egovframework/com/cmm/paging/pagination_next_on.gif') no-repeat; }
 .pagination ul li.current a,
 .pagination ul li a:hover { border:none; color:#fff; font-size:15px; font-weight:600; width:28px; height:28px; line-height:28px; background:#4688d2; }
 

@@ -1,3 +1,6 @@
+/*********************************************************
+ * TUI.GRID Theme
+ ******************************************************** */
 tui.Grid.applyTheme('default', {
 	selection: {
         background: "#00A9ff",
@@ -54,6 +57,9 @@ tui.Grid.applyTheme('default', {
     }
 });
 
+/*********************************************************
+ * TUI.GRID Event
+ ******************************************************** */
 function setGridEvent(grid) {
 	var selectedRowKey = null;
 	grid.on('focusChange', function (ev) {
@@ -68,3 +74,14 @@ function setGridEvent(grid) {
 		return;
 	});
 }
+
+/*********************************************************
+* Program File Name Search Modal
+******************************************************** */
+function settingDialog(options) {
+	$dialog = $('<div></div>')
+	.html('<iframe style="border: 0px; " src="' + options['pageUrl'] + '" width="100%" height="100%"></iframe>')
+	.dialog({autoOpen: false, modal: true, width: options['width'], height: options['height'], title: options['pagetitle']});
+	$dialog.dialog('open');
+	$('.ui-dialog').css('z-index', '120');
+} 
