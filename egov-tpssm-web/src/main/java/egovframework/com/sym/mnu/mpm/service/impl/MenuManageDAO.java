@@ -1,6 +1,7 @@
 package egovframework.com.sym.mnu.mpm.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import egovframework.com.cmm.ComDefaultVO;
 import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
@@ -33,7 +34,7 @@ public class MenuManageDAO extends EgovComAbstractDAO{
 	
 	/**
 	 * 하위메뉴목록을 조회
-	 * @param vo ComDefaultVO
+	 * @param vo MenuManageVO
 	 * @return List
 	 * @exception Exception
 	 */
@@ -43,7 +44,7 @@ public class MenuManageDAO extends EgovComAbstractDAO{
 	
 	/**
 	 * 계층형메뉴목록을 조회
-	 * @param vo ComDefaultVO
+	 * @param vo MenuManageVO
 	 * @return List
 	 * @exception Exception
 	 */
@@ -53,12 +54,22 @@ public class MenuManageDAO extends EgovComAbstractDAO{
 	
 	/**
 	 * 메뉴관리목록을 조회
-	 * @param vo ComDefaultVO
+	 * @param vo MenuManageVO
 	 * @return List
 	 * @exception Exception
 	 */
 	public List<?> selectMenuManageList(MenuManageVO vo) throws Exception{
 		return selectList("menuManageDAO.selectMenuManageList_D", vo);
+	}
+	
+	/**
+	 * 신규 메뉴 번호를 조회
+	 * @param vo MenuManageVO
+	 * @return List
+	 * @exception Exception
+	 */
+	public List<?> selectNextMenuInfo(MenuManageVO vo) throws Exception{
+		return selectList("menuManageDAO.selectNextMenuInfo", vo);
 	}
 	
 	/** 하위 : 전자정부프레임워크 기본 로직 */

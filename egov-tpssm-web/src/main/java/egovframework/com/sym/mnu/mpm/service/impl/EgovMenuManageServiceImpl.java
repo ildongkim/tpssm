@@ -92,6 +92,16 @@ public class EgovMenuManageServiceImpl extends EgovAbstractServiceImpl implement
 		return menuManageDAO.selectMenuManageList(vo);
 	}
 	
+	/**
+	 * 신규 메뉴 번호를 조회
+	 * @param vo MenuManageVO
+	 * @return List
+	 * @exception Exception
+	 */
+	public List<?> selectNextMenuInfo(MenuManageVO vo) throws Exception {
+		return menuManageDAO.selectNextMenuInfo(vo);
+	}
+	
 	/** 하위 : 전자정부프레임워크 기본 로직 */
 	
 	/**

@@ -53,6 +53,17 @@
 			WHERE binary(A.MENU_NO) = #{menuNo}
 			ORDER BY A.MENU_ORDR
 	</select>
+
+	<!-- Modify Script : Harry 2022-02-05  -->
+	<select id="selectNextMenuInfo" parameterType="egovframework.com.sym.mnu.mpm.service.MenuManageVO" resultType="egovMap">
+
+			SELECT 
+				   MAX(A.UPPER_MENU_NO) AS "upperMenuId", 
+			     , MAX(A.MENU_NO)+1 AS "menuNo", 
+			     , MAX(A.MENU_ORDR)+1 AS "menuOrdr"
+			FROM COMTNMENUINFO A
+			WHERE binary(UPPER_MENU_NO) = #{menuNo}
+	</select> 
 	
 	<!-- Modify Script : Harry 2022-02-03  -->
 	<select id="selectMenuManageList_D" parameterType="egovframework.com.sym.mnu.mpm.service.MenuManageVO" resultType="egovMap">
@@ -69,7 +80,7 @@
 			WHERE binary(A.UPPER_MENU_NO) = #{menuNo}
 			ORDER BY A.MENU_ORDR
 	</select>
-
+	
 	<!-- Modify Script : Harry 2022-02-03  -->
 	<insert id="insertMenuManage_S">
 		

@@ -30,6 +30,7 @@
 let gridMenu;
 let gridMenuDtl;
 let $dialog;
+let gridMenuRowKey;
 
 /* ********************************************************
  * document.ready 처리 함수
@@ -44,7 +45,7 @@ $(document).ready(function()
 		treeColumnOptions: {
 			name: 'menuNm',
 			useIcon: true,
-			useCascadingCheckbox: false
+			useCascadingCheckbox: true
 		},
 		columns: 
 		[
@@ -57,8 +58,9 @@ $(document).ready(function()
 	
 	//3.트리메뉴목록의 Click 이벤트
 	gridMenu.on('click', function (ev) {
-		searchMenuMngList(gridMenu.getValue(ev.rowKey, 'menuNo'));
+		searchMenuMngList(gridMenu.getValue(ev.rowKey, 'menuNo'),'S');
 		setMenuList(gridMenu.getRow(ev.rowKey), 1);
+		gridMenuRowKey = ev.rowKey;
 	});
 	
 	//4.하위메뉴목록
@@ -112,9 +114,21 @@ function searchMenuList() {
 		data : {"menuNo":menuNo},
 		dataType : "JSON",
 		success : function(result){
-			gridMenu.clear();
-			gridMenuDtl.clear();
+			initlMenuList(1);
 			if (result['menuManageVOList'] != null) {
+				const data = result['menuManageVOList'][0];
+				let childdata;
+				for (key in data) {
+					if (key == '_children') {
+						for (idx in data[key]) {
+							childdata = data[key][idx];
+							if (childdata['_children'].length == 0) {
+								delete childdata['_children'];
+							}
+						}
+					}
+				}
+				
 				gridMenu.resetData(result['menuManageVOList']);
 				gridMenu.expandAll();
 			}
@@ -129,17 +143,21 @@ function setMenuList(data, unit) {
 	if (data != null) {
 		document.menuManageVO.upperMenuId.value=data["upperMenuId"];
 		document.menuManageVO.menuNo.value=data["menuNo"];
-		document.menuManageVO.menuNm.value=data["menuNm"];
+		document.menuManageVO.menuNm.value=isNullToString(data["menuNm"]);
 		document.menuManageVO.menuOrdr.value=data["menuOrdr"];
-		document.menuManageVO.progrmFileNm.value=data["progrmFileNm"];
-		document.menuManageVO.menuDc.value=data["menuDc"];
+		document.menuManageVO.progrmFileNm.value=isNullToString(data["progrmFileNm"]);
+		document.menuManageVO.menuDc.value=isNullToString(data["menuDc"]);
 		document.menuManageVO.useAt.value=data["useAt"];
 		
 		switch (unit) {
 		case 1: 
 			initlMenuList();
+			$('.btn_b.new').css('pointer-events','auto');
+			$('.btn_b.new').css('background','#4688d2');
 			break;
 		case 2: 
+			$('.btn_b.new').css('pointer-events','none');
+			$('.btn_b.new').css('background','#cccccc');
 			$('.btn_b.save').css('pointer-events','auto');
 			$('.btn_b.save').css('background','#4688d2');
 			document.menuManageVO.menuNm.readOnly=false;
@@ -161,11 +179,15 @@ function initlMenuList(unit) {
 		$('.wTable input').val('');
 		$('.wTable select').val('Y');
 		$('.wTable textarea').val('');
+		gridMenu.clear();
+		gridMenuDtl.clear();		
 	default:
 		$(".wTable input").attr("readonly",true);
 		$(".wTable textarea").attr("readonly",true);
 		$(".wTable select").attr("readonly",true);
 		$(".wTable select").prop("disabled",true);
+		$('.btn_b.new').css('pointer-events','none');
+		$('.btn_b.new').css('background','#cccccc');
 		$('.btn_b.save').css('pointer-events','none');
 		$('.btn_b.save').css('background','#cccccc');
 	}
@@ -174,9 +196,9 @@ function initlMenuList(unit) {
 /* ********************************************************
  * 하위메뉴목록의 데이터검색 처리 함수
  ******************************************************** */
-function searchMenuMngList(menuNo) {
+function searchMenuMngList(menuNo, mode) {
 	$.ajax({
-		url : "<c:url value='/cmm/menumanagelist.do'/>",
+		url : "<c:url value='/cmm/menumngList.do'/>",
 		method :"POST",
 		data : {"menuNo":menuNo},
 		dataType : "JSON",
@@ -184,6 +206,7 @@ function searchMenuMngList(menuNo) {
 			gridMenuDtl.clear();
 			if (result['egovMapList'] != null) {
 				gridMenuDtl.resetData(result['egovMapList']);
+				if (mode == 'I') { gridMenuDtl.focusAt(gridMenuDtl.getRowCount()-1,1,true); }
 			}			
 		} 
 	});
@@ -193,11 +216,11 @@ function searchMenuMngList(menuNo) {
  * 메뉴등록 처리 함수
  ******************************************************** */
 function insertMenuList(form) {
-	if(confirm("<spring:message code="common.save.msg" />")){	
+	if(confirm("<spring:message code="common.save.msg" />")){
 		if(validateMenuManageVO(form)){
 			$('.btn_b.save').css('pointer-events','none');
 			$.ajax({
-				url : "<c:url value='/cmm/menuinfoinsert.do'/>",
+				url : "<c:url value='/cmm/menumngInsert.do'/>",
 				method :"POST",
 				data : $("#menuManageVO").serialize(),
 				dataType : "JSON",
@@ -206,7 +229,7 @@ function insertMenuList(form) {
 						confirm(result['message']);	
 					} else {
 						if (result['upperMenuId'] != null) {
-							searchMenuMngList(result['upperMenuId'])	
+							searchMenuMngList(result['upperMenuId'], 'I');
 						}
 					}
 				},
@@ -219,6 +242,54 @@ function insertMenuList(form) {
 			});
 		}
 	}
+}
+
+/* ********************************************************
+ * 메뉴삭제 처리 함수
+ ******************************************************** */
+function deleteMenuList(form) {
+	if(confirm("<spring:message code="common.delete.msg" />")){
+		$('.btn_b.save').css('pointer-events','none');
+		$.ajax({
+			url : "<c:url value='/cmm/menumngDelete.do'/>",
+			method :"POST",
+			data : $("#menuManageVO").serialize(),
+			dataType : "JSON",
+			success : function(result) {
+				if (result['message'] != null) {
+					confirm(result['message']);	
+				} else {
+					if (result['upperMenuId'] != null) {
+						searchMenuMngList(result['upperMenuId'],'D');
+					}
+				}
+			},
+			error : function(xhr, status) {
+				confirm("<spring:message code='fail.common.delete' />");
+			},
+			complete : function() {
+				$('.btn_b.save').css('pointer-events','auto');
+			}
+		});
+	}
+}
+
+/* ********************************************************
+ * 신규메뉴 처리 함수
+ ******************************************************** */
+function newMenuList() {
+	$.ajax({
+		url : "<c:url value='/cmm/menumngCreate.do'/>",
+		method :"POST",
+		data : $("#menuManageVO").serialize(),
+		dataType : "JSON",
+		success : function(result) {
+			setMenuList(result['menulist'][0], 2);
+		},
+		error : function(xhr, status) {
+			confirm("<spring:message code='fail.common.insert' />");
+		}
+	});
 }
 -->
 </script>
@@ -242,8 +313,8 @@ function insertMenuList(form) {
 				</span>				
 			</li>
 			<li>
-				<span class="btn_b" onclick="initlMenuList(); return false;">
-					<a href="#"><spring:message code="button.init" /></a>
+				<span class="btn_b new" onclick="newMenuList(document.forms[0]); return false;">
+					<a href="#"><spring:message code="title.new" /></a>
 				</span>
 				<span class="btn_b save" onclick="insertMenuList(document.forms[0]); return false;">
 					<a href="#"><spring:message code="button.save" /></a>

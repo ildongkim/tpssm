@@ -29,55 +29,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title><spring:message code="comSymPrm.fileNmSearch.title"/></title><!-- 프로그램파일명 검색 -->
-<link href="<c:url value='/modules/tui-grid/dist/tui-grid.min.css' />" rel="stylesheet" type="text/css">
 <link href="<c:url value="/css/egovframework/com/com.css"/>" rel="stylesheet" type="text/css">
-<script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/jquery.js'/>" ></script>
-<script type="text/javascript" src="<c:url value='/modules/tui-grid/dist/tui-grid.min.js'/>" ></script>
-<script type="text/javascript" src="<c:url value='/js/tpssm/com/com.js'/>" ></script>
 <script language="javascript1.2"  type="text/javaScript">
-
-/* ********************************************************
- * document.ready 처리 함수
- ******************************************************** */
-let gridProgrm;
- 
-$(document).ready(function() 
-{
-	const data = [{progrmFileNm:'CnsltAnswerListInqire', progrmKoreanNm:'상담답변관리'}];
-	
-	//1.프로그램메뉴목록
-	gridProgrm = new tui.Grid({
-		el: document.getElementById('gridProgrmList'), // Container element
-		scrollX: false,
-		data: data,
-		bodyHeight: 200,
-		columns: 
-		[
-			{header : '<spring:message code="comSymPrm.fileNmSearch.progrmFileNm"/>', name:'progrmFileNm'     , align:'center'},
-			{header : '<spring:message code="comSymPrm.fileNmSearch.progrmNm"/>'    , name:'progrmKoreanNm'   , align:'center'}
-		]
-	});
-
-	//2.프로그램메뉴목록의 현재 Row 선택을 위한 이벤트 설정
-	setGridEvent(gridProgrm);
-
-	//console.log(document.getElementById('gridProgrm').id);
-	console.log("${list_progrmmanage}");
-	console.log(Object.fromEntries("${list_progrmmanage}"));
-	//console.log("${list_progrmmanage[0]}");
-	
-	//const obj = "${list_progrmmanage[0]}";
-	
-	//console.log("${list_progrmmanage[0].progrmFileNm}");
-	
-	//2.프로그램메뉴목록의 데이터바인딩
-	//gridProgrm.resetData(data);
-	
-	//3.트리메뉴목록의 Click 이벤트
-	//gridProgrm.on('click', function (ev) {
-	//});
-});
-
+<!--
 /* ********************************************************
  * 페이징 처리 함수
  ******************************************************** */
@@ -106,7 +60,7 @@ function choisProgramListSearch(vFileNm) {
 	parentFrom[0].progrmFileNm.value = vFileNm;
     parent.$('.ui-dialog-content').dialog('close');
 }
-
+-->
 </script>
 </head>
 <body>
@@ -131,31 +85,22 @@ function choisProgramListSearch(vFileNm) {
 			<col style="width:50%" />
 			<col style="width:50%" />
 		</colgroup>
-		<tr>
-			<td style="vertical-align:top">
-				<div id="gridProgrmList"></div>
-			</td>
-		</tr>
-		<!-- 
 		<thead>
 			<tr>
-			   <th scope="col"><spring:message code="comSymPrm.fileNmSearch.progrmFileNm"/></th><!-- 프로그램파일명 ->
-			   <th scope="col"><spring:message code="comSymPrm.fileNmSearch.progrmNm"/></th><!-- 프로그램명 ->
+			   <th scope="col"><spring:message code="comSymPrm.fileNmSearch.progrmFileNm"/></th><!-- 프로그램파일명 -->
+			   <th scope="col"><spring:message code="comSymPrm.fileNmSearch.progrmNm"/></th><!-- 프로그램명 -->
 			</tr>
 		</thead>
 		<tbody>
 			<c:forEach var="result" items="${list_progrmmanage}" varStatus="status">
 			  <tr>
 			    <td>
-			    <div id="gridProgrm"></div>
 			      <span class="link"><a href="#LINK" onclick="choisProgramListSearch('<c:out value="${result.progrmFileNm}"/>'); return false;">
-			      <c:out value="${result.progrmFileNm}"/></a></span>
-			    </td>
+			      <c:out value="${result.progrmFileNm}"/></a></span></td>
 			    <td><c:out value="${result.progrmKoreanNm}"/></td>
 			  </tr>
 			 </c:forEach>
 		</tbody>
-		 -->
 	</table>
 
 	<!-- paging navigation -->

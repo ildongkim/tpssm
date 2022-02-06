@@ -36,7 +36,7 @@ public interface EgovProgrmManageService {
 	 * @return List
 	 * @exception Exception
 	 */
-	List<Map<String, Object>> selectProgrmList(ComDefaultVO vo) throws Exception;
+	List<?> selectProgrmList(ComDefaultVO vo) throws Exception;
 	/**
 	 * 프로그램목록 총건수를 조회한다.
 	 * @param vo ComDefaultVO

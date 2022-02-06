@@ -52,6 +52,14 @@ public interface EgovMenuManageService {
 	 */
 	List<?> selectMenuManageList(MenuManageVO vo) throws Exception;
 	
+	/**
+	 * 신규 메뉴 번호를 조회
+	 * @param vo MenuManageVO
+	 * @return List
+	 * @exception Exception
+	 */
+	List<?> selectNextMenuInfo(MenuManageVO vo) throws Exception;
+	
 	/** 하위 : 전자정부프레임워크 기본 로직 */
 	
 	/**

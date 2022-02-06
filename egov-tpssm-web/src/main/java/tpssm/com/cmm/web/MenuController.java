@@ -5,8 +5,6 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,15 +15,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springmodules.validation.commons.DefaultBeanValidator;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import egovframework.com.cmm.ComDefaultVO;
 import egovframework.com.cmm.EgovMessageSource;
-import egovframework.com.cmm.JsonUtil;
 import egovframework.com.cmm.LoginVO;
 import egovframework.com.cmm.util.EgovUserDetailsHelper;
 import egovframework.com.sym.mnu.mpm.service.EgovMenuManageService;
@@ -113,7 +107,7 @@ public class MenuController {
 	 * @return result - List
 	 * @exception Exception
 	 */
-	@PostMapping(value="/cmm/menumanagelist.do")
+	@PostMapping(value="/cmm/menumngList.do")
 	public ModelAndView menuManageList(@RequestParam Map<String, Object> commandMap) throws Exception {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("jsonView");
@@ -137,8 +131,7 @@ public class MenuController {
 	 * @return result - String
 	 * @exception Exception
 	 */
-    @PostMapping(value="/cmm/menuinfoinsert.do")
-    @ResponseBody
+    @PostMapping(value="/cmm/menumngInsert.do")
     public ModelAndView insertMenuManage (
     		@ModelAttribute("menuManageVO") MenuManageVO menuManageVO,
     		BindingResult bindingResult,
@@ -148,23 +141,63 @@ public class MenuController {
 		modelAndView.setViewName("jsonView");
 		
     	beanValidator.validate(menuManageVO, bindingResult); //validation 수행
-    	System.out.println("hasErrors : " + bindingResult.hasErrors());
 		if (bindingResult.hasErrors()) { 
 			modelAndView.addObject("message", egovMessageSource.getMessage("fail.common.save"));
 		} else {
-	    	Boolean isAuthenticated = EgovUserDetailsHelper.isAuthenticated();
-	    	if(!isAuthenticated) {
-	    		modelAndView.addObject("message", egovMessageSource.getMessage("fail.common.save"));
-	    	} else {
-		    	LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
-		    	menuManageVO.setRegisterId((user == null || user.getUniqId() == null) ? "" : user.getUniqId());
-		    	menuManageService.insertMenuManage(menuManageVO);
-		    	modelAndView.addObject("upperMenuId", menuManageVO.getUpperMenuId());	    		
-	    	}
+	    	LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
+	    	menuManageVO.setRegisterId((user == null || user.getUniqId() == null) ? "" : user.getUniqId());
+	    	menuManageService.insertMenuManage(menuManageVO);
+	    	modelAndView.addObject("upperMenuId", menuManageVO.getUpperMenuId());
 		}
 		
     	return modelAndView;
 	}
+    
+    /**
+     * 메뉴정보를 등록한다
+     * 메뉴정보 화면으로 이동한다
+     * @param menuManageVO    MenuManageVO
+	 * @return result - String
+	 * @exception Exception
+	 */
+    @PostMapping(value="/cmm/menumngCreate.do")
+    public ModelAndView createMenuManage (
+    		@ModelAttribute("menuManageVO") MenuManageVO menuManageVO,
+    		ModelMap model) throws Exception {
+    	
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("jsonView");
+		
+		List<?> menulist = menuManageService.selectNextMenuInfo(menuManageVO);
+		modelAndView.addObject("menulist", menulist);
+		
+    	return modelAndView;
+	}
+    
+    /**
+     * 메뉴정보를 삭제 한다.
+     * @param menuManageVO MenuManageVO
+     * @return 출력페이지정보 "forward:/cmm/menumanagedelete.do"
+     * @exception Exception
+     */
+    @RequestMapping(value="/cmm/menumngDelete.do")
+    public ModelAndView deleteMenuManage(
+    		@ModelAttribute("menuManageVO") MenuManageVO menuManageVO,
+    		ModelMap model)
+            throws Exception {
+    	
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("jsonView");
+		
+    	if (menuManageService.selectUpperMenuNoByPk(menuManageVO) != 0){
+    		modelAndView.addObject("message", egovMessageSource.getMessage("fail.common.delete.upperMenuExist"));
+		} else {
+			menuManageService.deleteMenuManage(menuManageVO);
+			modelAndView.addObject("upperMenuId", menuManageVO.getUpperMenuId());
+		}
+		
+    	return modelAndView;
+    }
     
     /**
      * 프로그램파일명을 조회한다.
@@ -179,7 +212,7 @@ public class MenuController {
             throws Exception {
     	
     	// 내역 조회
-        searchVO.setPageUnit(propertiesService.getInt("pageUnit"));
+    	searchVO.setPageUnit(propertiesService.getInt("pageUnit"));
     	searchVO.setPageSize(propertiesService.getInt("pageSize"));
 
     	/** pageing */
@@ -191,24 +224,14 @@ public class MenuController {
 		searchVO.setFirstIndex(paginationInfo.getFirstRecordIndex());
 		searchVO.setLastIndex(paginationInfo.getLastRecordIndex());
 		searchVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
-		
-		List<Map<String, Object>> list_progrmmanage = progrmManageService.selectProgrmList(searchVO);
-		//JSONArray jsonArray = JsonUtil.getJsonArrayFromList(list_progrmmanage);
-		
-		JSONArray jsonArray = new JSONArray();
-		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("progrmFileNm", "CnsltAnswerListInqire");
-		jsonObject.put("progrmKoreanNm", "상담답변관리");
-		jsonArray.put(jsonObject);
-		model.addAttribute("list_progrmmanage", list_progrmmanage);
-		
-		ObjectMapper mapper = new ObjectMapper();
-        String samString = mapper.writeValueAsString(jsonObject);
-        
+
+        List<?> list_progrmmanage = progrmManageService.selectProgrmList(searchVO);
+        model.addAttribute("list_progrmmanage", list_progrmmanage);
+
         int totCnt = progrmManageService.selectProgrmListTotCnt(searchVO);
 		paginationInfo.setTotalRecordCount(totCnt);
         model.addAttribute("paginationInfo", paginationInfo);
-        
+
         return "tpssm/com/sym/menu/filenmsearch";
     }
 }

@@ -85,3 +85,10 @@ function settingDialog(options) {
 	$dialog.dialog('open');
 	$('.ui-dialog').css('z-index', '120');
 } 
+
+/*********************************************************
+* Program File Name Search Modal
+******************************************************** */
+function isNullToString(obj) {
+	return (obj == null) ? "" : obj;
+}
