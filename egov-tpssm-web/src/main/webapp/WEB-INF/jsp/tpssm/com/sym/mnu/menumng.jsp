@@ -25,7 +25,7 @@
     <script type="text/javascript" src="<c:url value="/cmm/init/validator.do"/>"></script>
     <validator:javascript formName="menuManageVO" staticJavascript="false" xhtml="true" cdata="false"/>
 </head>
-<script>
+<script type="text/javascript">
 <!--
 let gridMenu;
 let gridMenuDtl;
@@ -109,7 +109,7 @@ $(document).ready(function()
 function searchMenuList() {
 	const menuNo = $("#searchCondition option:selected").val();
 	$.ajax({
-		url : "<c:url value='/cmm/hierarchyMenulist.do'/>",
+		url : "<c:url value='/cmm/hierarchyMenuList.do'/>",
 		method :"POST",
 		data : {"menuNo":menuNo},
 		dataType : "JSON",
@@ -402,7 +402,7 @@ function newMenuList() {
 		</table>
 	</div>
 </body>
-</form:form>
 </div>
+</form:form>
 </div>
 </html>

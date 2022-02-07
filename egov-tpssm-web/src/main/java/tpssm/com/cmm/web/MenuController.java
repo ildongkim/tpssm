@@ -22,6 +22,7 @@ import egovframework.com.cmm.ComDefaultVO;
 import egovframework.com.cmm.EgovMessageSource;
 import egovframework.com.cmm.LoginVO;
 import egovframework.com.cmm.util.EgovUserDetailsHelper;
+import egovframework.com.sym.ccm.cca.service.CmmnCodeVO;
 import egovframework.com.sym.mnu.mpm.service.EgovMenuManageService;
 import egovframework.com.sym.mnu.mpm.service.MenuManageVO;
 import egovframework.com.sym.prm.service.EgovProgrmManageService;
@@ -71,7 +72,7 @@ public class MenuController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MenuController.class);
 
 	@RequestMapping("/cmm/menumng.do")
-	public String index(ModelMap model) throws Exception  {
+	public String menuMng(ModelMap model) throws Exception  {
 
 		// 1. 상위메뉴정보
 		MenuManageVO menuManageVO = new MenuManageVO();
@@ -79,7 +80,13 @@ public class MenuController {
 		List<?> menulist = menuManageService.selectSubMenuList(menuManageVO);
 		model.addAttribute("upperMenuList", menulist);
 		
-		return "tpssm/com/sym/menu/menumng";
+		return "tpssm/com/sym/mnu/menumng";
+	}
+	
+	@RequestMapping("/cmm/progrmmng.do")
+	public String progrmMng(ModelMap model) throws Exception  {
+
+		return "tpssm/com/sym/prm/progrmmng";
 	}
 	
 	/**
@@ -87,7 +94,7 @@ public class MenuController {
 	 * @return result - List
 	 * @exception Exception
 	 */
-	@PostMapping(value="/cmm/hierarchyMenulist.do")
+	@PostMapping(value="/cmm/hierarchyMenuList.do")
 	public ModelAndView selectHierarchyMenuList(@RequestParam Map<String, Object> commandMap) throws Exception {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("jsonView");
@@ -232,6 +239,23 @@ public class MenuController {
 		paginationInfo.setTotalRecordCount(totCnt);
         model.addAttribute("paginationInfo", paginationInfo);
 
-        return "tpssm/com/sym/menu/filenmsearch";
+        return "tpssm/com/sym/mnu/filenmsearch";
     }
+    
+	/**
+	 * 프로그램 목록을 조회
+	 * @return result - List
+	 * @exception Exception
+	 */
+	@PostMapping(value="/cmm/progrmmngList.do")
+	public ModelAndView progrmManageList(@RequestParam Map<String, Object> commandMap) throws Exception {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("jsonView");
+		
+		ComDefaultVO comdefaultVO = new ComDefaultVO();
+    	List<?> menulist = progrmManageService.selectProgrmList(comdefaultVO);
+		modelAndView.addObject(menulist);
+		
+		return modelAndView;
+	}
 }
