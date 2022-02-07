@@ -73,25 +73,26 @@ $(document).ready(function()
 		]
 	});
 
-	//5.상세코드목록의 현재 Row 선택을 위한 이벤트 설정
-	setGridEvent(gridCodeDtl);
-	
+	//5.코드목록의 데이터검색
+	searchCodeList();
 });
 
 /* ********************************************************
  * 코드목록의 데이터검색 처리 함수
  ******************************************************** */
 function searchCodeList() {
-	let codeId = "";
 	$.ajax({
 		url : "<c:url value='/cmm/cmmnCodeList.do'/>",
 		method :"POST",
-		data : {"codeId":codeId},
+		data : {
+				"searchCondition":$("#searchCondition option:selected").val(),
+				"searchKeyword":$("#searchKeyword").val(),
+			},
 		dataType : "JSON",
 		success : function(result){
-			initlCodeList(1);
-			if (result['cmmnCodeVOList'] != null) {
-				gridCode.resetData(result['cmmnCodeVOList']);
+			initlCodeList(2);
+			if (result['egovMapList'] != null) {
+				gridCode.resetData(result['egovMapList']);
 			}
 		} 
 	});
@@ -107,33 +108,61 @@ function searchCodeDtlList(codeId) {
 		data : {"codeId":codeId},
 		dataType : "JSON",
 		success : function(result){
-			if (result['cmmnDetailCodeVOList'] != null) {
-				gridCodeDtl.resetData(result['cmmnDetailCodeVOList']);
+			gridCodeDtl.clear();
+			if (result['egovMapList'] != null) {
+				gridCodeDtl.resetData(result['egovMapList']);
 			}
 		} 
 	});
 }
 
 /* ********************************************************
+ * 메뉴삭제 처리 함수
+ ******************************************************** */
+function deleteCodeList(form) {
+	if(confirm("<spring:message code="common.delete.msg" />")){
+		$('.btn_b.save').css('pointer-events','none');
+		$.ajax({
+			url : "<c:url value='/cmm/codemngDelete.do'/>",
+			method :"POST",
+			data : $("#cmmnCodeVO").serialize(),
+			dataType : "JSON",
+			success : function(result) {
+				if (result['message'] != null) {
+					confirm(result['message']);	
+				} else {
+					searchCodeList();
+				}
+			},
+			error : function(xhr, status) {
+				confirm("<spring:message code='fail.common.delete' />");
+			},
+			complete : function() {
+				$('.btn_b.save').css('pointer-events','auto');
+			}
+		});
+	}
+}
+
+/* ********************************************************
  * 폼입력 정보의 초기화 처리 함수
  ******************************************************** */
 function initlCodeList(unit) {
+	$("#codeId").attr("readonly",true);	
 	switch (unit) {
-	case 1:
+	case 1: //추가
+		$("#codeId").attr("readonly",false);
 		$('.wTable input').val('');
 		$('.wTable select').val('Y');
 		$('.wTable textarea').val('');
+		break;
+	case 2:
 		gridCode.clear();
-		gridCodeDtl.clear();		
-	default:
-		$(".wTable input").attr("readonly",true);
-		$(".wTable textarea").attr("readonly",true);
-		$(".wTable select").attr("readonly",true);
-		$(".wTable select").prop("disabled",true);
-		$('.btn_b.new').css('pointer-events','none');
-		$('.btn_b.new').css('background','#cccccc');
-		$('.btn_b.save').css('pointer-events','none');
-		$('.btn_b.save').css('background','#cccccc');
+		gridCodeDtl.clear();
+		$('.wTable input').val('');
+		$('.wTable select').val('Y');
+		$('.wTable textarea').val('');
+		break;
 	}
 }
 
@@ -145,26 +174,53 @@ function setCodeList(data, unit) {
 		document.cmmnCodeVO.codeId.value=isNullToString(data["codeId"]);
 		document.cmmnCodeVO.codeIdNm.value=isNullToString(data["codeIdNm"]);
 		document.cmmnCodeVO.codeIdDc.value=isNullToString(data["codeIdDc"]);
-		document.cmmnCodeVO.useAt.value=isNullToString(data["codeIdDc"]);
+		document.cmmnCodeVO.useAt.value=isNullToString(data["useAt"]);
 		
 		switch (unit) {
 		case 1: 
 			initlCodeList();
-			$('.btn_b.new').css('pointer-events','auto');
-			$('.btn_b.new').css('background','#4688d2');
 			break;
 		case 2: 
-			$('.btn_b.new').css('pointer-events','none');
-			$('.btn_b.new').css('background','#cccccc');
-			$('.btn_b.save').css('pointer-events','auto');
-			$('.btn_b.save').css('background','#4688d2');
-			document.cmmnCodeVO.codeIdNm.readOnly=false;
-			document.cmmnCodeVO.codeIdDc.readOnly=false;
-			$(".wTable select").css('background','#ffffff');
-			$(".wTable select").prop("disabled",false);
 			break;
 		}
 	}
+}
+
+/* ********************************************************
+ * 공통코드 등록 처리 함수
+ ******************************************************** */
+function insertCodeList(form) {
+	if(confirm("<spring:message code="common.save.msg" />")){
+		if(validateCmmnCodeVO(form)){
+			$('.btn_b.save').css('pointer-events','none');
+			$.ajax({
+				url : "<c:url value='/cmm/codemngInsert.do'/>",
+				method :"POST",
+				data : $("#cmmnCodeVO").serialize(),
+				dataType : "JSON",
+				success : function(result) {
+					if (result['message'] != null) {
+						confirm(result['message']);	
+					} else {
+						searchCodeList();
+					}
+				},
+				error : function(xhr, status) {
+					confirm("<spring:message code='fail.common.save' />");
+				},
+				complete : function() {
+					$('.btn_b.save').css('pointer-events','auto');
+				}
+			});
+		}
+	}
+}
+
+/* ********************************************************
+ * 신규코드 처리 함수
+ ******************************************************** */
+function newCodeList() {
+	initlCodeList(1);
 }
 </script>
 <div id="border" style="width:730px">
@@ -176,13 +232,11 @@ function setCodeList(data, unit) {
 	<div class="search_box" title="<spring:message code="common.searchCondition.msg" />"><!-- 이 레이아웃은 하단 정보를 대한 검색 정보로 구성되어 있습니다. -->
 		<ul>
 			<li>
-				<select name="searchCondition" title="<spring:message code="title.searchCondition" />">
-					<%-- <option <c:if test="${searchVO.searchCondition == ''}">selected="selected"</c:if>><spring:message code="input.select" /></option><!-- 선택하세요 --> --%>
-					<option selected value=''><spring:message code="input.select" /></option><!-- 선택하세요 -->
+				<select name="searchCondition" id="searchCondition" title="<spring:message code="title.searchCondition" />">
 					<option value="1"  <c:if test="${searchVO.searchCondition == '1'}">selected="selected"</c:if> ><spring:message code="comSymCcmCca.cmmnCodeVO.codeId" /></option><!-- 코드ID -->
 					<option value="2"  <c:if test="${searchVO.searchCondition == '2'}">selected="selected"</c:if> ><spring:message code="comSymCcmCca.cmmnCodeVO.codeIdNm" /></option><!-- 코드ID명 -->
 				</select>
-				<input class="s_input" name="searchKeyword" type="text"  size="35" title="<spring:message code="title.search" /> <spring:message code="input.input" />" value='<c:out value="${searchVO.searchKeyword}"/>'  maxlength="155" >
+				<input class="s_input" name="searchKeyword" id="searchKeyword" type="text"  size="35" title="<spring:message code="title.search" /> <spring:message code="input.input" />" value='<c:out value="${searchVO.searchKeyword}"/>'  maxlength="155" >
 				<span class="btn_b" onclick="searchCodeList(); return false;">
 					<a href="#"><spring:message code="button.inquire" /></a>
 				</span>				
@@ -231,7 +285,7 @@ function setCodeList(data, unit) {
 			<tr>
 				<th><spring:message code="comSymCcmCca.cmmnCodeVO.codeId" /> <span class="pilsu">*</span></th><!-- 코드ID -->
 				<td class="left">
-				<input name="codeId" type="text" value=""  maxlength="10" title="<spring:message code="comSymCcmCca.cmmnCodeVO.codeId" />" style="width:190px"/>
+				<input name="codeId" id="codeId" type="text" value=""  maxlength="10" title="<spring:message code="comSymCcmCca.cmmnCodeVO.codeId" />" style="width:190px"/>
 				</td>
 			</tr>
 			<tr>

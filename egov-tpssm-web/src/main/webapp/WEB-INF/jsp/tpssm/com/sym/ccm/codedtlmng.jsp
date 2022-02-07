@@ -67,7 +67,8 @@ $(document).ready(function()
 		[
 			{header:'<spring:message code="comSymCcmCde.cmmnDetailCodeVO.code" />',   name:'code', align:'center'},
 			{header:'<spring:message code="comSymCcmCde.cmmnDetailCodeVO.codeNm" />', name: 'codeNm', align:'center'},
-			{header:'<spring:message code="comSymCcmCde.cmmnDetailCodeVO.useAt" />', name: 'useAt', align:'center'}
+			{header:'<spring:message code="comSymCcmCde.cmmnDetailCodeVO.useAt" />', name: 'useAt', align:'center'},
+			{header:'<spring:message code="comSymCcmCde.cmmnDetailCodeVO.lastUpdtPnttm" />',   name:'lastUpdtPnttm', align:'center'}
 		]
 	});
 

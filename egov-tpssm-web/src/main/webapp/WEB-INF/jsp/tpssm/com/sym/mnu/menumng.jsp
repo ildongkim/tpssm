@@ -206,7 +206,7 @@ function searchMenuMngList(menuNo, mode) {
 			gridMenuDtl.clear();
 			if (result['egovMapList'] != null) {
 				gridMenuDtl.resetData(result['egovMapList']);
-				if (mode == 'I') { gridMenuDtl.focusAt(gridMenuDtl.getRowCount()-1,1,true); }
+				if (mode == 'D') { gridMenuDtl.focusAt(gridMenuDtl.getRowCount()-1,1,true); }
 			}			
 		} 
 	});

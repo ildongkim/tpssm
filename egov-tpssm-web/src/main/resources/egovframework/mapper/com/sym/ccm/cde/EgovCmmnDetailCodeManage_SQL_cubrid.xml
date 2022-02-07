@@ -7,43 +7,20 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="CmmnDetailCodeManage">
 
-
-	<select id="selectCmmnDetailCodeList" parameterType="egovframework.com.sym.ccm.cde.service.CmmnDetailCodeVO" resultType="egovframework.com.sym.ccm.cde.service.CmmnDetailCodeVO">
+	<!-- Modify Script : Harry 2022-02-05  -->
+	<select id="selectCmmnDetailCodeList" parameterType="egovframework.com.sym.ccm.cde.service.CmmnDetailCodeVO" resultType="egovMap">
 		
-		<![CDATA[
-			SELECT  *
-			  FROM  (
-			SELECT ROWNUM RNUM, ALL_LIST.*
-			  FROM  (
-			/* 구현 Sql */
-			SELECT  A.CODE_ID
+			SELECT  B.CODE_ID
+				 ,  B.CODE_ID_NM
 			     ,  A.CODE
 			     ,  A.CODE_NM
+			     ,  A.CODE_DC
 			     ,  A.USE_AT
+			     ,  TO_CHAR(A.LAST_UPDT_PNTTM, 'YYYY-MM-DD') AS LAST_UPDT_PNTTM
 			  FROM  COMTCCMMNDETAILCODE A
 			     ,  COMTCCMMNCODE       B
-			 WHERE 	B.USE_AT  = 'Y'
-			   AND  A.CODE_ID = B.CODE_ID
-			   ]]>
-		
-			<if test="searchCondition == 1">	<![CDATA[	AND
-				A.CODE_ID LIKE '%' || #{searchKeyword} || '%'	]]>
-			</if>
-			<if test="searchCondition == 2">	<![CDATA[	AND
-				A.CODE    LIKE '%' || #{searchKeyword} || '%'	]]>
-			</if>
-			<if test="searchCondition == 3">	<![CDATA[	AND
-				A.CODE_NM LIKE '%' || #{searchKeyword} || '%'	]]>
-			</if>
-		
-		<![CDATA[
-			/* 구현 Sql */
-				    ) ALL_LIST
-				    ) Z
-			 WHERE  RNUM  > #{firstIndex}
-			   AND  RNUM <= #{firstIndex} + #{recordCountPerPage}
-			   ]]>
-		
+			 WHERE 	A.CODE_ID = B.CODE_ID
+			   AND  A.CODE_ID = #{codeId}
 	</select>
 
 	<select id="selectCmmnDetailCodeListTotCnt" parameterType="egovframework.com.sym.ccm.cde.service.CmmnDetailCodeVO" resultType="int">

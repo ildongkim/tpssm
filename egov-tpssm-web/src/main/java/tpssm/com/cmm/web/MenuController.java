@@ -135,7 +135,7 @@ public class MenuController {
      * 메뉴정보를 등록한다
      * 메뉴정보 화면으로 이동한다
      * @param menuManageVO    MenuManageVO
-	 * @return result - String
+	 * @return result - List
 	 * @exception Exception
 	 */
     @PostMapping(value="/cmm/menumngInsert.do")
@@ -164,7 +164,7 @@ public class MenuController {
      * 메뉴정보를 등록한다
      * 메뉴정보 화면으로 이동한다
      * @param menuManageVO    MenuManageVO
-	 * @return result - String
+	 * @return result - List
 	 * @exception Exception
 	 */
     @PostMapping(value="/cmm/menumngCreate.do")
@@ -184,7 +184,7 @@ public class MenuController {
     /**
      * 메뉴정보를 삭제 한다.
      * @param menuManageVO MenuManageVO
-     * @return 출력페이지정보 "forward:/cmm/menumanagedelete.do"
+     * @return result - List
      * @exception Exception
      */
     @RequestMapping(value="/cmm/menumngDelete.do")
