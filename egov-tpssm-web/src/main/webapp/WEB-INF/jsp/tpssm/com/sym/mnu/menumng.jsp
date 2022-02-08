@@ -4,7 +4,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="validator" uri="http://www.springmodules.org/tags/commons-validator" %>
-
+<c:set var="pageTitle"><spring:message code="comSymMnuMpm.menu.title"/></c:set>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -13,7 +13,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<meta name="description" content="" />
 	<meta name="author" content="" />
-    <title>임시출입자 출입신청심의 시스템</title>
+    <title>${pageTitle}<spring:message code="title.list" /></title>
     <link href="<c:url value='/modules/tui-grid/dist/tui-grid.min.css' />" rel="stylesheet" type="text/css">
     <link href="<c:url value="/css/egovframework/com/com.css"/>" rel="stylesheet" type="text/css">
     <link href="<c:url value="/css/egovframework/com/button.css"/>" rel="stylesheet" type="text/css">
@@ -49,7 +49,7 @@ $(document).ready(function()
 		},
 		columns: 
 		[
-			{header:'<spring:message code="tpssmMnu.menuMng.menuNm" />',   name:'menuNm'}
+			{header:'<spring:message code="tpssmMnu.menuMng.menuNm" />', name:'menuNm'}
 		]
 	});
 	
@@ -71,10 +71,10 @@ $(document).ready(function()
 		bodyHeight: 200,
 		columns: 
 		[
-			{header:'<spring:message code="tpssmMnu.menuMng.menuNm" />',   name:'menuNm', align:'center'},
-			{header:'<spring:message code="tpssmMnu.menuMng.progrmFileNm" />', name: 'progrmFileNm', align:'center'},
-			{header:'<spring:message code="tpssmMnu.menuMng.menuOrdr" />', name: 'menuOrdr', align:'center'},
-			{header:'<spring:message code="tpssmMnu.menuMng.useAt" />', name: 'useAt', align:'center'},
+			{header:'<spring:message code="tpssmMnu.menuMng.menuNm" />',        name:'menuNm',       align:'center'},
+			{header:'<spring:message code="tpssmMnu.menuMng.progrmFileNm" />',  name:'progrmFileNm', align:'center'},
+			{header:'<spring:message code="tpssmMnu.menuMng.menuOrdr" />',      name:'menuOrdr',     align:'center'},
+			{header:'<spring:message code="tpssmMnu.menuMng.useAt" />',         name:'useAt',        align:'center'}
 		]
 	});
 	
@@ -141,13 +141,13 @@ function searchMenuList() {
  ******************************************************** */
 function setMenuList(data, unit) {
 	if (data != null) {
-		document.menuManageVO.upperMenuId.value=data["upperMenuId"];
-		document.menuManageVO.menuNo.value=data["menuNo"];
+		document.menuManageVO.upperMenuId.value=isNullToString(data["upperMenuId"]);
+		document.menuManageVO.menuNo.value=isNullToString(data["menuNo"]);
 		document.menuManageVO.menuNm.value=isNullToString(data["menuNm"]);
-		document.menuManageVO.menuOrdr.value=data["menuOrdr"];
+		document.menuManageVO.menuOrdr.value=isNullToString(data["menuOrdr"]);
 		document.menuManageVO.progrmFileNm.value=isNullToString(data["progrmFileNm"]);
 		document.menuManageVO.menuDc.value=isNullToString(data["menuDc"]);
-		document.menuManageVO.useAt.value=data["useAt"];
+		document.menuManageVO.useAt.value=isNullToString(data["useAt"]);
 		
 		switch (unit) {
 		case 1: 

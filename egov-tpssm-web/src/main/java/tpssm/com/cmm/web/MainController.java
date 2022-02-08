@@ -38,7 +38,6 @@ public class MainController implements ApplicationContextAware, InitializingBean
 
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
-		
 		LOGGER.info("MainController setApplicationContext method has called!");
 	}
 
@@ -54,6 +53,11 @@ public class MainController implements ApplicationContextAware, InitializingBean
 	@Resource(name = "meunManageService")
     private EgovMenuManageService menuManageService;
 	
+	/**
+	 * 메인화면이동
+	 * @return result - String
+	 * @exception Exception
+	 */
 	@RequestMapping("/cmm/main.do")
 	public String main(ModelMap model) throws Exception {
 
@@ -88,6 +92,29 @@ public class MainController implements ApplicationContextAware, InitializingBean
 		return "tpssm/com/main";
 	}
 	
+	/**
+	 * 메뉴조회
+	 * @return result - String
+	 * @exception Exception
+	 */
+	@RequestMapping("/cmm/mainleft.do")
+	public String left(ModelMap model) throws Exception {
+    	LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
+    	
+		MenuManageVO menuManageVO = new MenuManageVO();
+    	menuManageVO.setTmpId(user == null ? "" : EgovStringUtil.isNullToString(user.getId()));
+    	menuManageVO.setTmpPassword(user == null ? "" : EgovStringUtil.isNullToString(user.getPassword()));
+    	menuManageVO.setTmpUserSe(user == null ? "" : EgovStringUtil.isNullToString(user.getUserSe()));
+    	menuManageVO.setTmpName(user == null ? "" : EgovStringUtil.isNullToString(user.getName()));
+    	menuManageVO.setTmpEmail(user == null ? "" : EgovStringUtil.isNullToString(user.getEmail()));
+    	menuManageVO.setTmpOrgnztId(user == null ? "" : EgovStringUtil.isNullToString(user.getOrgnztId()));
+    	menuManageVO.setTmpUniqId(user == null ? "" : EgovStringUtil.isNullToString(user.getUniqId()));
+    	List<?> list_menulist = menuManageService.selectMainMenuLeft(menuManageVO);
+		model.addAttribute("list_menulist", list_menulist);
+		
+		return "tpssm/com/main_left";
+	}
+	
 	@RequestMapping("/cmm/maintop.do")
 	public String top() {
 		return "tpssm/com/main_top";
@@ -98,34 +125,13 @@ public class MainController implements ApplicationContextAware, InitializingBean
 		return "tpssm/com/main_bottom";
 	}
 	
-	@RequestMapping("/cmm/mainleft.do")
-	public String left(ModelMap model) throws Exception {
-    	LoginVO user =
-			(LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
-    	
-		// 2. 메뉴조회
-		MenuManageVO menuManageVO = new MenuManageVO();
-    	menuManageVO.setTmpId(user == null ? "" : EgovStringUtil.isNullToString(user.getId()));
-    	menuManageVO.setTmpPassword(user == null ? "" : EgovStringUtil.isNullToString(user.getPassword()));
-    	menuManageVO.setTmpUserSe(user == null ? "" : EgovStringUtil.isNullToString(user.getUserSe()));
-    	menuManageVO.setTmpName(user == null ? "" : EgovStringUtil.isNullToString(user.getName()));
-    	menuManageVO.setTmpEmail(user == null ? "" : EgovStringUtil.isNullToString(user.getEmail()));
-    	menuManageVO.setTmpOrgnztId(user == null ? "" : EgovStringUtil.isNullToString(user.getOrgnztId()));
-    	menuManageVO.setTmpUniqId(user == null ? "" : EgovStringUtil.isNullToString(user.getUniqId()));
-    	
-    	List<?> list_menulist = menuManageService.selectMainMenuLeft(menuManageVO);
-		model.addAttribute("list_menulist", list_menulist);
-		
-		return "tpssm/com/main_left";
-	}
-	
 	@RequestMapping("/cmm/maincontent.do")
 	public String setMainContent(ModelMap model) throws Exception {
 		return "tpssm/com/main_content";
 	}
 
 	/**
-	 * 로그인 후 메인화면으로 들어간다
+	 * 로그인 후 메인화면으로 이동
 	 * @param
 	 * @return 로그인 페이지
 	 * @exception Exception
@@ -139,13 +145,12 @@ public class MainController implements ApplicationContextAware, InitializingBean
 			model.addAttribute("loginMessage", egovMessageSource.getMessage("fail.common.login"));
 			return "tpssm/com/init/LoginUsr";
 		}
-		LoginVO user = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
 		
+		LoginVO user = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
 		LOGGER.debug("User Id : {}", user == null ? "" : EgovStringUtil.isNullToString(user.getId()));
 
-		// 3. 메인 페이지 이동
+		// 2. 메인 페이지 이동
 		String main_page = Globals.MAIN_PAGE;
-
 		LOGGER.debug("Globals.MAIN_PAGE > " + Globals.MAIN_PAGE);
 		LOGGER.debug("main_page > {}", main_page);
 
@@ -154,23 +159,6 @@ public class MainController implements ApplicationContextAware, InitializingBean
 		} else {
 			return main_page;
 		}
-
-		/*
-		if (main_page != null && !main_page.equals("")) {
-
-			// 3-1. 설정된 메인화면이 있는 경우
-			return main_page;
-
-		} else {
-
-			// 3-2. 설정된 메인화면이 없는 경우
-			if (user.getUserSe().equals("USR")) {
-				return "egovframework/com/EgovMainView";
-			} else {
-				return "egovframework/com/EgovMainViewG";
-			}
-		}
-		*/
 	}
 	
 	/**
@@ -183,9 +171,7 @@ public class MainController implements ApplicationContextAware, InitializingBean
 	public ModelAndView refreshSessionTimeout(@RequestParam Map<String, Object> commandMap) throws Exception {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("jsonView");
-
 		modelAndView.addObject("result", "ok");
-
 		return modelAndView;
 	}
 	

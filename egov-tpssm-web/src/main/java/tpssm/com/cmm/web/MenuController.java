@@ -32,6 +32,7 @@ import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 
 /**
  * 메뉴관리 서비스를 처리하는 컨트롤러 클래스
+ * 메뉴관련 서비스 : 프로그램관리, 권한관리
  * @author Harry
  * @since 2022.01.30
  * @version 1.0
@@ -71,6 +72,11 @@ public class MenuController {
 	/** log */
 	private static final Logger LOGGER = LoggerFactory.getLogger(MenuController.class);
 
+	/**
+	 * 메뉴관리 화면이동
+	 * @return result - String
+	 * @exception Exception
+	 */
 	@RequestMapping("/cmm/menumng.do")
 	public String menuMng(ModelMap model) throws Exception  {
 
@@ -83,10 +89,51 @@ public class MenuController {
 		return "tpssm/com/sym/mnu/menumng";
 	}
 	
+	/**
+	 * 메뉴생성관리 화면이동
+	 * @return result - String
+	 * @exception Exception
+	 */
+	@RequestMapping("/cmm/menucreatemng.do")
+	public String menuCreateMng(ModelMap model) throws Exception  {
+		
+		// 1. 상위메뉴정보
+		MenuManageVO menuManageVO = new MenuManageVO();
+		menuManageVO.setUpperMenuId(0);
+		List<?> menulist = menuManageService.selectSubMenuList(menuManageVO);
+		model.addAttribute("upperMenuList", menulist);
+		
+		return "tpssm/com/sym/mnu/menucreatemng";
+	}
+	
+	/**
+	 * 프로그램관리 화면이동
+	 * @return result - String
+	 * @exception Exception
+	 */
 	@RequestMapping("/cmm/progrmmng.do")
 	public String progrmMng(ModelMap model) throws Exception  {
-
 		return "tpssm/com/sym/prm/progrmmng";
+	}
+	
+	/**
+	 * 권한관리 화면이동
+	 * @return result - String
+	 * @exception Exception
+	 */
+	@RequestMapping("/cmm/authmng.do")
+	public String authMng(ModelMap model) throws Exception  {
+		return "tpssm/com/sec/authmng";
+	}
+	
+	/**
+	 * 권한그룹관리 화면이동
+	 * @return result - String
+	 * @exception Exception
+	 */
+	@RequestMapping("/cmm/authgroupmng.do")
+	public String authGroupMng(ModelMap model) throws Exception  {
+		return "tpssm/com/sec/authgroupmng";
 	}
 	
 	/**
@@ -99,10 +146,8 @@ public class MenuController {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("jsonView");
 
-		// 1. 메뉴조회
 		MenuManageVO menuManageVO = new MenuManageVO();
     	menuManageVO.setMenuNo(Integer.parseInt(EgovStringUtil.isNullToString(commandMap.get("menuNo"))));
-    	
     	List<?> menulist = menuManageService.selectHierarchyMenuList(menuManageVO);
 		modelAndView.addObject(menulist);
 		
@@ -119,12 +164,10 @@ public class MenuController {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("jsonView");
 		
-		// 1. 메뉴조회
 		String strMenuNo = EgovStringUtil.isNullToString(commandMap.get("menuNo"));
 		if ("".contentEquals(strMenuNo)) { return modelAndView; }
 		MenuManageVO menuManageVO = new MenuManageVO();
 		menuManageVO.setMenuNo(Integer.parseInt(strMenuNo));
-    	
     	List<?> menulist = menuManageService.selectMenuManageList(menuManageVO);
 		modelAndView.addObject(menulist);
 		
@@ -141,8 +184,7 @@ public class MenuController {
     @PostMapping(value="/cmm/menumngInsert.do")
     public ModelAndView insertMenuManage (
     		@ModelAttribute("menuManageVO") MenuManageVO menuManageVO,
-    		BindingResult bindingResult,
-    		ModelMap model) throws Exception {
+    		BindingResult bindingResult) throws Exception {
     	
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("jsonView");
@@ -188,11 +230,7 @@ public class MenuController {
      * @exception Exception
      */
     @RequestMapping(value="/cmm/menumngDelete.do")
-    public ModelAndView deleteMenuManage(
-    		@ModelAttribute("menuManageVO") MenuManageVO menuManageVO,
-    		ModelMap model)
-            throws Exception {
-    	
+    public ModelAndView deleteMenuManage(@ModelAttribute("menuManageVO") MenuManageVO menuManageVO) throws Exception {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("jsonView");
 		

@@ -4,7 +4,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="validator" uri="http://www.springmodules.org/tags/commons-validator" %>
-
+<c:set var="pageTitle"><spring:message code="comSymPrm.progrm.title"/></c:set>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -13,7 +13,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<meta name="description" content="" />
 	<meta name="author" content="" />
-    <title>임시출입자 출입신청심의 시스템</title>
+    <title>${pageTitle}<spring:message code="title.list" /></title>
     <link href="<c:url value='/modules/tui-grid/dist/tui-grid.min.css' />" rel="stylesheet" type="text/css">
     <link href="<c:url value="/css/egovframework/com/com.css"/>" rel="stylesheet" type="text/css">
     <link href="<c:url value="/css/egovframework/com/button.css"/>" rel="stylesheet" type="text/css">
@@ -42,11 +42,11 @@ $(document).ready(function()
 		rowHeaders: ['rowNum'],
 		columns: 
 		[
-			{header:'<spring:message code="comSymPrm.programListManage.programFileName" />',   name:'progrmFileNm'},
-			{header:'<spring:message code="comSymPrm.programListManage.programName" />',   name:'progrmKoreanNm'},
-			{header:'<spring:message code="comSymPrm.programListManage.ProgramDescription" />',   name:'progrmDc'},
-			{header:'<spring:message code="comSymPrm.programListManage.url" />',   name:'url'},
-			{header:'<spring:message code="comSymPrm.programListManage.useAt" />',   name:'useAt'}
+			{header:'<spring:message code="comSymPrm.programListManage.programFileName" />',    name:'progrmFileNm',    align:'center'},
+			{header:'<spring:message code="comSymPrm.programListManage.programName" />',        name:'progrmKoreanNm',  align:'center'},
+			{header:'<spring:message code="comSymPrm.programListManage.ProgramDescription" />', name:'progrmDc',        align:'center'},
+			{header:'<spring:message code="comSymPrm.programListManage.url" />',                name:'url',             align:'center'},
+			{header:'<spring:message code="comSymPrm.programListManage.useAt" />',              name:'useAt',           align:'center'}
 		]
 	});
 	
@@ -60,7 +60,7 @@ $(document).ready(function()
 });
 
 /* ********************************************************
- * 트리메뉴목록의 데이터검색 처리 함수
+ * 프로그램목록의 데이터검색 처리 함수
  ******************************************************** */
 function searchProgrmList() {
 	const programFileName = "";
@@ -83,11 +83,11 @@ function searchProgrmList() {
  ******************************************************** */
 function setProgrmList(data, unit) {
 	if (data != null) {
-		document.progrmManageVO.progrmFileNm.value=data["progrmFileNm"];
-		document.progrmManageVO.programName.value=data["progrmKoreanNm"];
+		document.progrmManageVO.progrmFileNm.value=isNullToString(data["progrmFileNm"]);
+		document.progrmManageVO.programName.value=isNullToString(data["progrmKoreanNm"]);
 		document.progrmManageVO.progrmDc.value=isNullToString(data["progrmDc"]);
 		document.progrmManageVO.url.value=isNullToString(data["url"]);
-		document.progrmManageVO.useAt.value=data["useAt"];
+		document.progrmManageVO.useAt.value=isNullToString(data["useAt"]);
 		
 		switch (unit) {
 		case 1: 

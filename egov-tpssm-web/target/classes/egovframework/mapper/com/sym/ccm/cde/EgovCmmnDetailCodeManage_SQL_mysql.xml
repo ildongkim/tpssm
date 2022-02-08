@@ -6,30 +6,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="CmmnDetailCodeManage">
-
-	<select id="selectCmmnDetailCodeList" parameterType="egovframework.com.sym.ccm.cde.service.CmmnDetailCodeVO"  resultType="egovframework.com.sym.ccm.cde.service.CmmnDetailCodeVO">
+			   
+	<select id="selectCmmnDetailCodeList" parameterType="egovframework.com.sym.ccm.cde.service.CmmnDetailCodeVO"  resultType="egovMap">
 		
-		<![CDATA[
-			SELECT  A.CODE_ID
+			SELECT  B.CODE_ID
+				 ,  B.CODE_ID_NM
 			     ,  A.CODE
 			     ,  A.CODE_NM
+			     ,  A.CODE_DC
 			     ,  A.USE_AT
+			     ,  DATE_FORMAT(A.LAST_UPDT_PNTTM, '%Y-%m-%d') LAST_UPDT_PNTTM
 			  FROM  COMTCCMMNDETAILCODE A
 			     ,  COMTCCMMNCODE       B
-			 WHERE 	B.USE_AT  = 'Y'
-			   AND  A.CODE_ID = B.CODE_ID
-		]]>	   
-		
-			<if test="searchCondition == 1">	<![CDATA[	AND
-				A.CODE_ID LIKE CONCAT ('%', #{searchKeyword},'%')	]]>
-			</if>
-			<if test="searchCondition == 2">	<![CDATA[	AND
-				A.CODE    LIKE CONCAT ('%', #{searchKeyword},'%')	]]>
-			</if>
-			<if test="searchCondition == 3">	<![CDATA[	AND
-				A.CODE_NM LIKE CONCAT ('%', #{searchKeyword},'%')	]]>
-			</if>
-			 LIMIT  #{recordCountPerPage} OFFSET #{firstIndex}
+			 WHERE 	A.CODE_ID = B.CODE_ID
+			   AND  A.CODE_ID = #{codeId}
 	</select>
 
 	<select id="selectCmmnDetailCodeListTotCnt" parameterType="egovframework.com.sym.ccm.cde.service.CmmnDetailCodeVO" resultType="int">

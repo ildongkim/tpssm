@@ -4,7 +4,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="validator" uri="http://www.springmodules.org/tags/commons-validator" %>
-
+<c:set var="pageTitle"><spring:message code="comSymPrmCde.codedtl.title"/></c:set>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -13,7 +13,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<meta name="description" content="" />
 	<meta name="author" content="" />
-    <title>임시출입자 출입신청심의 시스템</title>
+    <title>${pageTitle}<spring:message code="title.list" /></title>
     <link href="<c:url value='/modules/tui-grid/dist/tui-grid.min.css' />" rel="stylesheet" type="text/css">
     <link href="<c:url value="/css/egovframework/com/com.css"/>" rel="stylesheet" type="text/css">
     <link href="<c:url value="/css/egovframework/com/button.css"/>" rel="stylesheet" type="text/css">
@@ -26,7 +26,7 @@
     <validator:javascript formName="cmmnDetailCodeVO" staticJavascript="false" xhtml="true" cdata="false"/>
 </head>
 <script type="text/javascript">
-
+<!--
 let gridCode;
 let gridCodeDtl;
 
@@ -65,10 +65,10 @@ $(document).ready(function()
 		bodyHeight: 200,
 		columns: 
 		[
-			{header:'<spring:message code="comSymCcmCde.cmmnDetailCodeVO.code" />',   name:'code', align:'center'},
-			{header:'<spring:message code="comSymCcmCde.cmmnDetailCodeVO.codeNm" />', name: 'codeNm', align:'center'},
-			{header:'<spring:message code="comSymCcmCde.cmmnDetailCodeVO.useAt" />', name: 'useAt', align:'center'},
-			{header:'<spring:message code="comSymCcmCde.cmmnDetailCodeVO.lastUpdtPnttm" />',   name:'lastUpdtPnttm', align:'center'}
+			{header:'<spring:message code="comSymCcmCde.cmmnDetailCodeVO.code" />',          name:'code',          align:'center'},
+			{header:'<spring:message code="comSymCcmCde.cmmnDetailCodeVO.codeNm" />',        name:'codeNm',        align:'center'},
+			{header:'<spring:message code="comSymCcmCde.cmmnDetailCodeVO.useAt" />',         name:'useAt',         align:'center'},
+			{header:'<spring:message code="comSymCcmCde.cmmnDetailCodeVO.lastUpdtPnttm" />', name:'lastUpdtPnttm', align:'center'}
 		]
 	});
 
@@ -80,6 +80,8 @@ $(document).ready(function()
 		setCodeList(gridCodeDtl.getRow(ev.rowKey), 1);
 	});
 	
+	//7.코드목록의 데이터검색
+	searchCodeList();
 });
 
 /* ********************************************************
@@ -94,8 +96,8 @@ function searchCodeList() {
 		dataType : "JSON",
 		success : function(result){
 			initlCodeList(1);
-			if (result['cmmnCodeVOList'] != null) {
-				gridCode.resetData(result['cmmnCodeVOList']);
+			if (result['egovMapList'] != null) {
+				gridCode.resetData(result['egovMapList']);
 			}
 		} 
 	});
@@ -111,8 +113,8 @@ function searchCodeDtlList(codeId) {
 		data : {"codeId":codeId},
 		dataType : "JSON",
 		success : function(result){
-			if (result['cmmnDetailCodeVOList'] != null) {
-				gridCodeDtl.resetData(result['cmmnDetailCodeVOList']);
+			if (result['egovMapList'] != null) {
+				gridCodeDtl.resetData(result['egovMapList']);
 			}
 		} 
 	});
@@ -172,6 +174,7 @@ function setCodeList(data, unit) {
 		}
 	}
 }
+-->
 </script>
 <div id="border" style="width:730px">
 

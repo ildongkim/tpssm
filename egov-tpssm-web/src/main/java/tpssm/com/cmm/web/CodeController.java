@@ -61,7 +61,6 @@ public class CodeController {
 	@Resource(name = "CmmnDetailCodeManageService")
 	private EgovCcmCmmnDetailCodeManageService cmmnDetailCodeManageService;
 
-	
 	@RequestMapping("/cmm/codemng.do")
 	public String codeMng(ModelMap model) throws Exception  {
 		return "tpssm/com/sym/ccm/codemng";
@@ -122,8 +121,7 @@ public class CodeController {
     @PostMapping(value="/cmm/codemngInsert.do")
     public ModelAndView insertMenuManage (
     		@ModelAttribute("cmmnCodeVO") CmmnCodeVO cmmnCodeVO,
-    		BindingResult bindingResult,
-    		ModelMap model) throws Exception {
+    		BindingResult bindingResult) throws Exception {
     	
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("jsonView");
@@ -149,7 +147,6 @@ public class CodeController {
      */
     @RequestMapping(value="/cmm/codemngDelete.do")
     public ModelAndView deleteMenuManage(@RequestParam Map<String, Object> commandMap) throws Exception {
-    	
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("jsonView");
 		
