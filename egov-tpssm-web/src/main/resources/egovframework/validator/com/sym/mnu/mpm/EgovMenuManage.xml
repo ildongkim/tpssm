@@ -43,6 +43,10 @@
                 <var-value>250</var-value>
                 </var>
             </field>
+            
+			<field property="useAt" depends="required">
+        		<arg0 key="사용여부" resource="true"/><!-- 사용여부 -->
+			</field>
         </form>
         
     </formset>

@@ -12,6 +12,7 @@
 		<result property="URL" column="URL"/>
 	</resultMap> 
 
+	<!-- Modify Script : Harry 2022-02-09  -->
 	<select id="selectProgrmList_D" parameterType="comDefaultVO" resultMap="progrmManage">
 		
 			SELECT 
@@ -20,6 +21,7 @@
 				, PROGRM_KOREAN_NM  AS "progrmKoreanNm" 
 				, PROGRM_DC        AS "progrmDc" 
 				, URL              AS "URL"
+				, USE_AT AS "useAt" 
 			FROM COMTNPROGRMLIST
 			WHERE binary(PROGRM_KOREAN_NM) like  CONCAT('%', #{searchKeyword}, '%')
 			LIMIT  #{recordCountPerPage} OFFSET #{firstIndex}

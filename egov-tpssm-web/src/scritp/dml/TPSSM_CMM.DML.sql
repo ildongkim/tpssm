@@ -101,7 +101,22 @@ COMTNPROGRMLIST (PROGRM_FILE_NM, PROGRM_STRE_PATH, PROGRM_KOREAN_NM, PROGRM_DC, 
 INSERT INTO 
 COMTNPROGRMLIST (PROGRM_FILE_NM, PROGRM_STRE_PATH, PROGRM_KOREAN_NM, PROGRM_DC, URL) VALUES 
 ('AuthManagment', '/com/cmm/mnu', '권한관리', '권한관리', '/cmm/authmng.do');
+INSERT INTO comtnprogrmlist (progrm_file_nm, progrm_stre_path, progrm_korean_nm, progrm_dc, url, use_at, frst_regist_pnttm, frst_register_id, last_updt_pnttm, last_updusr_id) VALUES 
+('EgovMenuCreatManageSelect', '/cmm/', '메뉴생성관리', '메뉴생성관리', '/cmm/menucreatemng.do', 'Y', DATETIME'2022-02-09 22:48:50.577', 'USRCNFRM_00000000001', DATETIME'2022-02-09 22:48:50.577', 'USRCNFRM_00000000001');
+INSERT INTO comtnprogrmlist (progrm_file_nm, progrm_stre_path, progrm_korean_nm, progrm_dc, url, use_at, frst_regist_pnttm, frst_register_id, last_updt_pnttm, last_updusr_id) VALUES 
+('EgovAuthorGroup', '/cmm/', '권한그룹관리', '권한그룹관리', '/cmm/authgroupmng.do', 'Y', DATETIME'2022-02-09 22:55:12.870', 'USRCNFRM_00000000001', DATETIME'2022-02-09 22:55:12.870', 'USRCNFRM_00000000001');
 
+/* 메뉴생성정보 */
+INSERT INTO comtnmenucreatdtls (menu_no, author_code, mapng_creat_id) VALUES (1010000, 'ROLE_USER', NULL);
+INSERT INTO comtnmenucreatdtls (menu_no, author_code, mapng_creat_id) VALUES (1020000, 'ROLE_USER', NULL);
+INSERT INTO comtnmenucreatdtls (menu_no, author_code, mapng_creat_id) VALUES (1030000, 'ROLE_USER', NULL);
+INSERT INTO comtnmenucreatdtls (menu_no, author_code, mapng_creat_id) VALUES (1040000, 'ROLE_USER', NULL);
+INSERT INTO comtnmenucreatdtls (menu_no, author_code, mapng_creat_id) VALUES (1050000, 'ROLE_USER', NULL);
+INSERT INTO comtnmenucreatdtls (menu_no, author_code, mapng_creat_id) VALUES (1060000, 'ROLE_USER', NULL);
+INSERT INTO comtnmenucreatdtls (menu_no, author_code, mapng_creat_id) VALUES (1070000, 'ROLE_USER', NULL);
+INSERT INTO comtnmenucreatdtls (menu_no, author_code, mapng_creat_id) VALUES (1080000, 'ROLE_USER', NULL);
+INSERT INTO comtnmenucreatdtls (menu_no, author_code, mapng_creat_id) VALUES (1090000, 'ROLE_USER', NULL);
+INSERT INTO comtnmenucreatdtls (menu_no, author_code, mapng_creat_id) VALUES (1110000, 'ROLE_USER', NULL);
 
 /* ------------------------------------------------------------------------------------------------------------------------------------------------- */
 

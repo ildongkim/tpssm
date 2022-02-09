@@ -57,6 +57,9 @@ $(document).ready(function()
 	gridProgrm.on('click', function (ev) {
 		setProgrmList(gridProgrm.getRow(ev.rowKey), 1);
 	});
+	
+	//4.프로그램목록의 데이터검색
+	searchProgrmList();
 });
 
 /* ********************************************************
@@ -84,29 +87,11 @@ function searchProgrmList() {
 function setProgrmList(data, unit) {
 	if (data != null) {
 		document.progrmManageVO.progrmFileNm.value=isNullToString(data["progrmFileNm"]);
-		document.progrmManageVO.programName.value=isNullToString(data["progrmKoreanNm"]);
+		document.progrmManageVO.progrmKoreanNm.value=isNullToString(data["progrmKoreanNm"]);
 		document.progrmManageVO.progrmDc.value=isNullToString(data["progrmDc"]);
 		document.progrmManageVO.url.value=isNullToString(data["url"]);
 		document.progrmManageVO.useAt.value=isNullToString(data["useAt"]);
-		
-		switch (unit) {
-		case 1: 
-			initlProgrmList();
-			$('.btn_b.new').css('pointer-events','auto');
-			$('.btn_b.new').css('background','#4688d2');
-			break;
-		case 2: 
-			$('.btn_b.new').css('pointer-events','none');
-			$('.btn_b.new').css('background','#cccccc');
-			$('.btn_b.save').css('pointer-events','auto');
-			$('.btn_b.save').css('background','#4688d2');
-			document.progrmManageVO.progrmFileNm.readOnly=false;
-			document.progrmManageVO.programName.readOnly=false;
-			document.progrmManageVO.progrmDc.readOnly=false;
-			$(".wTable select").css('background','#ffffff');
-			$(".wTable select").prop("disabled",false);
-			break;
-		}
+		$("#progrmFileNm").attr("readonly",true);
 	}
 }
 
@@ -116,19 +101,43 @@ function setProgrmList(data, unit) {
 function initlProgrmList(unit) {
 	switch (unit) {
 	case 1:
+		gridProgrm.clear();
+		break;
+	default:
 		$('.wTable input').val('');
 		$('.wTable select').val('Y');
 		$('.wTable textarea').val('');
-		gridProgrm.clear();
-	default:
-		$(".wTable input").attr("readonly",true);
-		$(".wTable textarea").attr("readonly",true);
-		$(".wTable select").attr("readonly",true);
-		$(".wTable select").prop("disabled",true);
-		$('.btn_b.new').css('pointer-events','none');
-		$('.btn_b.new').css('background','#cccccc');
-		$('.btn_b.save').css('pointer-events','none');
-		$('.btn_b.save').css('background','#cccccc');
+		$("#progrmFileNm").attr("readonly",false);
+	}
+}
+
+/* ********************************************************
+ * 프로그램등록 처리 함수
+ ******************************************************** */
+function insertProgrmList(form) {
+	if(confirm("<spring:message code="common.save.msg" />")){
+		if(validateProgrmManageVO(form)){
+			$('.btn_b.save').css('pointer-events','none');
+			$.ajax({
+				url : "<c:url value='/cmm/progrmmngInsert.do'/>",
+				method :"POST",
+				data : $("#progrmManageVO").serialize(),
+				dataType : "JSON",
+				success : function(result) {
+					if (result['message'] != null) {
+						confirm(result['message']);	
+					} else {
+						searchProgrmList();
+					}
+				},
+				error : function(xhr, status) {
+					confirm("<spring:message code='fail.common.save' />");
+				},
+				complete : function() {
+					$('.btn_b.save').css('pointer-events','auto');
+				}
+			});
+		}
 	}
 }
 -->
@@ -149,7 +158,7 @@ function initlProgrmList(unit) {
 				</span>				
 			</li>
 			<li>
-				<span class="btn_b new" onclick="newProgrmList(document.forms[0]); return false;">
+				<span class="btn_b new" onclick="initlProgrmList();">
 					<a href="#"><spring:message code="title.new" /></a>
 				</span>
 				<span class="btn_b save" onclick="insertProgrmList(document.forms[0]); return false;">
@@ -187,25 +196,25 @@ function initlProgrmList(unit) {
 			<tr>
 				<th><spring:message code="comSymPrm.programListManage.programFileName" /> <span class="pilsu">*</span></th><!-- 프로그램파일명 -->
 				<td class="left">
-				<input name="progrmFileNm" type="text" value=""  maxlength="10" title="<spring:message code="comSymPrm.programListManage.programFileName" />" style="width:190px"/>
+				<input name="progrmFileNm" id="progrmFileNm" type="text" value=""  maxlength="50" title="<spring:message code="comSymPrm.programListManage.programFileName" />" style="width:190px"/>
 				</td>
 			</tr>
 			<tr>
 				<th><spring:message code="comSymPrm.programListManage.programName" /> <span class="pilsu">*</span></th><!-- 프로그램명 -->
 				<td class="left">
-				<input name="programName" type="text" value=""  maxlength="10" title="<spring:message code="comSymPrm.programListManage.programName" />" style="width:190px"/>
-				</td>
-			</tr>
-			<tr>
-				<th><spring:message code="comSymPrm.programListManage.ProgramDescription" /></th><!-- 프로그램설명 -->
-				<td width="70%" class="left">
-				<textarea name="progrmDc" class="textarea"  cols="45" rows="8"  style="width:350px;" title="<spring:message code="comSymPrm.programListManage.ProgramDescription" />"></textarea>
+				<input name="progrmKoreanNm" type="text" value=""  maxlength="50" title="<spring:message code="comSymPrm.programListManage.programName" />" style="width:190px"/>
 				</td>
 			</tr>
 			<tr>
 				<th><spring:message code="comSymPrm.programListManage.url" /></th><!-- URL -->
 				<td width="70%" class="left">
-				<textarea name="url" class="textarea"  cols="45" rows="8"  style="width:350px;" title="<spring:message code="comSymPrm.programListManage.url" />"></textarea>
+				<input name="URL" type="text" value=""  maxlength="100" title="<spring:message code="comSymPrm.programListManage.url" />" style="width:190px"/>
+				</td>
+			</tr>			
+			<tr>
+				<th><spring:message code="comSymPrm.programListManage.ProgramDescription" /></th><!-- 프로그램설명 -->
+				<td width="70%" class="left">
+				<textarea name="progrmDc" class="textarea"  cols="45" rows="8"  style="width:350px;" title="<spring:message code="comSymPrm.programListManage.ProgramDescription" />"></textarea>
 				</td>
 			</tr>
 			<tr>

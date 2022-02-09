@@ -26,6 +26,7 @@ import egovframework.com.sym.ccm.cca.service.CmmnCodeVO;
 import egovframework.com.sym.mnu.mpm.service.EgovMenuManageService;
 import egovframework.com.sym.mnu.mpm.service.MenuManageVO;
 import egovframework.com.sym.prm.service.EgovProgrmManageService;
+import egovframework.com.sym.prm.service.ProgrmManageVO;
 import egovframework.com.utl.fcc.service.EgovStringUtil;
 import egovframework.rte.fdl.property.EgovPropertyService;
 import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
@@ -296,4 +297,31 @@ public class MenuController {
 		
 		return modelAndView;
 	}
+	
+    /**
+     * 프로그램정보를 등록한다
+     * 프로그램정보 화면으로 이동한다
+     * @param menuManageVO    MenuManageVO
+	 * @return result - List
+	 * @exception Exception
+	 */
+    @PostMapping(value="/cmm/progrmmngInsert.do")
+    public ModelAndView insertMenuManage (
+    		@ModelAttribute("progrmManageVO") ProgrmManageVO progrmManageVO,
+    		BindingResult bindingResult) throws Exception {
+    	
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("jsonView");
+		
+    	beanValidator.validate(progrmManageVO, bindingResult); //validation 수행
+		if (bindingResult.hasErrors()) { 
+			modelAndView.addObject("message", egovMessageSource.getMessage("fail.common.save"));
+		} else {
+	    	LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
+	    	progrmManageVO.setRegisterId((user == null || user.getUniqId() == null) ? "" : user.getUniqId());
+	    	progrmManageService.insertProgrm(progrmManageVO);
+		}
+		
+    	return modelAndView;
+	}	
 }
