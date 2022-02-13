@@ -55,7 +55,8 @@ $(document).ready(function()
 	
 	//3.프로그램목록의 Click 이벤트
 	gridProgrm.on('click', function (ev) {
-		setProgrmList(gridProgrm.getRow(ev.rowKey), 1);
+		setViewProgrmClick(); //화면처리
+		setProgrmList(gridProgrm.getRow(ev.rowKey));
 	});
 	
 	//4.프로그램목록의 데이터검색
@@ -66,6 +67,9 @@ $(document).ready(function()
  * 프로그램목록의 데이터검색 처리 함수
  ******************************************************** */
 function searchProgrmList() {
+	//화면처리
+	setViewSearch();
+	
 	const programFileName = "";
 	$.ajax({
 		url : "<c:url value='/cmm/progrmmngList.do'/>",
@@ -73,42 +77,11 @@ function searchProgrmList() {
 		data : {"programFileName":programFileName},
 		dataType : "JSON",
 		success : function(result){
-			initlProgrmList(1);
 			if (result['progrmManageVOList'] != null) {
 				gridProgrm.resetData(result['progrmManageVOList']);
 			}
 		} 
 	});
-}
-
-/* ********************************************************
- * 폼입력 정보의 데이터바인딩 처리 함수
- ******************************************************** */
-function setProgrmList(data, unit) {
-	if (data != null) {
-		document.progrmManageVO.progrmFileNm.value=isNullToString(data["progrmFileNm"]);
-		document.progrmManageVO.progrmKoreanNm.value=isNullToString(data["progrmKoreanNm"]);
-		document.progrmManageVO.progrmDc.value=isNullToString(data["progrmDc"]);
-		document.progrmManageVO.url.value=isNullToString(data["url"]);
-		document.progrmManageVO.useAt.value=isNullToString(data["useAt"]);
-		$("#progrmFileNm").attr("readonly",true);
-	}
-}
-
-/* ********************************************************
- * 폼입력 정보의 초기화 처리 함수
- ******************************************************** */
-function initlProgrmList(unit) {
-	switch (unit) {
-	case 1:
-		gridProgrm.clear();
-		break;
-	default:
-		$('.wTable input').val('');
-		$('.wTable select').val('Y');
-		$('.wTable textarea').val('');
-		$("#progrmFileNm").attr("readonly",false);
-	}
 }
 
 /* ********************************************************
@@ -140,6 +113,88 @@ function insertProgrmList(form) {
 		}
 	}
 }
+
+/* ********************************************************
+ * 프로그램 삭제 처리 함수
+ ******************************************************** */
+function deleteProgrmList(form) {
+	if(confirm("<spring:message code="common.delete.msg" />")){
+		$('.btn_b.save').css('pointer-events','none');
+		$.ajax({
+			url : "<c:url value='/cmm/progrmmngDelete.do'/>",
+			method :"POST",
+			data : $("#progrmManageVO").serialize(),
+			dataType : "JSON",
+			success : function(result) {
+				if (result['message'] != null) {
+					confirm(result['message']);	
+				} else {
+					searchProgrmList();
+				}
+			},
+			error : function(xhr, status) {
+				confirm("<spring:message code='fail.common.delete' />");
+			},
+			complete : function() {
+				$('.btn_b.save').css('pointer-events','auto');
+			}
+		});
+	}
+}
+
+/* ********************************************************
+ * 폼입력 정보의 데이터바인딩 처리 함수
+ ******************************************************** */
+function setProgrmList(data) {
+	if (data != null) {
+		document.progrmManageVO.progrmFileNm.value=isNullToString(data["progrmFileNm"]);
+		document.progrmManageVO.progrmKoreanNm.value=isNullToString(data["progrmKoreanNm"]);
+		document.progrmManageVO.progrmDc.value=isNullToString(data["progrmDc"]);
+		document.progrmManageVO.URL.value=isNullToString(data["url"]);
+		document.progrmManageVO.useAt.value=isNullToString(data["useAt"]);
+		$("#progrmFileNm").attr("readonly",true);
+	}
+}
+
+/* ********************************************************
+ * 조회 후 화면처리
+ ******************************************************** */
+function setViewSearch()  {
+	
+	//입력값공백처리
+	$('.wTable input').val('');
+	$('.wTable select').val('Y');
+	$('.wTable textarea').val('');
+	
+	//입력항목비활성처리
+	$("#progrmFileNm").attr("readonly",false);
+	
+	//그리드초기화처리
+	gridProgrm.clear();
+}
+
+/* ********************************************************
+ * 프로그램목록 클릭 후 화면처리
+ ******************************************************** */
+function setViewProgrmClick() {
+	
+	//입력항목비활성처리
+	$("#progrmFileNm").attr("readonly",true);
+}
+
+/* ********************************************************
+ * 신규버튼클릭 후 화면처리
+ ******************************************************** */
+function setViewNewClick()  {
+	
+	//입력값공백처리
+	$('.wTable input').val('');
+	$('.wTable select').val('Y');
+	$('.wTable textarea').val('');
+	
+	//입력항목비활성처리
+	$("#progrmFileNm").attr("readonly",false);
+}
 -->
 </script>
 <div id="border" style="width:730px">
@@ -158,7 +213,7 @@ function insertProgrmList(form) {
 				</span>				
 			</li>
 			<li>
-				<span class="btn_b new" onclick="initlProgrmList();">
+				<span class="btn_b new" onclick="setViewNewClick();">
 					<a href="#"><spring:message code="title.new" /></a>
 				</span>
 				<span class="btn_b save" onclick="insertProgrmList(document.forms[0]); return false;">

@@ -99,5 +99,4 @@
             DELETE FROM COMTCCMMNCODE WHERE CODE_ID = #{codeId}
 	</delete>
 
-
 </mapper>

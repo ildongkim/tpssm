@@ -55,6 +55,7 @@ $(document).ready(function()
 	
 	//3.코드목록의 Click 이벤트
 	gridCode.on('click', function (ev) {
+		setViewCodeClick(); //화면처리
 		searchCodeDtlList(gridCode.getValue(ev.rowKey, 'codeId'));
 		setCodeList(gridCode.getRow(ev.rowKey), 1);
 	});
@@ -81,6 +82,8 @@ $(document).ready(function()
  * 코드목록의 데이터검색 처리 함수
  ******************************************************** */
 function searchCodeList() {
+	setViewSearch(); //화면처리
+	
 	$.ajax({
 		url : "<c:url value='/cmm/cmmnCodeList.do'/>",
 		method :"POST",
@@ -90,7 +93,6 @@ function searchCodeList() {
 			},
 		dataType : "JSON",
 		success : function(result){
-			initlCodeList(2);
 			if (result['egovMapList'] != null) {
 				gridCode.resetData(result['egovMapList']);
 			}
@@ -114,76 +116,6 @@ function searchCodeDtlList(codeId) {
 			}
 		} 
 	});
-}
-
-/* ********************************************************
- * 메뉴삭제 처리 함수
- ******************************************************** */
-function deleteCodeList(form) {
-	if(confirm("<spring:message code="common.delete.msg" />")){
-		$('.btn_b.save').css('pointer-events','none');
-		$.ajax({
-			url : "<c:url value='/cmm/codemngDelete.do'/>",
-			method :"POST",
-			data : $("#cmmnCodeVO").serialize(),
-			dataType : "JSON",
-			success : function(result) {
-				if (result['message'] != null) {
-					confirm(result['message']);	
-				} else {
-					searchCodeList();
-				}
-			},
-			error : function(xhr, status) {
-				confirm("<spring:message code='fail.common.delete' />");
-			},
-			complete : function() {
-				$('.btn_b.save').css('pointer-events','auto');
-			}
-		});
-	}
-}
-
-/* ********************************************************
- * 폼입력 정보의 초기화 처리 함수
- ******************************************************** */
-function initlCodeList(unit) {
-	$("#codeId").attr("readonly",true);	
-	switch (unit) {
-	case 1: //추가
-		$("#codeId").attr("readonly",false);
-		$('.wTable input').val('');
-		$('.wTable select').val('Y');
-		$('.wTable textarea').val('');
-		break;
-	case 2:
-		gridCode.clear();
-		gridCodeDtl.clear();
-		$('.wTable input').val('');
-		$('.wTable select').val('Y');
-		$('.wTable textarea').val('');
-		break;
-	}
-}
-
-/* ********************************************************
- * 폼입력 정보의 데이터바인딩 처리 함수
- ******************************************************** */
-function setCodeList(data, unit) {
-	if (data != null) {
-		document.cmmnCodeVO.codeId.value=isNullToString(data["codeId"]);
-		document.cmmnCodeVO.codeIdNm.value=isNullToString(data["codeIdNm"]);
-		document.cmmnCodeVO.codeIdDc.value=isNullToString(data["codeIdDc"]);
-		document.cmmnCodeVO.useAt.value=isNullToString(data["useAt"]);
-		
-		switch (unit) {
-		case 1: 
-			initlCodeList();
-			break;
-		case 2: 
-			break;
-		}
-	}
 }
 
 /* ********************************************************
@@ -217,10 +149,88 @@ function insertCodeList(form) {
 }
 
 /* ********************************************************
- * 신규코드 처리 함수
+ * 공통코드 삭제 처리 함수
  ******************************************************** */
-function newCodeList() {
-	initlCodeList(1);
+function deleteCodeList(form) {
+	if(confirm("<spring:message code="common.delete.msg" />")){
+		$('.btn_b.save').css('pointer-events','none');
+		$.ajax({
+			url : "<c:url value='/cmm/codemngDelete.do'/>",
+			method :"POST",
+			data : $("#cmmnCodeVO").serialize(),
+			dataType : "JSON",
+			success : function(result) {
+				if (result['message'] != null) {
+					confirm(result['message']);	
+				} else {
+					searchCodeList();
+				}
+			},
+			error : function(xhr, status) {
+				confirm("<spring:message code='fail.common.delete' />");
+			},
+			complete : function() {
+				$('.btn_b.save').css('pointer-events','auto');
+			}
+		});
+	}
+}
+
+/* ********************************************************
+ * 폼입력 정보의 데이터바인딩 처리 함수
+ ******************************************************** */
+function setCodeList(data, unit) {
+	if (data != null) {
+		document.cmmnCodeVO.codeId.value=isNullToString(data["codeId"]);
+		document.cmmnCodeVO.codeIdNm.value=isNullToString(data["codeIdNm"]);
+		document.cmmnCodeVO.codeIdDc.value=isNullToString(data["codeIdDc"]);
+		document.cmmnCodeVO.useAt.value=isNullToString(data["useAt"]);
+	}
+}
+
+/* ********************************************************
+ * 조회 후 화면처리
+ ******************************************************** */
+function setViewSearch()  {
+
+	//입력값공백처리
+	$('.wTable input').val('');
+	$('.wTable select').val('Y');
+	$('.wTable textarea').val('');
+	
+	//입력항목활성처리
+	$("#codeId").attr("readonly",false);
+	
+	//그리드초기화처리
+	gridCode.clear();
+	gridCodeDtl.clear();
+}
+
+/* ********************************************************
+ * 공통코드클릭 후 화면처리
+ ******************************************************** */
+function setViewCodeClick()  {
+	
+	//입력항목비활성처리
+	$(".wTable input").attr("readonly",false);
+	$(".wTable textarea").attr("readonly",false);
+	$(".wTable select").attr("readonly",false);
+	$(".wTable select").prop("disabled",false);
+	$("#codeId").attr("readonly",true);
+}
+
+/* ********************************************************
+ * 신규버튼클릭 후 화면처리
+ ******************************************************** */
+function setViewNewClick()  {
+	
+	//입력값공백처리
+	$('.wTable input').val('');
+	$('.wTable select').val('Y');
+	$('.wTable textarea').val('');
+	
+	//입력항목활성처리
+	$("#codeId").attr("readonly",false);
 }
 -->
 </script>
@@ -243,7 +253,7 @@ function newCodeList() {
 				</span>				
 			</li>
 			<li>
-				<span class="btn_b new" onclick="newCodeList(document.forms[0]); return false;">
+				<span class="btn_b new" onclick="setViewNewClick();">
 					<a href="#"><spring:message code="title.new" /></a>
 				</span>
 				<span class="btn_b save" onclick="insertCodeList(document.forms[0]); return false;">

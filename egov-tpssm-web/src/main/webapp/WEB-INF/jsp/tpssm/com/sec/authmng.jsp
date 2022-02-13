@@ -37,14 +37,13 @@ $(document).ready(function()
 	//1.권한목록
 	gridAuth = new tui.Grid({
 		el: document.getElementById('gridAuth'), // Container element
-		scrollX: false,
 		bodyHeight: 200,
 		rowHeaders: ['rowNum'],
 		columns: 
 		[
-			{header:'<spring:message code="comCopSecRam.regist.authorCode" />',     name:'authorCode',    align:'center'},
-			{header:'<spring:message code="comCopSecRam.regist.authorNm" />',       name:'authorNm',      align:'center'},
-			{header:'<spring:message code="comCopSecRam.regist.authorDc" />',       name:'authorDc',      align:'center'},
+			{header:'<spring:message code="comCopSecRam.regist.authorCode" />',     name:'authorCode'},
+			{header:'<spring:message code="comCopSecRam.regist.authorNm" />',       name:'authorNm'},
+			{header:'<spring:message code="comCopSecRam.regist.authorDc" />',       name:'authorDc'},
 			{header:'<spring:message code="comCopSecRam.regist.useAt" />',          name:'useAt',         align:'center'},
 			{header:'<spring:message code="comCopSecRam.regist.authorCreatDe" />',  name:'authorCreatDe', align:'center'}
 		]
@@ -55,14 +54,21 @@ $(document).ready(function()
 	
 	//3.권한목록의 Click 이벤트
 	gridAuth.on('click', function (ev) {
-		setAuthList(gridAuth.getRow(ev.rowKey), 1);
+		setViewAuthClick(); //화면처리
+		setAuthList(gridAuth.getRow(ev.rowKey));
 	});
+	
+	//5.권한목록의 데이터검색
+	searchAuthList();
 });
 
 /* ********************************************************
  * 권한목록의 데이터검색 처리 함수
  ******************************************************** */
 function searchAuthList() {
+	//화면처리
+	setViewSearch();
+	
 	const searchKeyword = "";
 	$.ajax({
 		url : "<c:url value='/cmm/authmngList.do'/>",
@@ -70,7 +76,6 @@ function searchAuthList() {
 		data : {"searchKeyword":searchKeyword},
 		dataType : "JSON",
 		success : function(result){
-			initlAuthList(1);
 			if (result['authorManageVOList'] != null) {
 				gridAuth.resetData(result['authorManageVOList']);
 			}
@@ -79,55 +84,115 @@ function searchAuthList() {
 }
 
 /* ********************************************************
- * 폼입력 정보의 데이터바인딩 처리 함수
+ * 권한등록 처리 함수
  ******************************************************** */
-function setAuthList(data, unit) {
-	if (data != null) {
-		document.authorManageVO.authorCode.value=isNullToString(data["authorCode"]);
-		document.authorManageVO.authorNm.value=isNullToString(data["authorNm"]);
-		document.authorManageVO.authorDc.value=isNullToString(data["authorDc"]);
-		document.authorManageVO.authorCreatDe.value=isNullToString(data["authorCreatDe"]);
-		document.authorManageVO.useAt.value=isNullToString(data["useAt"]);
-		
-		switch (unit) {
-		case 1: 
-			initlProgrmList();
-			$('.btn_b.new').css('pointer-events','auto');
-			$('.btn_b.new').css('background','#4688d2');
-			break;
-		case 2: 
-			$('.btn_b.new').css('pointer-events','none');
-			$('.btn_b.new').css('background','#cccccc');
-			$('.btn_b.save').css('pointer-events','auto');
-			$('.btn_b.save').css('background','#4688d2');
-			$(".wTable select").css('background','#ffffff');
-			$(".wTable select").prop("disabled",false);
-			break;
+function insertAuthList(form) {
+	if(confirm("<spring:message code="common.save.msg" />")){
+		if(validateAuthorManageVO(form)){
+			$('.btn_b.save').css('pointer-events','none');
+			$.ajax({
+				url : "<c:url value='/cmm/authmngInsert.do'/>",
+				method :"POST",
+				data : $("#authorManageVO").serialize(),
+				dataType : "JSON",
+				success : function(result) {
+					if (result['message'] != null) {
+						confirm(result['message']);	
+					} else {
+						searchAuthList();
+					}
+				},
+				error : function(xhr, status) {
+					confirm("<spring:message code='fail.common.save' />");
+				},
+				complete : function() {
+					$('.btn_b.save').css('pointer-events','auto');
+				}
+			});
 		}
 	}
 }
 
 /* ********************************************************
- * 폼입력 정보의 초기화 처리 함수
+ * 권한 삭제 처리 함수
  ******************************************************** */
-function initlAuthList(unit) {
-	switch (unit) {
-	case 1:
-		$('.wTable input').val('');
-		$('.wTable select').val('Y');
-		$('.wTable textarea').val('');
-		gridAuth.clear();
-	default:
-		$(".wTable input").attr("readonly",true);
-		$(".wTable textarea").attr("readonly",true);
-		$(".wTable select").attr("readonly",true);
-		$(".wTable select").prop("disabled",true);
-		$('.btn_b.new').css('pointer-events','none');
-		$('.btn_b.new').css('background','#cccccc');
+function deleteAuthList(form) {
+	if(confirm("<spring:message code="common.delete.msg" />")){
 		$('.btn_b.save').css('pointer-events','none');
-		$('.btn_b.save').css('background','#cccccc');
+		$.ajax({
+			url : "<c:url value='/cmm/authmngDelete.do'/>",
+			method :"POST",
+			data : $("#authorManageVO").serialize(),
+			dataType : "JSON",
+			success : function(result) {
+				if (result['message'] != null) {
+					confirm(result['message']);	
+				} else {
+					searchAuthList();
+				}
+			},
+			error : function(xhr, status) {
+				confirm("<spring:message code='fail.common.delete' />");
+			},
+			complete : function() {
+				$('.btn_b.save').css('pointer-events','auto');
+			}
+		});
 	}
 }
+
+/* ********************************************************
+ * 폼입력 정보의 데이터바인딩 처리 함수
+ ******************************************************** */
+function setAuthList(data) {
+	if (data != null) {
+		document.authorManageVO.authorCode.value=isNullToString(data["authorCode"]);
+		document.authorManageVO.authorNm.value=isNullToString(data["authorNm"]);
+		document.authorManageVO.authorDc.value=isNullToString(data["authorDc"]);
+		document.authorManageVO.useAt.value=isNullToString(data["useAt"]);
+	}
+}
+
+/* ********************************************************
+ * 조회 후 화면처리
+ ******************************************************** */
+function setViewSearch()  {
+	
+	//입력값공백처리
+	$('.wTable input').val('');
+	$('.wTable select').val('Y');
+	$('.wTable textarea').val('');
+	
+	//입력항목비활성처리
+	$("#authorCode").attr("readonly",false);
+	
+	//그리드초기화처리
+	gridAuth.clear();
+}
+
+/* ********************************************************
+ * 권한목록 클릭 후 화면처리
+ ******************************************************** */
+function setViewAuthClick() {
+	
+	//입력항목비활성처리
+	$("#authorCode").attr("readonly",true);
+}
+
+/* ********************************************************
+ * 신규버튼클릭 후 화면처리
+ ******************************************************** */
+function setViewNewClick() {
+	
+	//입력값공백처리
+	$('.wTable input').val('');
+	$('.wTable select').val('Y');
+	$('.wTable textarea').val('');
+	
+	//입력항목비활성처리
+	$("#authorCode").attr("readonly",false);
+}
+
 -->
 </script>
 <div id="border" style="width:730px">
@@ -146,7 +211,7 @@ function initlAuthList(unit) {
 				</span>				
 			</li>
 			<li>
-				<span class="btn_b new" onclick="newAuthList(document.forms[0]); return false;">
+				<span class="btn_b new" onclick="setViewNewClick();">
 					<a href="#"><spring:message code="title.new" /></a>
 				</span>
 				<span class="btn_b save" onclick="insertAuthList(document.forms[0]); return false;">

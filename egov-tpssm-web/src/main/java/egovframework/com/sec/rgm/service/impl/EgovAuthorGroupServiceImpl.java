@@ -36,6 +36,16 @@ public class EgovAuthorGroupServiceImpl  extends EgovAbstractServiceImpl impleme
     private AuthorGroupDAO authorGroupDAO;
 
 	/**
+	 * 사용자 목록 조회
+	 * @param authorGroupVO AuthorGroupVO
+	 * @return List<AuthorGroupVO>
+	 * @exception Exception
+	 */
+	public List<AuthorGroupVO> selectAuthorMberList(AuthorGroupVO authorGroupVO) throws Exception{
+		return authorGroupDAO.selectAuthorMberList(authorGroupVO);
+	}
+	
+	/**
 	 * 그룹별 할당된 권한 목록 조회
 	 * @param authorGroupVO AuthorGroupVO
 	 * @return List<AuthorGroupVO>

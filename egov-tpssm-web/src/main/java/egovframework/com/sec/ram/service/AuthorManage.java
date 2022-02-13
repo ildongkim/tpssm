@@ -45,7 +45,15 @@ public class AuthorManage extends ComDefaultVO {
 	 * 권한 명
 	 */
 	private String authorNm;
-	
+	/**
+	 * 사용여부
+	 */
+    private String useAt = "";	
+    /**
+     * 등록자ID
+     */
+    private String registerId;
+    
 	/**
 	 * authorManage attribute 를 리턴한다.
 	 * @return AuthorManage
@@ -116,9 +124,32 @@ public class AuthorManage extends ComDefaultVO {
 	public void setAuthorNm(String authorNm) {
 		this.authorNm = authorNm;
 	}
-	
-
-
-	
-
+	/**
+	 * useAt attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getUseAt() {
+		return useAt;
+	}
+	/**
+	 * useAt attribute 값을 설정한다.
+	 * @param useAt String
+	 */
+	public void setUseAt(String useAt) {
+		this.useAt = useAt;
+	}	
+	/**
+	 * registerId attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getRegisterId() {
+		return registerId;
+	}
+	/**
+	 * registerId attribute 값을 설정한다.
+	 * @param registerId String
+	 */
+	public void setRegisterId(String registerId) {
+		this.registerId = registerId;
+	}
 }

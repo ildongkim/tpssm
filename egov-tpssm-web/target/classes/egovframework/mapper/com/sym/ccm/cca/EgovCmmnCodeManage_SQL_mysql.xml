@@ -87,14 +87,9 @@
 		
 	</update>
 
+	<!-- Modify Script : Harry 2022-02-11  -->
 	<delete id="deleteCmmnCode">
-		<![CDATA[
-            UPDATE  COMTCCMMNCODE
-               SET  USE_AT  = 'N'
-             WHERE  CODE_ID = #{codeId}
-         ]]>    
-		
+            DELETE FROM COMTCCMMNCODE WHERE CODE_ID = #{codeId}
 	</delete>
-
 
 </mapper>

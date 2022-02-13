@@ -34,11 +34,11 @@ let gridProgrm;
  ******************************************************** */
 $(document).ready(function() 
 {
-	//1.프로그램목록
+	//1.게시판목록
 	gridBBS = new tui.Grid({
 		el: document.getElementById('gridBBS'), // Container element
 		scrollX: false,
-		bodyHeight: 200,
+		bodyHeight: 150,
 		rowHeaders: ['rowNum'],
 		columns: 
 		[
@@ -48,17 +48,35 @@ $(document).ready(function()
 		]
 	});
 	
-	//2.프로그램목록의 현재 Row 선택을 위한 이벤트 설정
+	//2.게시판목록의 현재 Row 선택을 위한 이벤트 설정
 	setGridEvent(gridBBS);
 	
-	//3.프로그램목록의 Click 이벤트
+	//3.게시판목록의 Click 이벤트
 	//gridBBS.on('click', function (ev) {
 	//	setBBSList(gridBBS.getRow(ev.rowKey), 1);
 	//});
 	
-	//4.프로그램목록의 데이터검색
-	//searchBBSList();
+	//4.게시판목록의 데이터검색
+	searchBBSList();
 });
+
+/* ********************************************************
+ * 게시판목록의 데이터검색 처리 함수
+ ******************************************************** */
+function searchBBSList() {
+	const bbsName = "";
+	$.ajax({
+		url : "<c:url value='/cmm/bbsmstinfs.do'/>",
+		method :"POST",
+		data : {"bbsName":bbsName},
+		dataType : "JSON",
+		success : function(result){
+			if (result['boardMasterVOList'] != null) {
+				gridBBS.resetData(result['boardMasterVOList']);
+			}
+		} 
+	});
+}
 
 -->
 </script>
@@ -116,7 +134,17 @@ $(document).ready(function()
 			<tr>
 				<th><spring:message code="comCopBbs.boardMasterVO.detail.bbsNm" /> <span class="pilsu">*</span></th>
 				<td class="left">
-				<input name="bbsNm" id="progrmFileNm" type="text" value=""  maxlength="50" title="<spring:message code="comCopBbs.boardMasterVO.detail.bbsNm" />" style="width:190px"/>
+				<input name="bbsNm" id="bbsNm" type="text" value=""  maxlength="50" title="<spring:message code="comCopBbs.boardMasterVO.detail.bbsNm" />" style="width:190px"/>
+				</td>
+			</tr>
+			<tr>
+				<th><spring:message code="comCopBbs.boardMasterVO.detail.bbsTyCode" /></th>
+				<td width="70%" class="left">
+				<select name="bbsTyCode" title="<spring:message code="input.input" />" >
+					<c:forEach var="bbsTyCode" items="${bbsTyCode}">
+			            <option value="<c:out value="${bbsTyCode.code}"/>"><c:out value="${bbsTyCode.codeNm}"/></option>
+					</c:forEach>
+				</select>
 				</td>
 			</tr>
 			<tr>
@@ -133,7 +161,7 @@ $(document).ready(function()
 					<option value="N"  label="<spring:message code="input.no" />"/>
 				</select>
 				</td>
-			</tr>			
+			</tr>
 			<tr>
 				<th><spring:message code="comCopBbs.boardMasterVO.detail.atchPosblFileNumber" /></th>
 				<td width="70%" class="left">

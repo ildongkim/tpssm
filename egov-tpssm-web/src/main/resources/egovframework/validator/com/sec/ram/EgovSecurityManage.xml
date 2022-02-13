@@ -6,7 +6,7 @@
 <form-validation>
 
     <formset>
-        <form name="authorManage">
+        <form name="authorManageVO">
             <field property="authorCode" depends="required, maxlength">
                 <arg0 key="권한 코드" resource="true"/>
                 <arg1 key="30" resource="true"/>
@@ -31,6 +31,9 @@
 				<var-value>200</var-value>
 				</var>
             </field>
+			<field property="useAt" depends="required">
+        		<arg0 key="사용여부" resource="true"/>
+			</field>             
         </form>
     </formset>
 

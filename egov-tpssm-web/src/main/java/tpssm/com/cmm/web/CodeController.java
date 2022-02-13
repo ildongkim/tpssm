@@ -119,7 +119,7 @@ public class CodeController {
 	 * @exception Exception
 	 */
     @PostMapping(value="/cmm/codemngInsert.do")
-    public ModelAndView insertMenuManage (
+    public ModelAndView insertCodeManage (
     		@ModelAttribute("cmmnCodeVO") CmmnCodeVO cmmnCodeVO,
     		BindingResult bindingResult) throws Exception {
     	
@@ -146,7 +146,7 @@ public class CodeController {
      * @exception Exception
      */
     @RequestMapping(value="/cmm/codemngDelete.do")
-    public ModelAndView deleteMenuManage(@RequestParam Map<String, Object> commandMap) throws Exception {
+    public ModelAndView deleteCodeManage(@RequestParam Map<String, Object> commandMap) throws Exception {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("jsonView");
 		
@@ -161,6 +161,54 @@ public class CodeController {
 			cmmnCodeVO.setCodeId(EgovStringUtil.isNullToString(commandMap.get("codeId")));
 			cmmnCodeManageService.deleteCmmnCode(cmmnCodeVO);
 		}
+		
+    	return modelAndView;
+    }
+    
+    /**
+     * 코드상세정보를 등록한다
+     * 코드셍세정보 화면으로 이동한다
+     * @param cmmnDetailCodeVO    CmmnDetailCodeVO
+	 * @return result - List
+	 * @exception Exception
+	 */
+    @PostMapping(value="/cmm/codedtlmngInsert.do")
+    public ModelAndView insertCodeDtlManage (
+    		@ModelAttribute("cmmnDetailCodeVO") CmmnDetailCodeVO cmmnDetailCodeVO,
+    		BindingResult bindingResult) throws Exception {
+    	
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("jsonView");
+		
+    	beanValidator.validate(cmmnDetailCodeVO, bindingResult); //validation 수행
+		if (bindingResult.hasErrors()) { 
+			modelAndView.addObject("message", egovMessageSource.getMessage("fail.common.save"));
+		} else {
+	    	LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
+	    	cmmnDetailCodeVO.setFrstRegisterId((user == null || user.getUniqId() == null) ? "" : user.getUniqId());
+	    	cmmnDetailCodeManageService.insertCmmnDetailCode(cmmnDetailCodeVO);
+	    	modelAndView.addObject("codeId", cmmnDetailCodeVO.getCodeId());
+		}
+		
+    	return modelAndView;
+    }
+    
+    /**
+     * 코드상세정보를 삭제 한다.
+     * @param cmmnDetailCodeVO    CmmnDetailCodeVO
+     * @return result - List
+     * @exception Exception
+     */
+    @RequestMapping(value="/cmm/codedtlmngDelete.do")
+    public ModelAndView deleteCodeDtlManage(@RequestParam Map<String, Object> commandMap) throws Exception {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("jsonView");
+		
+		CmmnDetailCodeVO cmmnDtlCodeVO = new CmmnDetailCodeVO();
+		cmmnDtlCodeVO.setCodeId(EgovStringUtil.isNullToString(commandMap.get("codeId")));
+		cmmnDtlCodeVO.setCode(EgovStringUtil.isNullToString(commandMap.get("code")));
+		cmmnDetailCodeManageService.deleteCmmnDetailCode(cmmnDtlCodeVO);
+		modelAndView.addObject("codeId", EgovStringUtil.isNullToString(commandMap.get("codeId")));
 		
     	return modelAndView;
     }

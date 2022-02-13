@@ -13,6 +13,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -22,7 +23,12 @@ import egovframework.com.cmm.ComDefaultVO;
 import egovframework.com.cmm.EgovMessageSource;
 import egovframework.com.cmm.LoginVO;
 import egovframework.com.cmm.util.EgovUserDetailsHelper;
-import egovframework.com.sym.ccm.cca.service.CmmnCodeVO;
+import egovframework.com.sec.ram.service.AuthorManageVO;
+import egovframework.com.sec.ram.service.EgovAuthorManageService;
+import egovframework.com.sec.rgm.service.AuthorGroupVO;
+import egovframework.com.sec.rgm.service.EgovAuthorGroupService;
+import egovframework.com.sym.mnu.mcm.service.EgovMenuCreateManageService;
+import egovframework.com.sym.mnu.mcm.service.MenuCreatVO;
 import egovframework.com.sym.mnu.mpm.service.EgovMenuManageService;
 import egovframework.com.sym.mnu.mpm.service.MenuManageVO;
 import egovframework.com.sym.prm.service.EgovProgrmManageService;
@@ -55,18 +61,29 @@ public class MenuController {
 	@Resource(name = "egovMessageSource")
 	EgovMessageSource egovMessageSource;
 
-    /** EgovMenuManageService */
-	@Resource(name = "meunManageService")
-    private EgovMenuManageService menuManageService;
-	
 	/** EgovPropertyService */
     @Resource(name = "propertiesService")
     protected EgovPropertyService propertiesService;
     
     /** EgovMenuManageService */
+	@Resource(name = "meunManageService")
+    private EgovMenuManageService menuManageService;
+    
+    /** EgovProgrmManageService */
 	@Resource(name = "progrmManageService")
 	private EgovProgrmManageService progrmManageService;
 	
+    /** EgovAuthorManageService */
+	@Resource(name = "egovAuthorManageService")
+	private EgovAuthorManageService egovAuthorManageService;
+	
+	/** EgovMenuManageService */
+	@Resource(name = "meunCreateManageService")
+	private EgovMenuCreateManageService menuCreateManageService;
+	
+    @Resource(name = "egovAuthorGroupService")
+    private EgovAuthorGroupService egovAuthorGroupService;
+    
     @Autowired
 	private DefaultBeanValidator beanValidator;
     
@@ -97,13 +114,6 @@ public class MenuController {
 	 */
 	@RequestMapping("/cmm/menucreatemng.do")
 	public String menuCreateMng(ModelMap model) throws Exception  {
-		
-		// 1. 상위메뉴정보
-		MenuManageVO menuManageVO = new MenuManageVO();
-		menuManageVO.setUpperMenuId(0);
-		List<?> menulist = menuManageService.selectSubMenuList(menuManageVO);
-		model.addAttribute("upperMenuList", menulist);
-		
 		return "tpssm/com/sym/mnu/menucreatemng";
 	}
 	
@@ -149,6 +159,7 @@ public class MenuController {
 
 		MenuManageVO menuManageVO = new MenuManageVO();
     	menuManageVO.setMenuNo(Integer.parseInt(EgovStringUtil.isNullToString(commandMap.get("menuNo"))));
+    	menuManageVO.setAuthorCode(EgovStringUtil.isNullToString(commandMap.get("authorCode")));
     	List<?> menulist = menuManageService.selectHierarchyMenuList(menuManageVO);
 		modelAndView.addObject(menulist);
 		
@@ -301,12 +312,12 @@ public class MenuController {
     /**
      * 프로그램정보를 등록한다
      * 프로그램정보 화면으로 이동한다
-     * @param menuManageVO    MenuManageVO
+     * @param progrmManageVO ProgrmManageVO
 	 * @return result - List
 	 * @exception Exception
 	 */
     @PostMapping(value="/cmm/progrmmngInsert.do")
-    public ModelAndView insertMenuManage (
+    public ModelAndView insertProgrmManage (
     		@ModelAttribute("progrmManageVO") ProgrmManageVO progrmManageVO,
     		BindingResult bindingResult) throws Exception {
     	
@@ -323,5 +334,149 @@ public class MenuController {
 		}
 		
     	return modelAndView;
-	}	
+	}
+    
+    /**
+     * 프로그램 정보를 삭제 한다.
+     * @param progrmManageVO ProgrmManageVO
+	 * @return result - List
+	 * @exception Exception
+     */
+    @RequestMapping(value="/cmm/progrmmngDelete.do")
+    public ModelAndView deleteProgrmList(@ModelAttribute("progrmManageVO") ProgrmManageVO progrmManageVO) throws Exception {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("jsonView");
+        progrmManageService.deleteProgrm(progrmManageVO);
+    	return modelAndView;
+    }
+    
+	/**
+	 * 권한 목록을 조회
+	 * @return result - List
+	 * @exception Exception
+	 */
+	@PostMapping(value="/cmm/authmngList.do")
+	public ModelAndView authorManageList(@RequestParam Map<String, Object> commandMap) throws Exception {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("jsonView");
+		
+		AuthorManageVO authorManageVO = new AuthorManageVO();
+    	List<?> authlist = egovAuthorManageService.selectAuthorList(authorManageVO);
+		modelAndView.addObject(authlist);
+		
+		return modelAndView;
+	}
+	
+    /**
+     * 권한정보를 등록한다
+     * 권한정보 화면으로 이동한다
+     * @param authorManageVO AuthorManageVO
+	 * @return result - List
+	 * @exception Exception
+	 */
+    @PostMapping(value="/cmm/authmngInsert.do")
+    public ModelAndView insertAuthorManage (
+    		@ModelAttribute("authorManageVO") AuthorManageVO authorManageVO,
+    		BindingResult bindingResult) throws Exception {
+    	
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("jsonView");
+		
+    	beanValidator.validate(authorManageVO, bindingResult); //validation 수행
+		if (bindingResult.hasErrors()) { 
+			modelAndView.addObject("message", egovMessageSource.getMessage("fail.common.save"));
+		} else {
+	    	LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
+	    	authorManageVO.setRegisterId((user == null || user.getUniqId() == null) ? "" : user.getUniqId());
+	    	egovAuthorManageService.insertAuthor(authorManageVO);
+		}
+		
+    	return modelAndView;
+	}
+    
+    /**
+     * 권한정보를 삭제 한다.
+     * @param authorManageVO AuthorManageVO
+	 * @return result - List
+	 * @exception Exception
+     */
+    @RequestMapping(value="/cmm/authmngDelete.do")
+    public ModelAndView deleteAuthorList(@ModelAttribute("authorManageVO") AuthorManageVO authorManageVO) throws Exception {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("jsonView");
+		egovAuthorManageService.deleteAuthor(authorManageVO);
+    	return modelAndView;
+    }
+    
+	/**
+	 * 메뉴생성 정보를 조회
+	 * @return result - List
+	 * @exception Exception
+	 */
+	@PostMapping(value="/cmm/menuCreatList.do")
+	public ModelAndView selectMenuCreatList(@RequestParam Map<String, Object> commandMap) throws Exception {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("jsonView");
+		MenuCreatVO menuCreatVO = new MenuCreatVO();
+		menuCreatVO.setAuthorCode(EgovStringUtil.isNullToString(commandMap.get("authorCode")));
+    	List<?> menuCreatList = menuCreateManageService.selectMenuCreatList(menuCreatVO);
+		modelAndView.addObject(menuCreatList);
+		return modelAndView;
+	}
+    
+    /**
+     * 메뉴생성정보를 등록한다
+     * 메뉴생성정보 화면으로 이동한다
+     * @param menuManageVO    MenuManageVO
+	 * @return result - List
+	 * @exception Exception
+	 */
+    @PostMapping(value="/cmm/menucreateInsert.do")
+    public ModelAndView insertMenuCreateManage (@RequestParam String data) throws Exception {
+    	
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("jsonView");
+		
+    	LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
+    	//menuManageVO.setRegisterId((user == null || user.getUniqId() == null) ? "" : user.getUniqId());
+    	//menuManageService.insertMenuManage(menuManageVO);
+    	//modelAndView.addObject("upperMenuId", menuManageVO.getUpperMenuId());
+    	
+    	return modelAndView;
+	}
+    
+	/**
+	 * 사용자 목록을 조회
+	 * @return result - List
+	 * @exception Exception
+	 */
+	@PostMapping(value="/cmm/authMberList.do")
+	public ModelAndView selectAuthorMberList(@RequestParam Map<String, Object> commandMap) throws Exception {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("jsonView");
+		
+		AuthorGroupVO authorGroupVO = new AuthorGroupVO();
+    	List<?> authlist = egovAuthorGroupService.selectAuthorMberList(authorGroupVO);
+		modelAndView.addObject(authlist);
+		
+		return modelAndView;
+	}
+	
+	/**
+	 * 권한그룹 목록을 조회
+	 * @return result - List
+	 * @exception Exception
+	 */
+	@PostMapping(value="/cmm/authgrpList.do")
+	public ModelAndView selectAuthorGroupList(@RequestParam Map<String, Object> commandMap) throws Exception {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("jsonView");
+		
+		AuthorGroupVO authorGroupVO = new AuthorGroupVO();
+		authorGroupVO.setUniqId(EgovStringUtil.isNullToString(commandMap.get("uniqId")));
+    	List<?> authlist = egovAuthorGroupService.selectAuthorGroupList(authorGroupVO);
+		modelAndView.addObject(authlist);
+		
+		return modelAndView;
+	}
 }

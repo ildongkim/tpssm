@@ -37,6 +37,14 @@ public interface EgovAuthorGroupService {
 	public void insertAuthorGroup(AuthorGroup authorGroup) throws Exception;
 
 	/**
+	 * 사용자 목록 조회
+	 * @param authorGroupVO AuthorGroupVO
+	 * @return List<AuthorGroupVO>
+	 * @exception Exception
+	 */
+	public List<AuthorGroupVO> selectAuthorMberList(AuthorGroupVO authorGroupVO) throws Exception;
+	
+	/**
 	 * 그룹별 할당된 권한 목록 조회
 	 * @param authorGroupVO AuthorGroupVO
 	 * @return List<AuthorGroupVO>

@@ -2036,7 +2036,12 @@ function getCheckedRowInfoList(_a) {
         nextRows: [],
     };
     data.rawData.reduce(function (acc, row, index) {
-        if (row._attributes.checked) {
+    	//Modify Script : Harry 2022-02-13
+    	var bChecked = row._attributes.checked;
+    	if (typeof bChecked === 'string') {
+    		bChecked = (bChecked == 'true') ? true : false;
+    	}
+        if (bChecked) {
             acc.rowIndexes.push(index);
             acc.rows.push(row);
             acc.nextRows.push(data.rawData[index + 1]);
@@ -3359,7 +3364,15 @@ function setCheckedAllRows(_a) {
     if (filteredRawData.length) {
         var enableCheckRows = filteredRawData
             .slice.apply(filteredRawData, pageRowRange).filter(function (row) { return !row._attributes.checkDisabled; });
-        result = !!enableCheckRows.length && enableCheckRows.every(function (row) { return row._attributes.checked; });
+        result = !!enableCheckRows.length && 
+        	enableCheckRows.every(function (row) {
+        		//Modify Script : Harry 2022-02-13
+        		var rowChecked = row._attributes.checked;
+        		if (typeof rowChecked === 'string') {
+        			rowChecked = (rowChecked == 'true') ? true : false;
+        		}
+        		return rowChecked; 
+        	});
     }
     data.checkedAllRows = result;
 }
@@ -17628,6 +17641,8 @@ var RowHeaderInputRenderer = /** @class */ (function () {
     };
     RowHeaderInputRenderer.prototype.render = function (props) {
         var value = props.value, disabled = props.disabled;
+        //Modify Script : Harry 2022-02-13
+        if (typeof value === 'string') { value = (value == 'true') ? true : false; }
         this.input.checked = Boolean(value);
         this.input.disabled = disabled;
     };

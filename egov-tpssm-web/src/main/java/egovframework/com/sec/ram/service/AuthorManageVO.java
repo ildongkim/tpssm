@@ -25,7 +25,6 @@ public class AuthorManageVO extends AuthorManage {
 
 	List <AuthorManageVO> authorManageList;
 
-
 	/**
 	 * authorManageList attribute 를 리턴한다.
 	 * @return List<AuthorManageVO>
@@ -41,7 +40,4 @@ public class AuthorManageVO extends AuthorManage {
 	public void setAuthorManageList(List<AuthorManageVO> authorManageList) {
 		this.authorManageList = authorManageList;
 	}
-
-
-
 }

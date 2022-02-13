@@ -12,7 +12,7 @@
 
     <select id="selectAuthorList" parameterType="egovframework.com.sec.ram.service.AuthorManageVO" resultMap="author">
             SELECT
-                   AUTHOR_CODE, AUTHOR_NM, AUTHOR_DC, AUTHOR_CREAT_DE
+                   AUTHOR_CODE, AUTHOR_NM, AUTHOR_DC, AUTHOR_CREAT_DE, USE_AT
               FROM COMTNAUTHORINFO
              WHERE 1=1
             <if test="searchCondition == 1">AND
@@ -22,18 +22,22 @@
             LIMIT #{recordCountPerPage} OFFSET #{firstIndex}      
     </select>
 
+	<!-- Modify Script : Harry 2022-02-12  -->
     <insert id="insertAuthor" parameterType="egovframework.com.sec.ram.service.AuthorManage">
         
-            INSERT INTO COMTNAUTHORINFO 
-                  ( AUTHOR_CODE
-                  , AUTHOR_NM
-                  , AUTHOR_DC
-                  , AUTHOR_CREAT_DE )
-           VALUES ( #{authorCode}
-                  , #{authorNm}
-                  , #{authorDc}
-                  , now())
-         
+			INSERT INTO COMTNAUTHORINFO 
+				(AUTHOR_CODE, AUTHOR_NM, AUTHOR_DC, AUTHOR_CREAT_DE, USE_AT,
+				FRST_REGIST_PNTTM, FRST_REGISTER_ID, LAST_UPDT_PNTTM, LAST_UPDUSR_ID)
+			VALUES 
+				(#{authorCode}, #{authorNm}, #{authorDc}, SYSDATETIME, #{useAt}, 
+				sysdate(), #{registerId}, sysdate(), #{registerId})
+			ON DUPLICATE KEY UPDATE
+				AUTHOR_NM = #{authorNm},
+				AUTHOR_DC = #{authorDc},
+				AUTHOR_CREAT_DE = sysdate(),
+				USE_AT = #{useAt},
+				LAST_UPDT_PNTTM = sysdate(), 
+				LAST_UPDUSR_ID = #{registerId}
     </insert>
 
     <update id="updateAuthor" parameterType="egovframework.com.sec.ram.service.AuthorManage">
@@ -46,10 +50,7 @@
     </update>
     
     <delete id="deleteAuthor">
-        
-            DELETE FROM COMTNAUTHORINFO 
-             WHERE AUTHOR_CODE=#{authorCode}
-        
+            DELETE FROM COMTNAUTHORINFO WHERE AUTHOR_CODE=#{authorCode}
     </delete>
     
     <select id="selectAuthor" resultMap="author">

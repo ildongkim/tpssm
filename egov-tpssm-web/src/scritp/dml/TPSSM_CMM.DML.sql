@@ -1,42 +1,20 @@
 
 /* 메뉴정보 */
-INSERT INTO comtnmenuinfo 
-(menu_nm, progrm_file_nm, menu_no, upper_menu_no, menu_ordr, menu_dc, relate_image_path, relate_image_nm, use_at, frst_regist_pnttm, frst_register_id, last_updt_pnttm, last_updusr_id) 
-VALUES ('프로그램관리', 'ProgrmManagment', 1030000, 1000000, 3, '프로그램관리', '/', '/', 'Y', NULL, NULL, NULL, NULL);
-INSERT INTO comtnmenuinfo 
-(menu_nm, progrm_file_nm, menu_no, upper_menu_no, menu_ordr, menu_dc, relate_image_path, relate_image_nm, use_at, frst_regist_pnttm, frst_register_id, last_updt_pnttm, last_updusr_id) 
-VALUES ('환경설정', 'dir', 1000000, 0, 1, '환경설정', '/', '/', 'Y', NULL, NULL, NULL, NULL);
-INSERT INTO comtnmenuinfo 
-(menu_nm, progrm_file_nm, menu_no, upper_menu_no, menu_ordr, menu_dc, relate_image_path, relate_image_nm, use_at, frst_regist_pnttm, frst_register_id, last_updt_pnttm, last_updusr_id) 
-VALUES ('root', 'dir', 0, 0, 1, 'root', '/', '/', 'Y', NULL, NULL, NULL, NULL);
-INSERT INTO comtnmenuinfo 
-(menu_nm, progrm_file_nm, menu_no, upper_menu_no, menu_ordr, menu_dc, relate_image_path, relate_image_nm, use_at, frst_regist_pnttm, frst_register_id, last_updt_pnttm, last_updusr_id) 
-VALUES ('공통코드관리', 'CmmnCodeManagment', 1010000, 1000000, 1, '공통코드관리', '/', '/', 'Y', NULL, NULL, NULL, NULL);
-INSERT INTO comtnmenuinfo 
-(menu_nm, progrm_file_nm, menu_no, upper_menu_no, menu_ordr, menu_dc, relate_image_path, relate_image_nm, use_at, frst_regist_pnttm, frst_register_id, last_updt_pnttm, last_updusr_id) 
-VALUES ('공통상세코드관리', 'CmmnCodeDtlManagment', 1020000, 1000000, 2, '공통상세코드관리', '/', '/', 'Y', NULL, NULL, NULL, NULL);
-INSERT INTO comtnmenuinfo 
-(menu_nm, progrm_file_nm, menu_no, upper_menu_no, menu_ordr, menu_dc, relate_image_path, relate_image_nm, use_at, frst_regist_pnttm, frst_register_id, last_updt_pnttm, last_updusr_id) 
-VALUES ('메뉴관리', 'MenuManagment', 1040000, 1000000, 4, '메뉴관리', '/', '/', 'Y', NULL, NULL, NULL, NULL);
-INSERT INTO comtnmenuinfo 
-(menu_nm, progrm_file_nm, menu_no, upper_menu_no, menu_ordr, menu_dc, relate_image_path, relate_image_nm, use_at, frst_regist_pnttm, frst_register_id, last_updt_pnttm, last_updusr_id) 
-VALUES ('메뉴권한할당', 'dir', 1050000, 1000000, 5, '메뉴권한할당', '/', '/', 'Y', NULL, NULL, NULL, NULL);
-INSERT INTO comtnmenuinfo 
-(menu_nm, progrm_file_nm, menu_no, upper_menu_no, menu_ordr, menu_dc, relate_image_path, relate_image_nm, use_at, frst_regist_pnttm, frst_register_id, last_updt_pnttm, last_updusr_id) 
-VALUES ('사용자권한할당', 'dir', 1060000, 1000000, 6, '사용자권한할당', '/', '/', 'Y', NULL, NULL, NULL, NULL);
-INSERT INTO comtnmenuinfo 
-(menu_nm, progrm_file_nm, menu_no, upper_menu_no, menu_ordr, menu_dc, relate_image_path, relate_image_nm, use_at, frst_regist_pnttm, frst_register_id, last_updt_pnttm, last_updusr_id) 
-VALUES ('팝업관리', 'dir', 1070000, 1000000, 7, '팝업관리', '/', '/', 'Y', NULL, NULL, NULL, NULL);
-INSERT INTO comtnmenuinfo 
-(menu_nm, progrm_file_nm, menu_no, upper_menu_no, menu_ordr, menu_dc, relate_image_path, relate_image_nm, use_at, frst_regist_pnttm, frst_register_id, last_updt_pnttm, last_updusr_id) 
-VALUES ('게시판관리', 'dir', 1080000, 1000000, 8, '게시판관리', '/', '/', 'Y', NULL, NULL, NULL, NULL);
-INSERT INTO comtnmenuinfo 
-(menu_nm, progrm_file_nm, menu_no, upper_menu_no, menu_ordr, menu_dc, relate_image_path, relate_image_nm, use_at, frst_regist_pnttm, frst_register_id, last_updt_pnttm, last_updusr_id) 
-VALUES ('업무담당자관리', 'dir', 1090000, 1000000, 9, '업무담당자관리', '/', '/', 'Y', NULL, NULL, NULL, NULL);
-INSERT INTO comtnmenuinfo 
-(menu_nm, progrm_file_nm, menu_no, upper_menu_no, menu_ordr, menu_dc, relate_image_path, relate_image_nm, use_at, frst_regist_pnttm, frst_register_id, last_updt_pnttm, last_updusr_id) 
-VALUES ('심의업무', 'dir', 2000000, 0, 1, '심의업무', '/', '/', 'Y', NULL, NULL, NULL, NULL);
-
+INSERT INTO comtnmenuinfo (menu_nm, progrm_file_nm, menu_no, upper_menu_no, menu_ordr, menu_dc, relate_image_path, relate_image_nm, use_at, frst_regist_pnttm, frst_register_id, last_updt_pnttm, last_updusr_id) VALUES ('공통코드관리', 'CmmnCodeManagment', 1010000, 1000000, 1, '공통코드관리', '/', '/', 'Y', NULL, NULL, DATETIME'2022-02-07 20:54:44.732', 'USRCNFRM_00000000001');
+INSERT INTO comtnmenuinfo (menu_nm, progrm_file_nm, menu_no, upper_menu_no, menu_ordr, menu_dc, relate_image_path, relate_image_nm, use_at, frst_regist_pnttm, frst_register_id, last_updt_pnttm, last_updusr_id) VALUES ('환경설정', 'dir', 1000000, 0, 1, '환경설정', '/', '/', 'Y', NULL, NULL, NULL, NULL);
+INSERT INTO comtnmenuinfo (menu_nm, progrm_file_nm, menu_no, upper_menu_no, menu_ordr, menu_dc, relate_image_path, relate_image_nm, use_at, frst_regist_pnttm, frst_register_id, last_updt_pnttm, last_updusr_id) VALUES ('전체', 'dir', 0, 0, 1, '전체메뉴', '/', '/', 'Y', NULL, NULL, NULL, NULL);
+INSERT INTO comtnmenuinfo (menu_nm, progrm_file_nm, menu_no, upper_menu_no, menu_ordr, menu_dc, relate_image_path, relate_image_nm, use_at, frst_regist_pnttm, frst_register_id, last_updt_pnttm, last_updusr_id) VALUES ('공통상세코드관리', 'CmmnCodeDtlManagment', 1020000, 1000000, 2, '공통상세코드관리', '/', '/', 'Y', NULL, NULL, DATETIME'2022-02-07 20:54:54.228', 'USRCNFRM_00000000001');
+INSERT INTO comtnmenuinfo (menu_nm, progrm_file_nm, menu_no, upper_menu_no, menu_ordr, menu_dc, relate_image_path, relate_image_nm, use_at, frst_regist_pnttm, frst_register_id, last_updt_pnttm, last_updusr_id) VALUES ('프로그램관리', 'ProgrmManagment', 1030000, 1000000, 3, '프로그램관리', '/', '/', 'N', NULL, NULL, DATETIME'2022-02-07 20:57:39.293', 'USRCNFRM_00000000001');
+INSERT INTO comtnmenuinfo (menu_nm, progrm_file_nm, menu_no, upper_menu_no, menu_ordr, menu_dc, relate_image_path, relate_image_nm, use_at, frst_regist_pnttm, frst_register_id, last_updt_pnttm, last_updusr_id) VALUES ('메뉴관리', 'MenuManagment', 1040000, 1000000, 4, '메뉴관리', '/', '/', 'Y', NULL, NULL, NULL, NULL);
+INSERT INTO comtnmenuinfo (menu_nm, progrm_file_nm, menu_no, upper_menu_no, menu_ordr, menu_dc, relate_image_path, relate_image_nm, use_at, frst_regist_pnttm, frst_register_id, last_updt_pnttm, last_updusr_id) VALUES ('메뉴권한할당', 'EgovMenuCreatManageSelect', 1050000, 1000000, 6, '메뉴권한할당', '/', '/', 'Y', NULL, NULL, DATETIME'2022-02-09 22:58:30.128', 'USRCNFRM_00000000001');
+INSERT INTO comtnmenuinfo (menu_nm, progrm_file_nm, menu_no, upper_menu_no, menu_ordr, menu_dc, relate_image_path, relate_image_nm, use_at, frst_regist_pnttm, frst_register_id, last_updt_pnttm, last_updusr_id) VALUES ('사용자권한할당', 'EgovAuthorGroup', 1060000, 1000000, 6, '사용자권한할당', '/', '/', 'Y', NULL, NULL, DATETIME'2022-02-09 22:55:52.574', 'USRCNFRM_00000000001');
+INSERT INTO comtnmenuinfo (menu_nm, progrm_file_nm, menu_no, upper_menu_no, menu_ordr, menu_dc, relate_image_path, relate_image_nm, use_at, frst_regist_pnttm, frst_register_id, last_updt_pnttm, last_updusr_id) VALUES ('팝업관리', 'dir', 1070000, 1000000, 7, '팝업관리', '/', '/', 'Y', NULL, NULL, NULL, NULL);
+INSERT INTO comtnmenuinfo (menu_nm, progrm_file_nm, menu_no, upper_menu_no, menu_ordr, menu_dc, relate_image_path, relate_image_nm, use_at, frst_regist_pnttm, frst_register_id, last_updt_pnttm, last_updusr_id) VALUES ('게시판관리', 'BBSMasterManagment', 1080000, 1000000, 8, '게시판관리', '/', '/', 'Y', NULL, NULL, DATETIME'2022-02-10 22:28:49.327', 'USRCNFRM_00000000001');
+INSERT INTO comtnmenuinfo (menu_nm, progrm_file_nm, menu_no, upper_menu_no, menu_ordr, menu_dc, relate_image_path, relate_image_nm, use_at, frst_regist_pnttm, frst_register_id, last_updt_pnttm, last_updusr_id) VALUES ('업무담당자관리', 'dir', 1090000, 1000000, 9, '업무담당자관리', '/', '/', 'Y', NULL, NULL, NULL, NULL);
+INSERT INTO comtnmenuinfo (menu_nm, progrm_file_nm, menu_no, upper_menu_no, menu_ordr, menu_dc, relate_image_path, relate_image_nm, use_at, frst_regist_pnttm, frst_register_id, last_updt_pnttm, last_updusr_id) VALUES ('심의업무', 'dir', 2000000, 0, 1, '심의업무', '/', '/', 'Y', NULL, NULL, NULL, NULL);
+INSERT INTO comtnmenuinfo (menu_nm, progrm_file_nm, menu_no, upper_menu_no, menu_ordr, menu_dc, relate_image_path, relate_image_nm, use_at, frst_regist_pnttm, frst_register_id, last_updt_pnttm, last_updusr_id) VALUES ('권한관리', 'AuthManagment', 1110000, 1000000, 5, '권한관리', NULL, NULL, 'Y', DATETIME'2022-02-07 20:58:36.822', 'USRCNFRM_00000000001', DATETIME'2022-02-09 22:58:20.577', 'USRCNFRM_00000000001');
+INSERT INTO comtnmenuinfo (menu_nm, progrm_file_nm, menu_no, upper_menu_no, menu_ordr, menu_dc, relate_image_path, relate_image_nm, use_at, frst_regist_pnttm, frst_register_id, last_updt_pnttm, last_updusr_id) VALUES ('테스트', '', 1010100, 1010000, 1, '테스트', NULL, NULL, 'Y', DATETIME'2022-02-12 21:45:44.236', 'USRCNFRM_00000000001', DATETIME'2022-02-12 21:45:44.236', 'USRCNFRM_00000000001');
+INSERT INTO comtnmenuinfo (menu_nm, progrm_file_nm, menu_no, upper_menu_no, menu_ordr, menu_dc, relate_image_path, relate_image_nm, use_at, frst_regist_pnttm, frst_register_id, last_updt_pnttm, last_updusr_id) VALUES ('테스트', '', 2010000, 2000000, 1, '테스트', NULL, NULL, 'Y', DATETIME'2022-02-12 22:58:12.802', 'USRCNFRM_00000000001', DATETIME'2022-02-12 22:58:12.802', 'USRCNFRM_00000000001');
 
 /* 약관정보 */
 INSERT INTO comtnstplatinfo (USE_STPLAT_ID, USE_STPLAT_CN, INFO_PROVD_AGRE_CN) 
@@ -44,11 +22,11 @@ VALUES ('STPLAT_0000000000001', '개인정보의 수집 및 이용목적-개인�
 INSERT INTO comtnstplatinfo (USE_STPLAT_ID, USE_STPLAT_CN, INFO_PROVD_AGRE_CN) 
 VALUES ('STPLAT_0000000000002', '개인정보의 수집 및 이용목적-기업회원', '제1조(목적 등)-기업회원');
 
-/* 공통코드 : 성별 */
+/* 공통코드상세 : 성별 */
 INSERT INTO comtccmmndetailcode (CODE_ID, CODE, CODE_NM, CODE_DC, USE_AT) VALUES ('COM014', 'F', '여자', '여자', 'Y');
 INSERT INTO comtccmmndetailcode (CODE_ID, CODE, CODE_NM, CODE_DC, USE_AT) VALUES ('COM014', 'M', '남자', '남자', 'Y');
 
-/* 공통코드 : 비밀번호힌트 */
+/* 공통코드상세 : 비밀번호힌트 */
 INSERT INTO comtccmmndetailcode (CODE_ID, CODE, CODE_NM, CODE_DC, USE_AT) VALUES ('COM022', 'P03', '나의 보물 제1호는?', '나의 보물 제1호는?', 'Y');
 INSERT INTO comtccmmndetailcode (CODE_ID, CODE, CODE_NM, CODE_DC, USE_AT) VALUES ('COM022', 'P01', '가장 기억에 남는 장소는?', '가장 기억에 남는 장소는?', 'Y');
 INSERT INTO comtccmmndetailcode (CODE_ID, CODE, CODE_NM, CODE_DC, USE_AT) VALUES ('COM022', 'P02', '나의 좌우명은?', '나의 좌우명은?', 'Y');
@@ -63,12 +41,18 @@ INSERT INTO comtccmmndetailcode (CODE_ID, CODE, CODE_NM, CODE_DC, USE_AT) VALUES
 INSERT INTO comtccmmndetailcode (CODE_ID, CODE, CODE_NM, CODE_DC, USE_AT) VALUES ('COM022', 'P12', '가장 감명깊게 본 영화는?', '가장 감명깊게 본 영화는?', 'Y');
 INSERT INTO comtccmmndetailcode (CODE_ID, CODE, CODE_NM, CODE_DC, USE_AT) VALUES ('COM022', 'P13', '좋아하는 스포츠팀 이름은?', '좋아하는 스포츠팀 이름은?', 'Y');
 
-/* 공통코드 : 기업정보 */
+/* 공통코드상세: 회원구분 */
+INSERT INTO comtccmmndetailcode (code_id, code, code_nm, code_dc, use_at, frst_regist_pnttm, frst_register_id, last_updt_pnttm, last_updusr_id) VALUES ('COM012', 'USR01', '일반 회원 유형', '일반 회원 유형', 'Y', DATETIME'2022-01-25 01:08:17.188', 'SYSTEM', DATETIME'2022-01-25 01:08:17.188', 'SYSTEM');
+INSERT INTO comtccmmndetailcode (code_id, code, code_nm, code_dc, use_at, frst_regist_pnttm, frst_register_id, last_updt_pnttm, last_updusr_id) VALUES ('COM012', 'USR02', '기업 회원 유형', '기업 회원 유형', 'Y', DATETIME'2022-01-25 01:08:17.189', 'SYSTEM', DATETIME'2022-01-25 01:08:17.189', 'SYSTEM');
+INSERT INTO comtccmmndetailcode (code_id, code, code_nm, code_dc, use_at, frst_regist_pnttm, frst_register_id, last_updt_pnttm, last_updusr_id) VALUES ('COM012', 'USR03', '업무 담당자(사용자) 유형', '업무 담당자(사용자) 유형', 'Y', DATETIME'2022-01-25 01:08:17.190', 'SYSTEM', DATETIME'2022-01-25 01:08:17.190', 'SYSTEM');
+INSERT INTO comtccmmndetailcode (code_id, code, code_nm, code_dc, use_at, frst_regist_pnttm, frst_register_id, last_updt_pnttm, last_updusr_id) VALUES ('COM012', 'USR99', '사용자 유형 최상위 롤', '사용자 유형 최상위 롤', 'Y', DATETIME'2022-01-25 01:08:17.192', 'SYSTEM', DATETIME'2022-01-25 01:08:17.192', 'SYSTEM');
+
+/* 공통코드상세 : 기업정보 */
 INSERT INTO comtccmmndetailcode (CODE_ID, CODE, CODE_NM, CODE_DC, USE_AT) VALUES ('COM026', 'C0000002', '중소기업', '중소기업', 'Y');
 INSERT INTO comtccmmndetailcode (CODE_ID, CODE, CODE_NM, CODE_DC, USE_AT) VALUES ('COM026', 'C0000001', '대기업', '대기업', 'Y');
 INSERT INTO comtccmmndetailcode (CODE_ID, CODE, CODE_NM, CODE_DC, USE_AT) VALUES ('COM026', 'C0000003', '다국적기업', '다국적기업', 'Y');
 
-/* 공통코드 : 업종코드 */
+/* 공통코드상세: 업종코드 */
 INSERT INTO comtccmmndetailcode (CODE_ID, CODE, CODE_NM, CODE_DC, USE_AT) VALUES ('COM027', 'G', '도소매 및 소비자용품수리업', '도소매 및 소비자용품수리업', 'Y');
 INSERT INTO comtccmmndetailcode (CODE_ID, CODE, CODE_NM, CODE_DC, USE_AT) VALUES ('COM027', 'A', '축산업', '축산업', 'Y');
 INSERT INTO comtccmmndetailcode (CODE_ID, CODE, CODE_NM, CODE_DC, USE_AT) VALUES ('COM027', 'B', '어업', '어업', 'Y');
@@ -84,6 +68,11 @@ INSERT INTO comtccmmndetailcode (CODE_ID, CODE, CODE_NM, CODE_DC, USE_AT) VALUES
 INSERT INTO comtccmmndetailcode (CODE_ID, CODE, CODE_NM, CODE_DC, USE_AT) VALUES ('COM027', 'N', '보건업', '보건업', 'Y');
 INSERT INTO comtccmmndetailcode (CODE_ID, CODE, CODE_NM, CODE_DC, USE_AT) VALUES ('COM027', 'O', '기타공공,사회및개인서비스업', '기타공공,사회및개인서비스업', 'Y');
 INSERT INTO comtccmmndetailcode (CODE_ID, CODE, CODE_NM, CODE_DC, USE_AT) VALUES ('COM027', 'P', '가사서비스업', '가사서비스업', 'Y');
+
+/* 공통코드 */
+INSERT INTO comtccmmncode (code_id, code_id_nm, code_id_dc, use_at, cl_code, frst_regist_pnttm, frst_register_id, last_updt_pnttm, last_updusr_id) VALUES ('COM014', '성별', '성별', 'Y', 'COM', DATETIME'2022-02-07 21:56:31.562', 'USRCNFRM_00000000001', DATETIME'2022-02-07 21:57:12.656', '');
+INSERT INTO comtccmmncode (code_id, code_id_nm, code_id_dc, use_at, cl_code, frst_regist_pnttm, frst_register_id, last_updt_pnttm, last_updusr_id) VALUES ('COM101', '게시판유형', '게시판유형', 'Y', 'COM', DATETIME'2022-02-12 00:12:57.197', 'USRCNFRM_00000000001', DATETIME'2022-02-12 00:12:57.197', 'USRCNFRM_00000000001');
+INSERT INTO comtccmmncode (code_id, code_id_nm, code_id_dc, use_at, cl_code, frst_regist_pnttm, frst_register_id, last_updt_pnttm, last_updusr_id) VALUES ('COM012', '회원유형', '일반/기업/업무담당자를 구현하기 위한 사용자 구분', 'Y', 'COM', DATETIME'2022-02-13 16:51:39.871', 'USRCNFRM_00000000001', DATETIME'2022-02-13 16:51:39.871', 'USRCNFRM_00000000001');
 
 /* 프로그램정보 */
 INSERT INTO 

@@ -63,32 +63,20 @@
 		
 	</select>
 
+	<!-- Modify Script : Harry 2022-02-11  -->
 	<insert id="insertCmmnDetailCode">
-		
-		<![CDATA[
-		    INSERT
-		      INTO  COMTCCMMNDETAILCODE
-		         (  CODE_ID
-		         ,  CODE
-		         ,  CODE_NM
-		         ,  CODE_DC
-		         ,  USE_AT
-		         ,  FRST_REGIST_PNTTM
-		         ,  FRST_REGISTER_ID
-		         ,  LAST_UPDT_PNTTM
-		         ,  LAST_UPDUSR_ID
-		         )
-		    VALUES
-		         (  #{codeId}
-		         ,  #{code}
-		         ,  #{codeNm}
-		         ,  #{codeDc}
-		         ,  #{useAt}
-		         ,  sysdate()
-		         ,  #{frstRegisterId}
-		         ,  sysdate()
-		         ,  #{frstRegisterId}
-		         )
+		    INSERT INTO COMTCCMMNDETAILCODE
+				(CODE_ID, CODE, CODE_NM, CODE_DC, USE_AT,
+				FRST_REGIST_PNTTM, FRST_REGISTER_ID, LAST_UPDT_PNTTM, LAST_UPDUSR_ID)
+			VALUES
+				(#{codeId}, #{code}, #{codeNm},  #{codeDc},  #{useAt},
+				sysdate(), #{frstRegisterId}, sysdate(), #{frstRegisterId})
+			ON DUPLICATE KEY UPDATE
+				CODE_NM = #{codeNm},
+				CODE_DC = #{codeDc},
+				USE_AT = #{useAt},
+				LAST_UPDT_PNTTM = sysdate(),
+				LAST_UPDUSR_ID = #{frstRegisterId}
 		   ]]>      
 		
 	</insert>
@@ -108,15 +96,9 @@
 		
 	</update>
 
+	<!-- Modify Script : Harry 2022-02-11  -->
 	<delete id="deleteCmmnDetailCode">
-		
-		<![CDATA[
-            UPDATE  COMTCCMMNDETAILCODE
-               SET  USE_AT    = 'N'
-             WHERE  CODE_ID   = #{codeId}
-               AND  CODE      = #{code}
-         ]]>      
-		
+            DELETE FROM COMTCCMMNDETAILCODE WHERE CODE_ID = #{codeId} AND CODE = #{code}
 	</delete>
 
 </mapper>

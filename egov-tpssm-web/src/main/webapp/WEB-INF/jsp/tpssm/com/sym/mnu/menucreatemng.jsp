@@ -20,7 +20,7 @@
     <link href="<c:url value="/css/egovframework/com/cmm/jqueryui.css"/>" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/jquery.js'/>" ></script>
     <script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/jqueryui.js'/>" ></script>
-    <script type="text/javascript" src="<c:url value='/modules/tui-grid/dist/tui-grid.min.js'/>" ></script>
+    <script type="text/javascript" src="<c:url value='/modules/tui-grid/dist/tui-grid.js'/>" ></script>
     <script type="text/javascript" src="<c:url value='/js/tpssm/com/com.js'/>" ></script>
     <script type="text/javascript" src="<c:url value="/cmm/init/validator.do"/>"></script>
     <validator:javascript formName="menuManageVO" staticJavascript="false" xhtml="true" cdata="false"/>
@@ -39,7 +39,7 @@ $(document).ready(function()
 	gridAuth = new tui.Grid({
 		el: document.getElementById('gridAuth'), // Container element
 		scrollX: false,
-		bodyHeight: 500,
+		bodyHeight: 450,
 		rowHeaders: ['rowNum'],
 		columns: 
 		[
@@ -54,14 +54,14 @@ $(document).ready(function()
 	
 	//3.권한목록의 Click 이벤트
 	gridAuth.on('click', function (ev) {
-		setAuthList(gridAuth.getRow(ev.rowKey), 1);
+		setMenuCreatList(gridAuth.getRow(ev.rowKey));
 	});
 	
 	//4.트리메뉴목록
 	gridMenu = new tui.Grid({
 		el: document.getElementById('gridUpperMenu'), // Container element
 		scrollX: false,
-		bodyHeight: 500,
+		bodyHeight: 450,
 		rowHeaders: ['checkbox'],
 		treeColumnOptions: {
 			name: 'menuNm',
@@ -74,39 +74,76 @@ $(document).ready(function()
 		]
 	});
 	
-	//5.트리메뉴목록의 데이터검색
-	searchMenuList();
+	//5.권한목록의 데이터검색
+	searchAuthList();
 });
 
 /* ********************************************************
- * 트리메뉴목록의 데이터검색 처리 함수
+ * 권한목록의 데이터검색 처리 함수
  ******************************************************** */
-function searchMenuList() {
-	const menuNo = $("#upperMenu option:selected").val();
+function searchAuthList() {
+	const searchKeyword = "";
+	$.ajax({
+		url : "<c:url value='/cmm/authmngList.do'/>",
+		method :"POST",
+		data : {"searchKeyword":searchKeyword},
+		dataType : "JSON",
+		success : function(result){
+			if (result['authorManageVOList'] != null) {
+				gridAuth.resetData(result['authorManageVOList']);
+				gridMenu.clear();
+			}
+		} 
+	});
+}
+
+/* ********************************************************
+ * 메뉴생성 목록의 체크 처리 함수
+ ******************************************************** */
+function setMenuCreatList(data) {
+	if (data == null) { return; }
 	$.ajax({
 		url : "<c:url value='/cmm/hierarchyMenuList.do'/>",
 		method :"POST",
-		data : {"menuNo":menuNo},
+		data : {menuNo:0, authorCode:isNullToString(data["authorCode"])},
 		dataType : "JSON",
 		success : function(result){
 			if (result['menuManageVOList'] != null) {
-				const data = result['menuManageVOList'][0];
-				let childdata;
-				for (key in data) {
-					if (key == '_children') {
-						for (idx in data[key]) {
-							childdata = data[key][idx];
-							if (childdata['_children'].length == 0) {
-								delete childdata['_children'];
-							}
-						}
-					}
-				}
+				getHierarchyMenuList(result['menuManageVOList'][0]);
 				gridMenu.resetData(result['menuManageVOList']);
 				gridMenu.expandAll();
 			}
 		} 
 	});
+}
+
+/* ********************************************************
+ * 메뉴생성등록 처리 함수
+ ******************************************************** */
+function insertMenuCreatList() {
+	if(confirm("<spring:message code="common.save.msg" />")){
+		$.ajax({
+			url : "<c:url value='/cmm/menucreateInsert.do'/>",
+			method :"POST",
+			data : {data : JSON.stringify(gridMenu.getCheckedRows())},
+			dataType : "JSON",
+			success : function(result) {
+				if (result['message'] != null) {
+					confirm(result['message']);	
+				} else {
+					if (result['upperMenuId'] != null) {
+						searchMenuMngList(result['upperMenuId'], 'I');
+					}
+				}
+			},
+			error : function(xhr, status) {
+				confirm("<spring:message code='fail.common.save' />");
+			},
+			complete : function() {
+				$('.btn_b.save').css('pointer-events','auto');
+			}
+		});
+	}
 }
 -->
 </script>
@@ -124,20 +161,7 @@ function searchMenuList() {
 				<span class="btn_b" onclick="searchAuthList(); return false;">
 					<a href="#"><spring:message code="button.inquire" /></a>
 				</span>				
-			</li>
-			<li><div style="line-height:4px;">&nbsp;</div><div><spring:message code="comSymMnuMpm.menuManage.validate.menuNm" /> : </div></li>
-			<li>
-				<select name="upperMenu" id="upperMenu" title="<spring:message code="title.searchCondition" />">
-					<c:forEach var="menu" items="${upperMenuList}">
-			            <option value="<c:out value="${menu.menuNo}"/>"><c:out value="${menu.menuNm}"/></option>
-					</c:forEach>
-				</select>
-				<span class="btn_b" onclick="searchMenuList(); return false;">
-					<a href="#"><spring:message code="button.inquire" /></a>
-				</span>
-			</li>				
-			<li>
-				<span class="btn_b save" onclick="insertMenuList(document.forms[0]); return false;">
+				<span class="btn_b save" onclick="insertMenuCreatList();">
 					<a href="#"><spring:message code="button.save" /></a>
 				</span>
 			</li>

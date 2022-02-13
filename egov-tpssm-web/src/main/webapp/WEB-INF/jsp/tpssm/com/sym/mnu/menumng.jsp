@@ -58,8 +58,9 @@ $(document).ready(function()
 	
 	//3.트리메뉴목록의 Click 이벤트
 	gridMenu.on('click', function (ev) {
+		setViewMenuClick(); //화면처리
 		searchMenuMngList(gridMenu.getValue(ev.rowKey, 'menuNo'),'S');
-		setMenuList(gridMenu.getRow(ev.rowKey), 1);
+		setMenuList(gridMenu.getRow(ev.rowKey));
 		gridMenuRowKey = ev.rowKey;
 	});
 	
@@ -83,14 +84,17 @@ $(document).ready(function()
 	
 	//6.하위메뉴목록의 Click 이벤트
 	gridMenuDtl.on('click', function (ev) {
-		setMenuList(gridMenuDtl.getRow(ev.rowKey), 2);
+		if (ev.rowKey >= '0') {
+			setViewMenuDtlClick(); //화면처리
+		}
+		setMenuList(gridMenuDtl.getRow(ev.rowKey));
 	});
 	
 	//7.트리메뉴목록의 데이터검색
 	searchMenuList();
 	
-	//8.폼입력 정보의 초기화
-	initlMenuList(1);
+	//8.화면초기화처리
+	setViewInit();
 	
 	//9.파일검색의 Click 이벤트
 	$('#popupProgrmFileNm').click(function (e) {
@@ -107,6 +111,9 @@ $(document).ready(function()
  * 트리메뉴목록의 데이터검색 처리 함수
  ******************************************************** */
 function searchMenuList() {
+	//화면처리
+	setViewSearch();
+	
 	const menuNo = $("#searchCondition option:selected").val();
 	$.ajax({
 		url : "<c:url value='/cmm/hierarchyMenuList.do'/>",
@@ -114,21 +121,8 @@ function searchMenuList() {
 		data : {"menuNo":menuNo},
 		dataType : "JSON",
 		success : function(result){
-			initlMenuList(1);
 			if (result['menuManageVOList'] != null) {
-				const data = result['menuManageVOList'][0];
-				let childdata;
-				for (key in data) {
-					if (key == '_children') {
-						for (idx in data[key]) {
-							childdata = data[key][idx];
-							if (childdata['_children'].length == 0) {
-								delete childdata['_children'];
-							}
-						}
-					}
-				}
-				
+				getHierarchyMenuList(result['menuManageVOList'][0]);
 				gridMenu.resetData(result['menuManageVOList']);
 				gridMenu.expandAll();
 			}
@@ -139,7 +133,7 @@ function searchMenuList() {
 /* ********************************************************
  * 폼입력 정보의 데이터바인딩 처리 함수
  ******************************************************** */
-function setMenuList(data, unit) {
+function setMenuList(data) {
 	if (data != null) {
 		document.menuManageVO.upperMenuId.value=isNullToString(data["upperMenuId"]);
 		document.menuManageVO.menuNo.value=isNullToString(data["menuNo"]);
@@ -148,48 +142,6 @@ function setMenuList(data, unit) {
 		document.menuManageVO.progrmFileNm.value=isNullToString(data["progrmFileNm"]);
 		document.menuManageVO.menuDc.value=isNullToString(data["menuDc"]);
 		document.menuManageVO.useAt.value=isNullToString(data["useAt"]);
-		
-		switch (unit) {
-		case 1: 
-			initlMenuList();
-			$('.btn_b.new').css('pointer-events','auto');
-			$('.btn_b.new').css('background','#4688d2');
-			break;
-		case 2: 
-			$('.btn_b.new').css('pointer-events','none');
-			$('.btn_b.new').css('background','#cccccc');
-			$('.btn_b.save').css('pointer-events','auto');
-			$('.btn_b.save').css('background','#4688d2');
-			document.menuManageVO.menuNm.readOnly=false;
-			document.menuManageVO.menuOrdr.readOnly=false;
-			document.menuManageVO.menuDc.readOnly=false;
-			$(".wTable select").css('background','#ffffff');
-			$(".wTable select").prop("disabled",false);
-			break;
-		}
-	}
-}
-
-/* ********************************************************
- * 폼입력 정보의 초기화 처리 함수
- ******************************************************** */
-function initlMenuList(unit) {
-	switch (unit) {
-	case 1:
-		$('.wTable input').val('');
-		$('.wTable select').val('Y');
-		$('.wTable textarea').val('');
-		gridMenu.clear();
-		gridMenuDtl.clear();		
-	default:
-		$(".wTable input").attr("readonly",true);
-		$(".wTable textarea").attr("readonly",true);
-		$(".wTable select").attr("readonly",true);
-		$(".wTable select").prop("disabled",true);
-		$('.btn_b.new').css('pointer-events','none');
-		$('.btn_b.new').css('background','#cccccc');
-		$('.btn_b.save').css('pointer-events','none');
-		$('.btn_b.save').css('background','#cccccc');
 	}
 }
 
@@ -278,18 +230,128 @@ function deleteMenuList(form) {
  * 신규메뉴 처리 함수
  ******************************************************** */
 function newMenuList() {
+	//화면처리
+	setViewNewClick();
+	
 	$.ajax({
 		url : "<c:url value='/cmm/menumngCreate.do'/>",
 		method :"POST",
 		data : $("#menuManageVO").serialize(),
 		dataType : "JSON",
 		success : function(result) {
-			setMenuList(result['menulist'][0], 2);
+			setMenuList(result['menulist'][0]);
 		},
 		error : function(xhr, status) {
 			confirm("<spring:message code='fail.common.insert' />");
 		}
 	});
+}
+
+/* ********************************************************
+ * 화면초기화처리
+ ******************************************************** */
+function setViewInit() {
+	
+	//입력값공백처리
+	$('.wTable input').val('');
+	$('.wTable select').val('Y');
+	$('.wTable textarea').val('');
+	
+	//입력항목비활성처리
+	$(".wTable input").attr("readonly",true);
+	$(".wTable textarea").attr("readonly",true);
+	$(".wTable select").attr("readonly",true);
+	$(".wTable select").prop("disabled",true);
+	
+	//버튼비활성처리
+	$('.btn_b.save').css('pointer-events','none');
+	$('.btn_b.save').css('background','#cccccc');
+	
+	//그리드초기화처리
+	gridMenu.clear();
+	gridMenuDtl.clear();
+}
+
+/* ********************************************************
+ * 조회 후 화면처리
+ ******************************************************** */
+function setViewSearch()  {
+	
+	//입력값공백처리
+	$('.wTable input').val('');
+	$('.wTable select').val('Y');
+	$('.wTable textarea').val('');
+	
+	//입력항목비활성처리
+	$(".wTable input").attr("readonly",true);
+	$(".wTable textarea").attr("readonly",true);
+	$(".wTable select").attr("readonly",true);
+	$(".wTable select").prop("disabled",true);
+	
+	//버튼처리
+	$('.btn_b.new').css('pointer-events','none');
+	$('.btn_b.new').css('background','#cccccc');	
+	$('.btn_b.save').css('pointer-events','none');
+	$('.btn_b.save').css('background','#cccccc');
+	
+	//그리드초기화처리
+	gridMenuDtl.clear();
+}
+
+/* ********************************************************
+ * 메뉴트리클릭 후 화면처리
+ ******************************************************** */
+function setViewMenuClick() {
+	
+	//입력항목비활성처리
+	$(".wTable input").attr("readonly",true);
+	$(".wTable textarea").attr("readonly",true);
+	$(".wTable select").attr("readonly",true);
+	$(".wTable select").prop("disabled",true);
+	
+	//버튼처리
+	$('.btn_b.new').css('pointer-events','auto');
+	$('.btn_b.new').css('background','#4688d2');
+	$('.btn_b.save').css('pointer-events','none');
+	$('.btn_b.save').css('background','#cccccc');
+}
+
+/* ********************************************************
+ * 하위메뉴클릭 후 화면처리
+ ******************************************************** */
+function setViewMenuDtlClick() {
+	
+	//입력항목활성처리
+	document.menuManageVO.menuNm.readOnly=false;
+	document.menuManageVO.menuOrdr.readOnly=false;
+	document.menuManageVO.menuDc.readOnly=false;
+	$(".wTable select").css('background','#ffffff');
+	$(".wTable select").prop("disabled",false);	
+	
+	//버튼처리
+	$('.btn_b.new').css('pointer-events','none');
+	$('.btn_b.new').css('background','#cccccc');
+	$('.btn_b.save').css('pointer-events','auto');
+	$('.btn_b.save').css('background','#4688d2');
+}
+
+/* ********************************************************
+ * 신규버튼클릭 후 화면처리
+ ******************************************************** */
+function setViewNewClick()  {
+	
+	//입력항목활성처리
+	document.menuManageVO.menuNm.readOnly=false;
+	document.menuManageVO.menuOrdr.readOnly=false;
+	document.menuManageVO.menuDc.readOnly=false;
+	$(".wTable select").css('background','#ffffff');
+	$(".wTable select").prop("disabled",false);	
+	
+	//버튼처리
+	$('.btn_b.new').css('pointer-events','none');
+	$('.btn_b.new').css('background','#cccccc');
+	$('.btn_b.save').css('pointer-events','auto');
+	$('.btn_b.save').css('background','#4688d2');
 }
 -->
 </script>

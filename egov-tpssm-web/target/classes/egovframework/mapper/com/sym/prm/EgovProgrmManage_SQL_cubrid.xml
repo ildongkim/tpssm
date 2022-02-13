@@ -12,7 +12,7 @@
 		<result property="URL" column="URL"/>
 	</resultMap> 
 
-	<!-- Modify Script : Harry 2022-02-09  -->
+	<!-- Modify Script : Harry 2022-02-11  -->
 	<select id="selectProgrmList_D" parameterType="comDefaultVO" resultMap="progrmManage">
 		
 	       SELECT * FROM ( SELECT rownum rn, TB.* FROM (
@@ -20,7 +20,7 @@
 					  PROGRM_FILE_NM   AS "progrmFileNm"
 					, PROGRM_STRE_PATH AS "progrmStrePath"
 					, PROGRM_KOREAN_NM  AS "progrmKoreanNm" 
-					, substr(PROGRM_DC, 1, 18)||'...' AS "progrmDc"
+					, PROGRM_DC AS "progrmDc"
 					, URL AS "URL"
 					, USE_AT AS "useAt" 
 				FROM COMTNPROGRMLIST

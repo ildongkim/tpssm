@@ -40,6 +40,15 @@
 				<result property="progrmFileNm" column="C_PROGRM_FILE_NM"/>
 				<result property="menuDc" column="C_MENU_DC"/>
 				<result property="useAt" column="C_USE_AT"/>
+				<collection property="_children" javaType="java.util.ArrayList" ofType="java.util.HashMap">
+					<id property="menuNo" column="D_MENU_NO" javaType="int"/>
+					<result property="menuNm" column="D_MENU_NM"/>
+					<result property="upperMenuId" column="D_UPPER_MENU_NO"/>
+					<result property="menuOrdr" column="D_MENU_ORDR"/>
+					<result property="progrmFileNm" column="D_PROGRM_FILE_NM"/>
+					<result property="menuDc" column="D_MENU_DC"/>
+					<result property="useAt" column="D_USE_AT"/>
+				</collection>
 			</collection>
 		</collection>
 	</resultMap>
@@ -67,13 +76,23 @@
 				  C.MENU_ORDR AS C_MENU_ORDR, 
 				  C.PROGRM_FILE_NM AS C_PROGRM_FILE_NM, 
 				  C.MENU_DC AS C_MENU_DC,
-				  C.USE_AT AS C_USE_AT 
+				  C.USE_AT AS C_USE_AT,
+				  D.MENU_NO AS D_MENU_NO, 
+				  D.MENU_NM AS D_MENU_NM, 
+				  D.UPPER_MENU_NO AS D_UPPER_MENU_NO, 
+				  D.MENU_ORDR AS D_MENU_ORDR, 
+				  D.PROGRM_FILE_NM AS D_PROGRM_FILE_NM, 
+				  D.MENU_DC AS D_MENU_DC,
+				  D.USE_AT AS D_USE_AT 
 			FROM  COMTNMENUINFO A
 			LEFT  OUTER JOIN COMTNMENUINFO B
 			ON    A.MENU_NO = B.UPPER_MENU_NO
 			LEFT  OUTER JOIN COMTNMENUINFO C
 			ON    B.MENU_NO = C.UPPER_MENU_NO
+			LEFT  OUTER JOIN COMTNMENUINFO D
+			ON    C.MENU_NO = D.UPPER_MENU_NO
 			WHERE binary(A.MENU_NO) = #{menuNo}
+			AND NVL(B.MENU_NO, A.MENU_NO) > 0
 			ORDER BY A.MENU_ORDR
 	</select>
 

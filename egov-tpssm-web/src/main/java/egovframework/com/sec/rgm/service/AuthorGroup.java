@@ -54,6 +54,10 @@ public class AuthorGroup extends ComDefaultVO {
 	 */
 	private String authorCode;
 	/**
+	 * 권한코드명
+	 */
+	private String authorNm;	
+	/**
 	 * 등록 여부
 	 */
 	private String regYn;
@@ -160,6 +164,20 @@ public class AuthorGroup extends ComDefaultVO {
 	public void setAuthorCode(String authorCode) {
 		this.authorCode = authorCode;
 	}
+	/**
+	 * authorNm attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getAuthorNm() {
+		return authorNm;
+	}
+	/**
+	 * authorNm attribute 값을 설정한다.
+	 * @param authorNm String 
+	 */
+	public void setAuthorNm(String authorNm) {
+		this.authorNm = authorNm;
+	}	
 	/**
 	 * regYn attribute 를 리턴한다.
 	 * @return String

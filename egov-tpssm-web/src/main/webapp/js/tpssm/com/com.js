@@ -92,3 +92,23 @@ function settingDialog(options) {
 function isNullToString(obj) {
 	return (obj == null) ? "" : obj;
 }
+
+/*********************************************************
+* Hierarchy MenuList delete empty folder
+******************************************************** */
+function getHierarchyMenuList(obj) {
+	//console.log('HierarchyMenuList');
+	var data = obj;
+	var idx = '';
+	if (data['_children'] != null) {
+		for (idx in data['_children']) {
+			if (data['_children'][idx]['_children'] != null) {
+				if (data['_children'][idx]['_children'].length == 0) {
+					delete data['_children'][idx]['_children'];
+				} else {
+					getHierarchyMenuList(data['_children'][idx]);
+				}
+			}
+		}
+	}
+}

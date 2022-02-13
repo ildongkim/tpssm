@@ -18,9 +18,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springmodules.validation.commons.DefaultBeanValidator;
 
+import egovframework.com.cmm.ComDefaultCodeVO;
 import egovframework.com.cmm.EgovMessageSource;
 import egovframework.com.cmm.LoginVO;
+import egovframework.com.cmm.service.EgovCmmUseService;
 import egovframework.com.cmm.util.EgovUserDetailsHelper;
+import egovframework.com.cop.bbs.service.BoardMasterVO;
+import egovframework.com.cop.bbs.service.EgovBBSMasterService;
 import egovframework.com.sym.ccm.cca.service.CmmnCode;
 import egovframework.com.sym.ccm.cca.service.CmmnCodeVO;
 import egovframework.com.sym.ccm.cca.service.EgovCcmCmmnCodeManageService;
@@ -51,12 +55,45 @@ public class BBSController {
 	/** log */
 	private static final Logger LOGGER = LoggerFactory.getLogger(BBSController.class);
 
+    @Resource(name = "EgovCmmUseService")
+    private EgovCmmUseService cmmUseService;
+    
 	/** EgovMessageSource */
 	@Resource(name = "egovMessageSource")
 	EgovMessageSource egovMessageSource;
 	
 	@RequestMapping("/cmm/bbsmstmng.do")
 	public String codeMng(ModelMap model) throws Exception  {
+		
+		//공통코드(게시판유형)
+		ComDefaultCodeVO vo = new ComDefaultCodeVO();
+		vo.setCodeId("COM101");
+		List<?> codeResult = cmmUseService.selectCmmCodeDetail(vo);
+		model.addAttribute("bbsTyCode", codeResult);
+		
 		return "tpssm/com/cop/bbs/bbsmstmng";
 	}
+	
+    @Resource(name = "EgovBBSMasterService")
+    private EgovBBSMasterService egovBBSMasterService;
+    
+    /**
+     * 게시판 마스터 목록을 조회한다.
+     * 
+     * @param boardMasterVO
+     * @param model
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/cmm/bbsmstinfs.do")
+    public ModelAndView selectBBSMasterInfs(@RequestParam Map<String, Object> commandMap) throws Exception {
+    	ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("jsonView");
+		
+		BoardMasterVO boardMasterVO = new BoardMasterVO();
+		Map<String, Object> bbsMstList = egovBBSMasterService.selectBBSMasterInfs(boardMasterVO);
+		modelAndView.addObject(bbsMstList);
+		
+		return modelAndView;
+    }	
 }

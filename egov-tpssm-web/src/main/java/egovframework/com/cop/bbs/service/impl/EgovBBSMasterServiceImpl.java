@@ -25,12 +25,6 @@ public class EgovBBSMasterServiceImpl extends EgovAbstractServiceImpl implements
     private EgovIdGnrService idgenService;
 	
 	@Override
-	public Map<String, Object> selectNotUsedBdMstrList(BoardMasterVO boardMasterVO) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void deleteBBSMasterInf(BoardMaster boardMaster) {
 		egovBBSMasterDao.deleteBBSMaster(boardMaster);	
 	}

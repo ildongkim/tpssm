@@ -59,19 +59,24 @@
 		
 	</select>
 	
+	<!-- Modify Script : Harry 2022-02-22  -->
 	<insert id="insertProgrm_S">
-		
+	
 			INSERT INTO COMTNPROGRMLIST 
-				( PROGRM_FILE_NM
-				  , PROGRM_STRE_PATH
-				  , PROGRM_KOREAN_NM
-				  , PROGRM_DC
-				  , URL )
-			VALUES ( #{progrmFileNm}
-				  , #{progrmStrePath}
-				  , #{progrmKoreanNm}
-				  , #{progrmDc}
-				  , #{URL} )
+				(PROGRM_FILE_NM, PROGRM_STRE_PATH, PROGRM_KOREAN_NM, PROGRM_DC, URL, USE_AT,
+				FRST_REGIST_PNTTM, FRST_REGISTER_ID, LAST_UPDT_PNTTM, LAST_UPDUSR_ID)			
+			VALUES 
+				(#{progrmFileNm}, {URL}, #{progrmKoreanNm}, #{progrmDc}, #{URL}, #{useAt}, 
+				sysdate(), #{registerId}, sysdate(), #{registerId})			
+			ON DUPLICATE KEY UPDATE
+				PROGRM_STRE_PATH = {URL},
+				PROGRM_KOREAN_NM = #{progrmKoreanNm},
+				PROGRM_DC = #{progrmDc},
+				PROGRM_FILE_NM = #{progrmFileNm},
+				URL = #{URL},
+				USE_AT = #{useAt},
+				LAST_UPDT_PNTTM = sysdate(), 
+				LAST_UPDUSR_ID = #{registerId}
 		
 	</insert>
 

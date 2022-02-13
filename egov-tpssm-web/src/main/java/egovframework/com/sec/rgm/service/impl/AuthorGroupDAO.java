@@ -29,6 +29,17 @@ import org.springframework.stereotype.Repository;
 public class AuthorGroupDAO extends EgovComAbstractDAO {
 
 	/**
+	 * 사용자 목록 조회
+	 * @param authorGroupVO AuthorGroupVO
+	 * @return List<AuthorGroupVO>
+	 * @exception Exception
+	 */
+	@SuppressWarnings("unchecked")
+	public List<AuthorGroupVO> selectAuthorMberList(AuthorGroupVO authorGroupVO) throws Exception {
+		return (List<AuthorGroupVO>) list("authorGroupDAO.selectAuthorMberList", authorGroupVO);
+	}
+	
+	/**
 	 * 그룹별 할당된 권한 목록 조회
 	 * @param authorGroupVO AuthorGroupVO
 	 * @return List<AuthorGroupVO>

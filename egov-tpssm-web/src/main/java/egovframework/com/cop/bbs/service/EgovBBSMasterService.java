@@ -7,8 +7,6 @@ import egovframework.rte.fdl.cmmn.exception.FdlException;
 
 public interface EgovBBSMasterService {
 
-	Map<String, Object> selectNotUsedBdMstrList(BoardMasterVO boardMasterVO);
-
 	void deleteBBSMasterInf(BoardMaster boardMaster);
 
 	void updateBBSMasterInf(BoardMaster boardMaster) throws Exception;
