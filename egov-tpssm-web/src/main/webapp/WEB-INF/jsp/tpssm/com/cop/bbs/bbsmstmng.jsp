@@ -71,6 +71,7 @@ function searchBBSList() {
 		data : {"bbsName":bbsName},
 		dataType : "JSON",
 		success : function(result){
+			console.log(result);
 			if (result['boardMasterVOList'] != null) {
 				gridBBS.resetData(result['boardMasterVOList']);
 			}
@@ -78,11 +79,41 @@ function searchBBSList() {
 	});
 }
 
+/* ********************************************************
+ * 게시판 등록 처리 함수
+ ******************************************************** */
+function insertBBSList(form) {
+	if(confirm("<spring:message code="common.save.msg" />")){
+		if(validateBoardMasterVO(form)){
+			$('.btn_b.save').css('pointer-events','none');
+			$.ajax({
+				url : "<c:url value='/cmm/bbsmstInsert.do'/>",
+				method :"POST",
+				data : $("#boardMasterVO").serialize(),
+				dataType : "JSON",
+				success : function(result) {
+					if (result['message'] != null) {
+						confirm(result['message']);	
+					} else {
+						searchBBSList();
+					}
+				},
+				error : function(xhr, status) {
+					confirm("<spring:message code='fail.common.save' />");
+				},
+				complete : function() {
+					$('.btn_b.save').css('pointer-events','auto');
+				}
+			});
+		}
+	}
+}
+
 -->
 </script>
 <div id="border" style="width:730px">
 
-<form:form commandName="boardMasterVO" name="boardMasterVO" method="post">
+<form:form commandName="boardMasterVO" name="boardMasterVO" id="boardMasterVO" method="post">
 
 <div class="board">
 	<h1 style="background-position:left 3px"><spring:message code="comCopBbs.boardMasterVO.title" /></h1>
@@ -132,9 +163,15 @@ function searchBBSList() {
 				<col style="" />
 			</colgroup>
 			<tr>
+				<th><spring:message code="comCopBbs.boardMasterVO.detail.bbsId" /> <span class="pilsu">*</span></th>
+				<td class="left">
+				<input name="bbsId" id="bbsId" type="text" value=""  maxlength="20" title="<spring:message code="comCopBbs.boardMasterVO.detail.bbsId" />" style="width:190px"/>
+				</td>
+			</tr>
+			<tr>
 				<th><spring:message code="comCopBbs.boardMasterVO.detail.bbsNm" /> <span class="pilsu">*</span></th>
 				<td class="left">
-				<input name="bbsNm" id="bbsNm" type="text" value=""  maxlength="50" title="<spring:message code="comCopBbs.boardMasterVO.detail.bbsNm" />" style="width:190px"/>
+				<input name="bbsNm" type="text" value=""  maxlength="50" title="<spring:message code="comCopBbs.boardMasterVO.detail.bbsNm" />" style="width:190px"/>
 				</td>
 			</tr>
 			<tr>

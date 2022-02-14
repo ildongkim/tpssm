@@ -51,19 +51,29 @@
 		<result property="bbsNm" column="BBS_NM"/>
 	</resultMap>	
 
+	<!-- Modify Script : Harry 2022-02-14  -->
 	<insert id="insertBBSMaster" parameterType="egovframework.com.cop.bbs.service.BoardMasterVO">
 		
-			INSERT INTO COMTNBBSMASTER
-			(BBS_ID, BBS_TY_CODE, BBS_NM, BBS_INTRCN, 
-			 REPLY_POSBL_AT, FILE_ATCH_POSBL_AT, ATCH_POSBL_FILE_NUMBER,
-			 TMPLAT_ID, USE_AT, CMMNTY_ID,
-			 FRST_REGISTER_ID, FRST_REGIST_PNTTM, BLOG_ID, BLOG_AT )
+	    	INSERT INTO COMTNBBSMASTER
+				(BBS_ID, BBS_TY_CODE, BBS_NM, BBS_INTRCN, 
+				 REPLY_POSBL_AT, FILE_ATCH_POSBL_AT, ATCH_POSBL_FILE_NUMBER,
+				 TMPLAT_ID, USE_AT, CMMNTY_ID,
+				 FRST_REGISTER_ID, FRST_REGIST_PNTTM, BLOG_ID, BLOG_AT )
 			VALUES
-			( #{bbsId}, #{bbsTyCode}, #{bbsNm}, #{bbsIntrcn}, 
-			  #{replyPosblAt}, #{fileAtchPosblAt}, #{atchPosblFileNumber}, 
-			  #{tmplatId}, #{useAt}, #{cmmntyId}, #{frstRegisterId}, SYSDATE(), #{blogId}, #{blogAt}  
-			 )			
-		
+				( #{bbsId}, #{bbsTyCode}, #{bbsNm}, #{bbsIntrcn}, 
+				  #{replyPosblAt}, #{fileAtchPosblAt}, #{atchPosblFileNumber}, 
+				  #{tmplatId}, #{useAt}, #{cmmntyId}, #{frstRegisterId}, SYSDATE(), #{blogId}, #{blogAt}  
+				 )	
+			ON DUPLICATE KEY UPDATE
+				BBS_NM = #{bbsNm},
+				BBS_INTRCN = #{bbsIntrcn}, 
+				BBS_TY_CODE = #{bbsTyCode},
+				FILE_ATCH_POSBL_AT = #{fileAtchPosblAt},
+				ATCH_POSBL_FILE_NUMBER = #{atchPosblFileNumber},
+				TMPLAT_ID = #{tmplatId},		
+				LAST_UPDUSR_ID = #{frstRegisterId},
+				LAST_UPDT_PNTTM = SYSDATE(),
+				USE_AT = #{useAt}
 	</insert>
 	
 	<select id="selectBBSMasterList" parameterType="egovframework.com.cop.bbs.service.BoardMasterVO" resultMap="boardMasterList">

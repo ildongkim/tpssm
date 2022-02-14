@@ -32,6 +32,8 @@
 			<result property="progrmFileNm" column="B_PROGRM_FILE_NM"/>
 			<result property="menuDc" column="B_MENU_DC"/>
 			<result property="useAt" column="B_USE_AT"/>
+			<result property="authorCode" column="B_AUTHOR_CODE"/>
+			<association property="_attributes" javaType="java.util.HashMap" column="{menuNo=B_MENU_NO, authorCode=B_AUTHOR_CODE}" select="selectMenuCreate"/>
 			<collection property="_children" javaType="java.util.ArrayList" ofType="java.util.HashMap">
 				<id property="menuNo" column="C_MENU_NO" javaType="int"/>
 				<result property="menuNm" column="C_MENU_NM"/>
@@ -40,6 +42,8 @@
 				<result property="progrmFileNm" column="C_PROGRM_FILE_NM"/>
 				<result property="menuDc" column="C_MENU_DC"/>
 				<result property="useAt" column="C_USE_AT"/>
+				<result property="authorCode" column="C_AUTHOR_CODE"/>
+				<association property="_attributes" javaType="java.util.HashMap" column="{menuNo=C_MENU_NO, authorCode=C_AUTHOR_CODE}" select="selectMenuCreate"/>
 				<collection property="_children" javaType="java.util.ArrayList" ofType="java.util.HashMap">
 					<id property="menuNo" column="D_MENU_NO" javaType="int"/>
 					<result property="menuNm" column="D_MENU_NM"/>
@@ -48,10 +52,17 @@
 					<result property="progrmFileNm" column="D_PROGRM_FILE_NM"/>
 					<result property="menuDc" column="D_MENU_DC"/>
 					<result property="useAt" column="D_USE_AT"/>
+					<result property="authorCode" column="D_AUTHOR_CODE"/>
+					<association property="_attributes" javaType="java.util.HashMap" column="{menuNo=D_MENU_NO, authorCode=D_AUTHOR_CODE}" select="selectMenuCreate"/>
 				</collection>
 			</collection>
 		</collection>
 	</resultMap>
+	
+	<select id="selectMenuCreate" resultType="java.util.HashMap">
+		SELECT CASE WHEN COUNT(B.AUTHOR_CODE) > 0 THEN 'true' ELSE 'false' END AS "checked"
+		  FROM COMTNMENUCREATDTLS B WHERE B.MENU_NO = #{menuNo} AND B.AUTHOR_CODE = #{authorCode}
+	</select>
 	
 	<!-- Add Script : Harry 2022-02-03  -->
 	<select id="selectHierarchyMenuList" parameterType="egovframework.com.sym.mnu.mpm.service.MenuManageVO" resultMap="hierarchyMenuListMap">
@@ -70,6 +81,7 @@
 				  B.PROGRM_FILE_NM AS B_PROGRM_FILE_NM, 
 				  B.MENU_DC AS B_MENU_DC,
 				  B.USE_AT AS B_USE_AT,
+				  CASE WHEN B.MENU_NO IS NULL THEN NULL ELSE #{authorCode} END AS B_AUTHOR_CODE,
 				  C.MENU_NO AS C_MENU_NO, 
 				  C.MENU_NM AS C_MENU_NM, 
 				  C.UPPER_MENU_NO AS C_UPPER_MENU_NO, 
@@ -77,13 +89,15 @@
 				  C.PROGRM_FILE_NM AS C_PROGRM_FILE_NM, 
 				  C.MENU_DC AS C_MENU_DC,
 				  C.USE_AT AS C_USE_AT,
+				  CASE WHEN C.MENU_NO IS NULL THEN NULL ELSE #{authorCode} END AS C_AUTHOR_CODE,
 				  D.MENU_NO AS D_MENU_NO, 
 				  D.MENU_NM AS D_MENU_NM, 
 				  D.UPPER_MENU_NO AS D_UPPER_MENU_NO, 
 				  D.MENU_ORDR AS D_MENU_ORDR, 
 				  D.PROGRM_FILE_NM AS D_PROGRM_FILE_NM, 
 				  D.MENU_DC AS D_MENU_DC,
-				  D.USE_AT AS D_USE_AT 
+				  D.USE_AT AS D_USE_AT,
+				  CASE WHEN D.MENU_NO IS NULL THEN NULL ELSE #{authorCode} END AS D_AUTHOR_CODE
 			FROM  COMTNMENUINFO A
 			LEFT  OUTER JOIN COMTNMENUINFO B
 			ON    A.MENU_NO = B.UPPER_MENU_NO
@@ -92,7 +106,7 @@
 			LEFT  OUTER JOIN COMTNMENUINFO D
 			ON    C.MENU_NO = D.UPPER_MENU_NO
 			WHERE binary(A.MENU_NO) = #{menuNo}
-			AND NVL(B.MENU_NO, A.MENU_NO) > 0
+			AND COALESCE(B.MENU_NO, A.MENU_NO) > 0
 			ORDER BY A.MENU_ORDR
 	</select>
 

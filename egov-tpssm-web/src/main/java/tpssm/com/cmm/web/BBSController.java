@@ -23,15 +23,9 @@ import egovframework.com.cmm.EgovMessageSource;
 import egovframework.com.cmm.LoginVO;
 import egovframework.com.cmm.service.EgovCmmUseService;
 import egovframework.com.cmm.util.EgovUserDetailsHelper;
+import egovframework.com.cop.bbs.service.BoardMaster;
 import egovframework.com.cop.bbs.service.BoardMasterVO;
 import egovframework.com.cop.bbs.service.EgovBBSMasterService;
-import egovframework.com.sym.ccm.cca.service.CmmnCode;
-import egovframework.com.sym.ccm.cca.service.CmmnCodeVO;
-import egovframework.com.sym.ccm.cca.service.EgovCcmCmmnCodeManageService;
-import egovframework.com.sym.ccm.cde.service.CmmnDetailCodeVO;
-import egovframework.com.sym.ccm.cde.service.EgovCcmCmmnDetailCodeManageService;
-import egovframework.com.sym.mnu.mpm.service.MenuManageVO;
-import egovframework.com.utl.fcc.service.EgovStringUtil;
 
 /**
  * 게시판 서비스를 처리하는 컨트롤러 클래스
@@ -62,6 +56,12 @@ public class BBSController {
 	@Resource(name = "egovMessageSource")
 	EgovMessageSource egovMessageSource;
 	
+    @Resource(name = "EgovBBSMasterService")
+    private EgovBBSMasterService egovBBSMasterService;
+    
+    @Autowired
+	private DefaultBeanValidator beanValidator;
+    
 	@RequestMapping("/cmm/bbsmstmng.do")
 	public String codeMng(ModelMap model) throws Exception  {
 		
@@ -74,14 +74,10 @@ public class BBSController {
 		return "tpssm/com/cop/bbs/bbsmstmng";
 	}
 	
-    @Resource(name = "EgovBBSMasterService")
-    private EgovBBSMasterService egovBBSMasterService;
-    
     /**
      * 게시판 마스터 목록을 조회한다.
      * 
-     * @param boardMasterVO
-     * @param model
+     * @param Map<String, Object>
      * @return
      * @throws Exception
      */
@@ -91,8 +87,35 @@ public class BBSController {
 		modelAndView.setViewName("jsonView");
 		
 		BoardMasterVO boardMasterVO = new BoardMasterVO();
-		Map<String, Object> bbsMstList = egovBBSMasterService.selectBBSMasterInfs(boardMasterVO);
+		List<?> bbsMstList = egovBBSMasterService.selectBBSMasterInfs(boardMasterVO);
 		modelAndView.addObject(bbsMstList);
+		
+		return modelAndView;
+    }	
+    
+    /**
+     * 게시판 정보를 저장한다.
+     * 
+     * @param boardMasterVO
+     * @param bindingResult
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/cmm/bbsmstInsert.do")
+    public ModelAndView bbsMasterInsert(
+    		@ModelAttribute("boardMaster") BoardMaster boardMaster,
+    		BindingResult bindingResult) throws Exception {
+    	ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("jsonView");
+		
+    	beanValidator.validate(boardMaster, bindingResult); //validation 수행
+		if (bindingResult.hasErrors()) { 
+			modelAndView.addObject("message", egovMessageSource.getMessage("fail.common.save"));
+		} else {
+	    	LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
+	    	boardMaster.setFrstRegisterId((user == null || user.getUniqId() == null) ? "" : user.getUniqId());
+	    	egovBBSMasterService.insertBBSMasterInf(boardMaster);
+		}
 		
 		return modelAndView;
     }	

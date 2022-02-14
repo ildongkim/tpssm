@@ -3,6 +3,20 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="progrmManageDAO">
 
+    <!-- Add Script : Harry 2022-02-14  -->
+	<select id="selectProgrmMngList" parameterType="comDefaultVO" resultType="egovMap">
+		
+			SELECT 
+				  PROGRM_FILE_NM    AS "progrmFileNm"
+				, PROGRM_STRE_PATH  AS "progrmStrePath"
+				, PROGRM_KOREAN_NM  AS "progrmKoreanNm" 
+				, PROGRM_DC         AS "progrmDc" 
+				, URL               AS "URL"
+				, USE_AT            AS "useAt" 
+			FROM COMTNPROGRMLIST
+			WHERE PROGRM_KOREAN_NM like  '%'|| #{searchKeyword}||'%'
+	</select> 
+	
     <!-- 프로그램목록 관리 -->
 	<resultMap id="progrmManage" type="egovframework.com.sym.prm.service.ProgrmManageVO">
 		<result property="progrmFileNm" column="progrmFileNm"/>

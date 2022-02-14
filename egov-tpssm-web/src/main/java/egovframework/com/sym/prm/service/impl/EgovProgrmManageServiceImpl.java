@@ -48,6 +48,16 @@ public class EgovProgrmManageServiceImpl extends EgovAbstractServiceImpl impleme
          	return progrmManageDAO.selectProgrm(vo);
 	}
 	/**
+	 * 프로그램관리 목록을 조회
+	 * @param vo ComDefaultVO
+	 * @return List
+	 * @exception Exception
+	 */
+	@Override
+	public List<?> selectProgrmMngList(ComDefaultVO vo) throws Exception {
+   		return progrmManageDAO.selectProgrmMngList(vo);
+	}
+	/**
 	 * 프로그램 목록을 조회
 	 * @param vo ComDefaultVO
 	 * @return List

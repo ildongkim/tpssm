@@ -70,15 +70,15 @@ function searchProgrmList() {
 	//화면처리
 	setViewSearch();
 	
-	const programFileName = "";
+	const programFileName = document.progrmManageVO.searchKeyword.value;
 	$.ajax({
 		url : "<c:url value='/cmm/progrmmngList.do'/>",
 		method :"POST",
 		data : {"programFileName":programFileName},
 		dataType : "JSON",
 		success : function(result){
-			if (result['progrmManageVOList'] != null) {
-				gridProgrm.resetData(result['progrmManageVOList']);
+			if (result['egovMapList'] != null) {
+				gridProgrm.resetData(result['egovMapList']);
 			}
 		} 
 	});

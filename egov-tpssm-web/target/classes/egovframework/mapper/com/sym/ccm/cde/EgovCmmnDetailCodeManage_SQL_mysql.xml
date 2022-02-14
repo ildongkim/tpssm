@@ -65,7 +65,8 @@
 
 	<!-- Modify Script : Harry 2022-02-11  -->
 	<insert id="insertCmmnDetailCode">
-		    INSERT INTO COMTCCMMNDETAILCODE
+
+	        INSERT INTO COMTCCMMNDETAILCODE
 				(CODE_ID, CODE, CODE_NM, CODE_DC, USE_AT,
 				FRST_REGIST_PNTTM, FRST_REGISTER_ID, LAST_UPDT_PNTTM, LAST_UPDUSR_ID)
 			VALUES
@@ -77,8 +78,6 @@
 				USE_AT = #{useAt},
 				LAST_UPDT_PNTTM = sysdate(),
 				LAST_UPDUSR_ID = #{frstRegisterId}
-		   ]]>      
-		
 	</insert>
 
 	<update id="updateCmmnDetailCode">

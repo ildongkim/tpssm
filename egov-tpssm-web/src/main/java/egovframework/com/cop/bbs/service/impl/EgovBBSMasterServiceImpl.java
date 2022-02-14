@@ -62,10 +62,6 @@ public class EgovBBSMasterServiceImpl extends EgovAbstractServiceImpl implements
 	
 	@Override
 	public void insertBBSMasterInf(BoardMaster boardMaster) throws Exception {
-		
-		//게시판 ID 채번
-		String bbsId = idgenService.getNextStringId();
-		boardMaster.setBbsId(bbsId);
 		egovBBSMasterDao.insertBBSMasterInf(boardMaster);
 	}
 

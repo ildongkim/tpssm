@@ -303,7 +303,8 @@ public class MenuController {
 		modelAndView.setViewName("jsonView");
 		
 		ComDefaultVO comdefaultVO = new ComDefaultVO();
-    	List<?> menulist = progrmManageService.selectProgrmList(comdefaultVO);
+		comdefaultVO.setSearchKeyword(EgovStringUtil.isNullToString(commandMap.get("programFileName")));
+    	List<?> menulist = progrmManageService.selectProgrmMngList(comdefaultVO);
 		modelAndView.addObject(menulist);
 		
 		return modelAndView;
