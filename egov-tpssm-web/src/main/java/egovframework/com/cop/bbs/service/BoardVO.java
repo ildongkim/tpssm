@@ -50,6 +50,9 @@ public class BoardVO extends Board implements Serializable {
 
     /** 페이지사이즈 */
     private int pageSize = 10;
+    
+    /** 페이지사이즈 */
+    private int totalCount = 10;
 
     /** 첫페이지 인덱스 */
     private int firstIndex = 1;
@@ -288,6 +291,25 @@ public class BoardVO extends Board implements Serializable {
 	this.pageSize = pageSize;
     }
 
+    /**
+     * totalCount attribute를 리턴한다.
+     * 
+     * @return the totalCount
+     */
+    public int getTotalCount() {
+	return totalCount;
+    }
+
+    /**
+     * totalCount attribute 값을 설정한다.
+     * 
+     * @param totalCount
+     *            the totalCount to set
+     */
+    public void setTotalCount(int totalCount) {
+	this.totalCount = totalCount;
+    }
+    
     /**
      * firstIndex attribute를 리턴한다.
      * 

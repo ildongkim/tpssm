@@ -1,8 +1,6 @@
 package egovframework.com.cop.bbs.service.impl;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -48,16 +46,9 @@ public class EgovBBSMasterServiceImpl extends EgovAbstractServiceImpl implements
 	}
 
 	@Override
-	public Map<String, Object> selectBBSMasterInfs(BoardMasterVO boardMasterVO) {
-		List<?> result = egovBBSMasterDao.selectBBSMasterInfs(boardMasterVO);
-		int cnt = egovBBSMasterDao.selectBBSMasterInfsCnt(boardMasterVO);
-		
-		Map<String, Object> map = new HashMap<String, Object>();
-		
-		map.put("resultList", result);
-		map.put("resultCnt", Integer.toString(cnt));
-
-		return map;
+	public List<?> selectBBSMasterInfs(BoardMasterVO boardMasterVO) {
+		List<?> resutl = egovBBSMasterDao.selectBBSMasterInfs(boardMasterVO);
+		return resutl;
 	}
 	
 	@Override

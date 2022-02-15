@@ -166,7 +166,7 @@ function setViewSearch()  {
 	$('.wTable select').val('Y');
 	$('.wTable textarea').val('');
 	
-	//입력항목비활성처리
+	//입력항목처리
 	$("#progrmFileNm").attr("readonly",false);
 	
 	//그리드초기화처리

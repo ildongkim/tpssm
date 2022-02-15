@@ -35,12 +35,12 @@ let gridCodeDtl;
  ******************************************************** */
 $(document).ready(function() 
 {
-	//1.코드목록
+	//1.코드목록 그리드 설정
 	gridCode = new tui.Grid({
 		el: document.getElementById('gridCode'), // Container element
-		scrollX: false,
+		bodyHeight: 200, scrollX: false,
+		data: setGridData("<c:url value='/cmm/cmmnCodeList.do'/>"),
 		rowHeaders: ['rowNum'],
-		bodyHeight: 200,
 		columns: 
 		[
 			{header:'<spring:message code="comSymCcmCca.cmmnCodeVO.codeId" />',   name:'codeId', align:'center'},
@@ -50,8 +50,8 @@ $(document).ready(function()
 		]
 	});
 	
-	//2.코드목록의 현재 Row 선택을 위한 이벤트 설정
-	setGridEvent(gridCode);
+	//2.코드목록의 이벤트 설정
+	setGridEvent(gridCode, 'egovMapList');
 	
 	//3.코드목록의 Click 이벤트
 	gridCode.on('click', function (ev) {
@@ -63,9 +63,9 @@ $(document).ready(function()
 	//4.상세코드목록
 	gridCodeDtl = new tui.Grid({
 		el: document.getElementById('gridCodeDtl'), // Container element
-		scrollX: false,
+		bodyHeight: 200, scrollX: false,
+		data: setGridData("<c:url value='/cmm/cmmnCodeDtlList.do'/>"),
 		rowHeaders: ['rowNum'],
-		bodyHeight: 200,
 		columns: 
 		[
 			{header:'<spring:message code="comSymCcmCde.cmmnDetailCodeVO.code" />',   name:'code',   align:'center'},
@@ -74,7 +74,10 @@ $(document).ready(function()
 		]
 	});
 
-	//5.코드목록의 데이터검색
+	//5.상세코드목록의 이벤트 설정
+	setGridEvent(gridCodeDtl, 'egovMapList', false);
+	
+	//6.코드목록의 데이터검색
 	searchCodeList();
 });
 
@@ -83,39 +86,19 @@ $(document).ready(function()
  ******************************************************** */
 function searchCodeList() {
 	setViewSearch(); //화면처리
-	
-	$.ajax({
-		url : "<c:url value='/cmm/cmmnCodeList.do'/>",
-		method :"POST",
-		data : {
-				"searchCondition":$("#searchCondition option:selected").val(),
-				"searchKeyword":$("#searchKeyword").val(),
-			},
-		dataType : "JSON",
-		success : function(result){
-			if (result['egovMapList'] != null) {
-				gridCode.resetData(result['egovMapList']);
-			}
-		} 
-	});
+	const params = {
+		"searchCondition":$("#searchCondition option:selected").val(),
+		"searchKeyword":$("#searchKeyword").val()
+	};
+	gridCode.readData(1, params);
 }
 
 /* ********************************************************
  * 코드목록의 데이터검색 처리 함수
  ******************************************************** */
 function searchCodeDtlList(codeId) {
-	$.ajax({
-		url : "<c:url value='/cmm/cmmnCodeDtlList.do'/>",
-		method :"POST",
-		data : {"codeId":codeId},
-		dataType : "JSON",
-		success : function(result){
-			gridCodeDtl.clear();
-			if (result['egovMapList'] != null) {
-				gridCodeDtl.resetData(result['egovMapList']);
-			}
-		} 
-	});
+	const params = {"codeId":codeId};
+	gridCodeDtl.readData(1, params);
 }
 
 /* ********************************************************

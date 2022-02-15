@@ -51,36 +51,12 @@
 		<result property="bbsNm" column="BBS_NM"/>
 	</resultMap>	
 
-	<!-- Modify Script : Harry 2022-02-14  -->
-	<insert id="insertBBSMaster" parameterType="egovframework.com.cop.bbs.service.BoardMasterVO">
-		
-	    	INSERT INTO COMTNBBSMASTER
-				(BBS_ID, BBS_TY_CODE, BBS_NM, BBS_INTRCN, 
-				 REPLY_POSBL_AT, FILE_ATCH_POSBL_AT, ATCH_POSBL_FILE_NUMBER,
-				 TMPLAT_ID, USE_AT, CMMNTY_ID,
-				 FRST_REGISTER_ID, FRST_REGIST_PNTTM, BLOG_ID, BLOG_AT )
-			VALUES
-				( #{bbsId}, #{bbsTyCode}, #{bbsNm}, #{bbsIntrcn}, 
-				  #{replyPosblAt}, #{fileAtchPosblAt}, #{atchPosblFileNumber}, 
-				  #{tmplatId}, #{useAt}, #{cmmntyId}, #{frstRegisterId}, SYSDATE(), #{blogId}, #{blogAt}  
-				 )	
-			ON DUPLICATE KEY UPDATE
-				BBS_NM = #{bbsNm},
-				BBS_INTRCN = #{bbsIntrcn}, 
-				BBS_TY_CODE = #{bbsTyCode},
-				FILE_ATCH_POSBL_AT = #{fileAtchPosblAt},
-				ATCH_POSBL_FILE_NUMBER = #{atchPosblFileNumber},
-				TMPLAT_ID = #{tmplatId},		
-				LAST_UPDUSR_ID = #{frstRegisterId},
-				LAST_UPDT_PNTTM = SYSDATE(),
-				USE_AT = #{useAt}
-	</insert>
-	
+	<!-- Modify Script : Harry 2022-02-15  -->
 	<select id="selectBBSMasterList" parameterType="egovframework.com.cop.bbs.service.BoardMasterVO" resultMap="boardMasterList">
 		
 			SELECT 
-				a.BBS_ID, a.BBS_TY_CODE, b.CODE_NM as BBS_TY_CODE_NM,
-				a.BBS_NM, 
+				a.BBS_ID, a.BBS_NM, a.BBS_TY_CODE, b.CODE_NM as BBS_TY_CODE_NM,
+				a.BBS_INTRCN, a.REPLY_POSBL_AT, a.FILE_ATCH_POSBL_AT, a.ATCH_POSBL_FILE_NUMBER,
 				a.TMPLAT_ID, a.USE_AT, 
 				DATE_FORMAT(a.FRST_REGIST_PNTTM, '%Y-%m-%d') as FRST_REGIST_PNTTM,
 				d.USER_NM AS FRST_REGISTER_NM
@@ -94,19 +70,12 @@
 				(SELECT ESNTL_ID, USER_ID, USER_NM FROM COMVNUSERMASTER) d
 				ON a.FRST_REGISTER_ID = d.ESNTL_ID
 			WHERE 1=1
-			<if test='cmmntyId != null and cmmntyId != ""'>
-				AND	a.CMMNTY_ID = #{cmmntyId} 		
-			</if>
 			<if test="searchCnd == 0">AND
 					a.BBS_NM LIKE CONCAT ('%', #{searchWrd},'%') 		
 			</if>
 			<if test="searchCnd == 1">AND
 					a.BBS_INTRCN LIKE CONCAT ('%', #{searchWrd},'%') 		
 			</if>	
-					
-			ORDER BY a.FRST_REGIST_PNTTM DESC 
-			LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
-						
 	</select>
 	
 	<select id="selectBBSMasterListTotCnt" parameterType="egovframework.com.cop.bbs.service.BoardMasterVO" resultType="java.lang.Integer">
@@ -159,6 +128,31 @@
 						
 	</select>
 	
+	<!-- Modify Script : Harry 2022-02-14  -->
+	<insert id="insertBBSMaster" parameterType="egovframework.com.cop.bbs.service.BoardMasterVO">
+		
+	    	INSERT INTO COMTNBBSMASTER
+				(BBS_ID, BBS_TY_CODE, BBS_NM, BBS_INTRCN, 
+				 REPLY_POSBL_AT, FILE_ATCH_POSBL_AT, ATCH_POSBL_FILE_NUMBER,
+				 TMPLAT_ID, USE_AT, CMMNTY_ID,
+				 FRST_REGISTER_ID, FRST_REGIST_PNTTM, BLOG_ID, BLOG_AT )
+			VALUES
+				( #{bbsId}, #{bbsTyCode}, #{bbsNm}, #{bbsIntrcn}, 
+				  #{replyPosblAt}, #{fileAtchPosblAt}, #{atchPosblFileNumber}, 
+				  #{tmplatId}, #{useAt}, #{cmmntyId}, #{frstRegisterId}, SYSDATE(), #{blogId}, #{blogAt}  
+				 )	
+			ON DUPLICATE KEY UPDATE
+				BBS_NM = #{bbsNm},
+				BBS_INTRCN = #{bbsIntrcn}, 
+				BBS_TY_CODE = #{bbsTyCode},
+				FILE_ATCH_POSBL_AT = #{fileAtchPosblAt},
+				ATCH_POSBL_FILE_NUMBER = #{atchPosblFileNumber},
+				TMPLAT_ID = #{tmplatId},		
+				LAST_UPDUSR_ID = #{frstRegisterId},
+				LAST_UPDT_PNTTM = SYSDATE(),
+				USE_AT = #{useAt}
+	</insert>
+	
  	<update id="updateBBSMaster" parameterType="egovframework.com.cop.bbs.service.BoardMasterVO">
  		
 			UPDATE COMTNBBSMASTER SET 
@@ -175,14 +169,9 @@
  		
  	</update>
 
+ 	<!-- Modify Script : Harry 2022-02-14  -->
  	<update id="deleteBBSMaster" parameterType="egovframework.com.cop.bbs.service.BoardMasterVO">
- 		
-			UPDATE COMTNBBSMASTER SET 
-				USE_AT = 'N',
-				LAST_UPDUSR_ID = #{lastUpdusrId},
-				LAST_UPDT_PNTTM = SYSDATE()
-			WHERE BBS_ID = #{bbsId}
- 		
+			DELETE FROM COMTNBBSMASTER WHERE BBS_ID = #{bbsId}
  	</update>
 	
 	<select id="selectBlogMasterListTotCnt" parameterType="egovframework.com.cop.bbs.service.BoardMasterVO" resultType="java.lang.Integer">

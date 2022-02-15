@@ -4,7 +4,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="validator" uri="http://www.springmodules.org/tags/commons-validator" %>
-<c:set var="pageTitle"><spring:message code="comSymPrm.progrm.title"/></c:set>
+<c:set var="pageTitle"><spring:message code="comCopBbs.bbsmst.title"/></c:set>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -27,7 +27,7 @@
 </head>
 <script type="text/javascript">
 <!--
-let gridProgrm;
+let gridBBS;
 
 /* ********************************************************
  * document.ready 처리 함수
@@ -42,9 +42,9 @@ $(document).ready(function()
 		rowHeaders: ['rowNum'],
 		columns: 
 		[
-			{header:'<spring:message code="comCopBbs.boardMasterVO.list.bbsNm" />',      name:'bbsNm',      align:'center'},
-			{header:'<spring:message code="comCopBbs.boardMasterVO.list.bbsTyCode" />',  name:'bbsTyCode',  align:'center'},
-			{header:'<spring:message code="comCopBbs.boardMasterVO.list.useAt" />',      name:'useAt',      align:'center'}
+			{header:'<spring:message code="comCopBbs.boardMasterVO.list.bbsNm" />',        name:'bbsNm',        align:'center'},
+			{header:'<spring:message code="comCopBbs.boardMasterVO.list.bbsTyCode" />',    name:'bbsTyCodeNm',  align:'center'},
+			{header:'<spring:message code="comCopBbs.boardMasterVO.list.useAt" />',        name:'useAt',        align:'center'}
 		]
 	});
 	
@@ -52,9 +52,9 @@ $(document).ready(function()
 	setGridEvent(gridBBS);
 	
 	//3.게시판목록의 Click 이벤트
-	//gridBBS.on('click', function (ev) {
-	//	setBBSList(gridBBS.getRow(ev.rowKey), 1);
-	//});
+	gridBBS.on('click', function (ev) {
+		setBBSList(gridBBS.getRow(ev.rowKey));
+	});
 	
 	//4.게시판목록의 데이터검색
 	searchBBSList();
@@ -64,6 +64,9 @@ $(document).ready(function()
  * 게시판목록의 데이터검색 처리 함수
  ******************************************************** */
 function searchBBSList() {
+	//화면처리
+	setViewSearch();
+	
 	const bbsName = "";
 	$.ajax({
 		url : "<c:url value='/cmm/bbsmstinfs.do'/>",
@@ -71,7 +74,6 @@ function searchBBSList() {
 		data : {"bbsName":bbsName},
 		dataType : "JSON",
 		success : function(result){
-			console.log(result);
 			if (result['boardMasterVOList'] != null) {
 				gridBBS.resetData(result['boardMasterVOList']);
 			}
@@ -109,6 +111,81 @@ function insertBBSList(form) {
 	}
 }
 
+/* ********************************************************
+ * 게시판 삭제 처리 함수
+ ******************************************************** */
+function deleteBBSList(form) {
+	if(confirm("<spring:message code="common.delete.msg" />")){
+		$('.btn_b.save').css('pointer-events','none');
+		$.ajax({
+			url : "<c:url value='/cmm/bbsmstDelete.do'/>",
+			method :"POST",
+			data : $("#boardMasterVO").serialize(),
+			dataType : "JSON",
+			success : function(result) {
+				if (result['message'] != null) {
+					confirm(result['message']);	
+				} else {
+					searchBBSList();
+				}
+			},
+			error : function(xhr, status) {
+				confirm("<spring:message code='fail.common.delete' />");
+			},
+			complete : function() {
+				$('.btn_b.save').css('pointer-events','auto');
+			}
+		});
+	}
+}
+
+/* ********************************************************
+ * 폼입력 정보의 데이터바인딩 처리 함수
+ ******************************************************** */
+function setBBSList(data) {
+	if (data != null) {
+		document.boardMasterVO.bbsId.value=isNullToString(data["bbsId"]);
+		document.boardMasterVO.bbsNm.value=isNullToString(data["bbsNm"]);
+		document.boardMasterVO.bbsTyCode.value=isNullToString(data["bbsTyCode"]);
+		document.boardMasterVO.bbsIntrcn.value=isNullToString(data["bbsIntrcn"]);
+		document.boardMasterVO.fileAtchPosblAt.value=isNullToString(data["fileAtchPosblAt"]);
+		document.boardMasterVO.atchPosblFileNumber.value=isNullToString(data["atchPosblFileNumber"]);
+		document.boardMasterVO.replyPosblAt.value=isNullToString(data["replyPosblAt"]);
+		document.boardMasterVO.useAt.value=isNullToString(data["useAt"]);
+		$("#bbsId").attr("readonly",true);
+	}
+}
+
+/* ********************************************************
+ * 조회 후 화면처리
+ ******************************************************** */
+function setViewSearch() {
+	
+	//입력값공백처리
+	$('.wTable input').val('');
+	$('.wTable select').val('Y');
+	$('.wTable textarea').val('');
+	
+	//입력항목처리
+	$("#bbsId").attr("readonly",false);
+	
+	//그리드초기화처리
+	gridBBS.clear();
+}
+
+/* ********************************************************
+ * 신규버튼클릭 후 화면처리
+ ******************************************************** */
+function setViewNewClick() {
+	
+	//입력값공백처리
+	$('.wTable input').val('');
+	$('.wTable select').val('Y');
+	$('.wTable textarea').val('');
+	
+	//입력항목비활성처리
+	$("#bbsId").attr("readonly",false);
+}
 -->
 </script>
 <div id="border" style="width:730px">
@@ -127,7 +204,7 @@ function insertBBSList(form) {
 				</span>				
 			</li>
 			<li>
-				<span class="btn_b new" onclick="initlBBSList();">
+				<span class="btn_b new" onclick="setViewNewClick();">
 					<a href="#"><spring:message code="title.new" /></a>
 				</span>
 				<span class="btn_b save" onclick="insertBBSList(document.forms[0]); return false;">
@@ -187,7 +264,7 @@ function insertBBSList(form) {
 			<tr>
 				<th><spring:message code="comCopBbs.boardMasterVO.detail.bbsIntrcn" /> <span class="pilsu">*</span></th>
 				<td class="left">
-				<textarea name="bbsIntrcn" class="textarea"  cols="45" rows="8"  style="width:350px;" title="<spring:message code="comCopBbs.boardMasterVO.detail.atchPosblFileNumber" />"></textarea>
+				<textarea name="bbsIntrcn" class="textarea"  cols="45" rows="8"  style="width:350px;" title="<spring:message code="comCopBbs.boardMasterVO.detail.bbsIntrcn" />"></textarea>
 				</td>
 			</tr>
 			<tr>
@@ -202,7 +279,7 @@ function insertBBSList(form) {
 			<tr>
 				<th><spring:message code="comCopBbs.boardMasterVO.detail.atchPosblFileNumber" /></th>
 				<td width="70%" class="left">
-				<input name="fileAtchPosblAt" type="text" value=""  maxlength="100" title="<spring:message code="comCopBbs.boardMasterVO.detail.fileAtchPosblAt" />" style="width:190px"/>
+				<input name="atchPosblFileNumber" type="text" value=""  maxlength="100" title="<spring:message code="comCopBbs.boardMasterVO.detail.atchPosblFileNumber" />" style="width:190px"/>
 				</td>
 			</tr>
 			<tr>

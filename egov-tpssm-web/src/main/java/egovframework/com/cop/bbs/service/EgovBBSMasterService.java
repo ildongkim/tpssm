@@ -13,7 +13,7 @@ public interface EgovBBSMasterService {
 
 	BoardMasterVO selectBBSMasterInf(BoardMasterVO boardMasterVO) throws Exception;
 
-	Map<String, Object> selectBBSMasterInfs(BoardMasterVO boardMasterVO);
+	List<?> selectBBSMasterInfs(BoardMasterVO boardMasterVO);
 	
 	void insertBBSMasterInf(BoardMaster boardMaster) throws Exception;
 

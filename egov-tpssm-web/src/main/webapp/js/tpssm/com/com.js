@@ -60,19 +60,81 @@ tui.Grid.applyTheme('default', {
 /*********************************************************
  * TUI.GRID Event
  ******************************************************** */
-function setGridEvent(grid) {
-	var selectedRowKey = null;
-	grid.on('focusChange', function (ev) {
-		if (selectedRowKey != null) {
-			grid.removeRowClassName(selectedRowKey, 'currentRow');
-		}
-		selectedRowKey = ev.rowKey;
-		grid.addRowClassName(selectedRowKey, 'currentRow');
-	});
+function setGridEvent(grid, data, selected) {
+	if (selected==null||selected==true) {
+		var selectedRowKey = null;
+		grid.on('focusChange', function (ev) {
+			if (selectedRowKey != null) {
+				grid.removeRowClassName(selectedRowKey, 'currentRow');
+			}
+			selectedRowKey = ev.rowKey;
+			grid.addRowClassName(selectedRowKey, 'currentRow');
+		});
+		
+		grid.on('dblclick', function (ev) {
+			return;
+		});	
+	}
 	
-	grid.on('dblclick', function (ev) {
-		return;
-	});
+	if (data) {
+		//요청을 보내기 전 실행
+		grid.on('beforeRequest', function(ev) {
+			//grid.clear();
+		});
+	
+		//성공, 실패와 관계 없이 응답을 받았을 경우 실행
+		grid.on('response', function(ev) {
+			try {
+				var responseObj = JSON.parse(ev.xhr.response);
+				
+				console.log(responseObj['hashMap']['data']);
+				
+				grid.resetData(
+					responseObj['hashMap']['data']['contents'],
+					responseObj['hashMap']['data']['pagination']
+				);
+				
+				/*
+				grid.resetData(
+					responseObj['hashMap']['data']['contents'],
+					responseObj['hashMap']['data']['pagination']
+				);
+				*/
+				console.log(responseObj['hashMap']);
+				/*
+				if (responseObj.message) {
+					confirm(responseObj.message);	
+				} else {
+					grid.resetData(responseObj[data]);	
+				}*/
+			} catch (error) {
+				confirm("요청처리를 실패하였습니다.");
+			}
+		});	
+		
+		//gridNotice.on('successResponse', function(ev) {
+		//	console.log('결과가 true인 경우');
+		//});
+		//gridNotice.on('failResponse', function(ev) {
+		//	console.log('결과가 false인 경우');
+		//});
+		//gridNotice.on('errorResponse', function(ev) {
+		//	console.log('오류가 발생한 경우');
+		//});
+	}
+}
+
+/*********************************************************
+ * TUI.GRID datasource
+ ******************************************************** */
+function setGridData(url) {
+	var datasource = {
+		contentType: 'application/x-www-form-urlencoded',
+		api: { readData: { url: url, method: 'POST' } },
+		hideLoadingBar: true,
+		initialRequest: false 
+	};
+	return datasource;
 }
 
 /*********************************************************

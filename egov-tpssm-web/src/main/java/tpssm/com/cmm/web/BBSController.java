@@ -1,10 +1,14 @@
 package tpssm.com.cmm.web;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.h2.server.web.PageParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springmodules.validation.commons.DefaultBeanValidator;
 
@@ -25,7 +30,10 @@ import egovframework.com.cmm.service.EgovCmmUseService;
 import egovframework.com.cmm.util.EgovUserDetailsHelper;
 import egovframework.com.cop.bbs.service.BoardMaster;
 import egovframework.com.cop.bbs.service.BoardMasterVO;
+import egovframework.com.cop.bbs.service.BoardVO;
+import egovframework.com.cop.bbs.service.EgovArticleService;
 import egovframework.com.cop.bbs.service.EgovBBSMasterService;
+import egovframework.com.utl.fcc.service.EgovStringUtil;
 
 /**
  * 게시판 서비스를 처리하는 컨트롤러 클래스
@@ -59,6 +67,9 @@ public class BBSController {
     @Resource(name = "EgovBBSMasterService")
     private EgovBBSMasterService egovBBSMasterService;
     
+	@Resource(name = "EgovArticleService")
+	private EgovArticleService egovArticleService;
+	
     @Autowired
 	private DefaultBeanValidator beanValidator;
     
@@ -74,6 +85,11 @@ public class BBSController {
 		return "tpssm/com/cop/bbs/bbsmstmng";
 	}
 	
+	@RequestMapping("/cmm/noticemng.do")
+	public String noticeMng(ModelMap model) throws Exception  {
+		return "tpssm/com/cop/bbs/noticemng";
+	}
+	
     /**
      * 게시판 마스터 목록을 조회한다.
      * 
@@ -87,11 +103,12 @@ public class BBSController {
 		modelAndView.setViewName("jsonView");
 		
 		BoardMasterVO boardMasterVO = new BoardMasterVO();
+		boardMasterVO.setBbsId(EgovStringUtil.isNullToString(commandMap.get("bbsId")));
 		List<?> bbsMstList = egovBBSMasterService.selectBBSMasterInfs(boardMasterVO);
 		modelAndView.addObject(bbsMstList);
 		
 		return modelAndView;
-    }	
+    }
     
     /**
      * 게시판 정보를 저장한다.
@@ -102,7 +119,7 @@ public class BBSController {
      * @throws Exception
      */
     @PostMapping("/cmm/bbsmstInsert.do")
-    public ModelAndView bbsMasterInsert(
+    public ModelAndView insertBBSMaster(
     		@ModelAttribute("boardMaster") BoardMaster boardMaster,
     		BindingResult bindingResult) throws Exception {
     	ModelAndView modelAndView = new ModelAndView();
@@ -118,5 +135,54 @@ public class BBSController {
 		}
 		
 		return modelAndView;
-    }	
+    }
+    
+    /**
+     * 게시판 정보를 삭제 한다.
+     * @param boardMasterVO BoardMaster
+	 * @return result - List
+	 * @exception Exception
+     */
+    @RequestMapping(value="/cmm/bbsmstDelete.do")
+    public ModelAndView deleteBBSMaster(@ModelAttribute("boardMaster") BoardMaster boardMaster) throws Exception {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("jsonView");
+		egovBBSMasterService.deleteBBSMasterInf(boardMaster);
+    	return modelAndView;
+    }
+    
+    /**
+     * 공지사항 목록을 조회한다.
+     * 
+     * @param Map<String, Object>
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/cmm/noticeinfs.do")
+    public ModelAndView selectNoticeInfs(@RequestParam Map<String, Object> commandMap) throws Exception {
+    	ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("jsonView");
+		if ("BBS_NOTICE".equals(EgovStringUtil.isNullToString(commandMap.get("bbsId")))) {
+			BoardVO boardVO = new BoardVO();
+			boardVO.setBbsId(EgovStringUtil.isNullToString(commandMap.get("bbsId")));
+			List<?> noticeList = egovArticleService.selectNoticeArticleList(boardVO);
+			Map<String, Object> result = new HashMap<String, Object>();
+			Map<String, Object> result2 = new HashMap<String, Object>();
+			Map<String, Object> result3 = new HashMap<String, Object>();
+			Map<String, Object> result4 = new HashMap<String, Object>();
+			result4.put("page", Integer.parseInt(EgovStringUtil.isNullToString(commandMap.get("page"))));
+			result4.put("perPage", 5);
+			result4.put("totalCount", 100);
+			result3.put("pageState", result4);
+			result2.put("pagination", result3);
+			result2.put("contents", noticeList);
+			result.put("result", true);
+			result.put("data", result2);
+			modelAndView.addObject(result);
+		} else {
+			modelAndView.addObject("message", egovMessageSource.getMessage("fail.common.select"));
+		}
+		
+		return modelAndView;
+    }
 }
