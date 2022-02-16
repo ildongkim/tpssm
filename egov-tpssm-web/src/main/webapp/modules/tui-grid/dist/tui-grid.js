@@ -7262,12 +7262,14 @@ function updatePageOptions(_a, pageOptions, forceUpdatePage) {
     var data = _a.data;
     if (forceUpdatePage === void 0) { forceUpdatePage = false; }
     var orgPageOptions = data.pageOptions;
+    
     if (!common_1.isEmpty(orgPageOptions)) {
         // if infinite scrolling is applied, page number should be not reset to know the last loaded page
         if (!forceUpdatePage && data_1.isScrollPagination(data)) {
             delete pageOptions.page;
         }
         var newPageOptions = tslib_1.__assign(tslib_1.__assign({}, orgPageOptions), pageOptions);
+        
         if (!common_1.shallowEqual(newPageOptions, orgPageOptions)) {
             data.pageOptions = newPageOptions;
         }

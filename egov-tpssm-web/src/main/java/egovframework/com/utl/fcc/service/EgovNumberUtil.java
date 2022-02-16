@@ -213,4 +213,19 @@ public class EgovNumberUtil {
 			}
 		}
 	}
+	
+	/**
+	 * 객체가 null인지 확인하고 null인 경우 0 로 바꾸는 메서드
+	 * @param object 원본 객체
+	 * @return result 숫자
+	 */
+	public static int isNullToZero(Object object) {
+		int value = 0;
+
+		if (object != null) {
+			value = Integer.parseInt(object.toString().trim());
+		}
+
+		return value;
+	}
 }

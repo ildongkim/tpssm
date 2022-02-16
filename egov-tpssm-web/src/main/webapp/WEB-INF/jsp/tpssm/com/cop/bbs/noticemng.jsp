@@ -30,8 +30,6 @@
 <script type="text/javascript">
 <!--
 let gridNotice;
-let noticedata;
-let pagination;
 
 /* ********************************************************
  * document.ready 처리 함수
@@ -42,7 +40,7 @@ $(document).ready(function()
 	gridNotice = new tui.Grid({
 		el: document.getElementById('gridNotice'),
 		bodyHeight: 200, scrollX: false, scrollY: false,
-		data: setGridData("<c:url value='/cmm/noticeinfs.do'/>"),
+		data: setReadData("<c:url value='/cmm/noticeinfs.do'/>"),
 		rowHeaders: ['rowNum'],
 		pageOptions: {
 			perPage: 5,
@@ -58,17 +56,6 @@ $(document).ready(function()
 	
 	//2.공지사항목록의 이벤트 설정
 	setGridEvent(gridNotice, 'boardVOList');
-	
-// 	pagination = gridNotice.getPagination();
-// 	pagination.on('beforeMove', function (ev) {
-// 		console.log("beforeMove");
-// 		console.log(ev.page);
-// 	});
-	
-// 	pagination.on('afterMove', function (ev) {
-// 		console.log("afterMove");
-// 		console.log(ev.page);
-// 	});
 	
 	//3.게시판목록의 Click 이벤트
 	//gridNotice.on('click', function (ev) {
@@ -89,7 +76,6 @@ function searchNoticeList() {
 	const nttSj = "";
 	const params = {"bbsId":"BBS_NOTICE", "nttSj":nttSj};
 	gridNotice.readData(1, params);
-	//gridNotice.setPaginationTotalCount(10);
 }	
 
 -->

@@ -17,7 +17,7 @@ public interface EgovArticleService {
 
 	void deleteArticle(Board board) throws Exception;
 
-	List<BoardVO> selectNoticeArticleList(BoardVO boardVO);
+	Map<String, Object> selectNoticeArticleList(BoardVO boardVO);
 	
 	Map<String, Object> selectGuestArticleList(BoardVO vo);
 	

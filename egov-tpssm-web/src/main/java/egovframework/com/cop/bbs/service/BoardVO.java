@@ -43,14 +43,11 @@ public class BoardVO extends Board implements Serializable {
     private String searchUseYn = "";
 
     /** 현재페이지 */
-    private int pageIndex = 1;
+    private int page = 1;
 
     /** 페이지갯수 */
-    private int pageUnit = 10;
+    private int perPage = 10;
 
-    /** 페이지사이즈 */
-    private int pageSize = 10;
-    
     /** 페이지사이즈 */
     private int totalCount = 10;
 
@@ -235,60 +232,41 @@ public class BoardVO extends Board implements Serializable {
     }
 
     /**
-     * pageIndex attribute를 리턴한다.
+     * page attribute를 리턴한다.
      * 
-     * @return the pageIndex
+     * @return the page
      */
-    public int getPageIndex() {
-	return pageIndex;
+    public int getPage() {
+	return page;
     }
 
     /**
-     * pageIndex attribute 값을 설정한다.
+     * page attribute 값을 설정한다.
      * 
-     * @param pageIndex
-     *            the pageIndex to set
+     * @param page
+     *            the page to set
      */
-    public void setPageIndex(int pageIndex) {
-	this.pageIndex = pageIndex;
+    public void setPage(int page) {
+	this.page = page;
     }
 
     /**
-     * pageUnit attribute를 리턴한다.
+     * perPage attribute를 리턴한다.
      * 
-     * @return the pageUnit
+     * @return the perPage
      */
-    public int getPageUnit() {
-	return pageUnit;
+    public int getPerPage() {
+	return perPage;
     }
 
     /**
-     * pageUnit attribute 값을 설정한다.
+     * perPage attribute 값을 설정한다.
      * 
-     * @param pageUnit
-     *            the pageUnit to set
+     * @param perPage
+     *            the perPage to set
      */
-    public void setPageUnit(int pageUnit) {
-	this.pageUnit = pageUnit;
-    }
-
-    /**
-     * pageSize attribute를 리턴한다.
-     * 
-     * @return the pageSize
-     */
-    public int getPageSize() {
-	return pageSize;
-    }
-
-    /**
-     * pageSize attribute 값을 설정한다.
-     * 
-     * @param pageSize
-     *            the pageSize to set
-     */
-    public void setPageSize(int pageSize) {
-	this.pageSize = pageSize;
+    public void setPerPage(int perPage) {
+	this.perPage = perPage;
     }
 
     /**

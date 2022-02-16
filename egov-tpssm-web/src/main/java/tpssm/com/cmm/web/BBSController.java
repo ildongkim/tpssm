@@ -5,10 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import org.h2.server.web.PageParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +16,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springmodules.validation.commons.DefaultBeanValidator;
 
@@ -33,6 +29,7 @@ import egovframework.com.cop.bbs.service.BoardMasterVO;
 import egovframework.com.cop.bbs.service.BoardVO;
 import egovframework.com.cop.bbs.service.EgovArticleService;
 import egovframework.com.cop.bbs.service.EgovBBSMasterService;
+import egovframework.com.utl.fcc.service.EgovNumberUtil;
 import egovframework.com.utl.fcc.service.EgovStringUtil;
 
 /**
@@ -165,21 +162,12 @@ public class BBSController {
 		if ("BBS_NOTICE".equals(EgovStringUtil.isNullToString(commandMap.get("bbsId")))) {
 			BoardVO boardVO = new BoardVO();
 			boardVO.setBbsId(EgovStringUtil.isNullToString(commandMap.get("bbsId")));
-			List<?> noticeList = egovArticleService.selectNoticeArticleList(boardVO);
-			Map<String, Object> result = new HashMap<String, Object>();
-			Map<String, Object> result2 = new HashMap<String, Object>();
-			Map<String, Object> result3 = new HashMap<String, Object>();
-			Map<String, Object> result4 = new HashMap<String, Object>();
-			result4.put("page", Integer.parseInt(EgovStringUtil.isNullToString(commandMap.get("page"))));
-			result4.put("perPage", 5);
-			result4.put("totalCount", 100);
-			result3.put("pageState", result4);
-			result2.put("pagination", result3);
-			result2.put("contents", noticeList);
-			result.put("result", true);
-			result.put("data", result2);
-			modelAndView.addObject(result);
+			boardVO.setPage(EgovNumberUtil.isNullToZero(commandMap.get("page")));
+			boardVO.setPerPage(EgovNumberUtil.isNullToZero(commandMap.get("perPage")));
+			modelAndView.addObject("result", true);
+			modelAndView.addObject("data", egovArticleService.selectNoticeArticleList(boardVO));
 		} else {
+			modelAndView.addObject("result", false);
 			modelAndView.addObject("message", egovMessageSource.getMessage("fail.common.select"));
 		}
 		

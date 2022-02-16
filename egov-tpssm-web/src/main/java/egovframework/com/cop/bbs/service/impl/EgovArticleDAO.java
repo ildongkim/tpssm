@@ -1,6 +1,7 @@
 package egovframework.com.cop.bbs.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
@@ -49,8 +50,8 @@ public class EgovArticleDAO extends EgovComAbstractDAO {
 		
 	}
 
-	public List<BoardVO> selectNoticeArticleList(BoardVO boardVO) {
-		return (List<BoardVO>) list("BBSArticle.selectNoticeArticleList", boardVO);
+	public Map<String, Object> selectNoticeArticleList(BoardVO boardVO) {
+		return selectOne("BBSArticle.selectNoticeArticleList", boardVO);
 	}
 	
 	public List<?> selectGuestArticleList(BoardVO vo) {

@@ -39,7 +39,7 @@ $(document).ready(function()
 	gridCode = new tui.Grid({
 		el: document.getElementById('gridCode'), // Container element
 		bodyHeight: 200, scrollX: false,
-		data: setGridData("<c:url value='/cmm/cmmnCodeList.do'/>"),
+		data: setReadData("<c:url value='/cmm/cmmnCodeList.do'/>"),
 		rowHeaders: ['rowNum'],
 		columns: 
 		[
@@ -64,7 +64,7 @@ $(document).ready(function()
 	gridCodeDtl = new tui.Grid({
 		el: document.getElementById('gridCodeDtl'), // Container element
 		bodyHeight: 200, scrollX: false,
-		data: setGridData("<c:url value='/cmm/cmmnCodeDtlList.do'/>"),
+		data: setReadData("<c:url value='/cmm/cmmnCodeDtlList.do'/>"),
 		rowHeaders: ['rowNum'],
 		columns: 
 		[

@@ -101,7 +101,7 @@ public class EgovArticleServiceImpl extends EgovAbstractServiceImpl implements E
 	}
 
 	@Override
-	public List<BoardVO> selectNoticeArticleList(BoardVO boardVO) {
+	public Map<String, Object>  selectNoticeArticleList(BoardVO boardVO) {
 		return egovArticleDao.selectNoticeArticleList(boardVO);
 	}
 	

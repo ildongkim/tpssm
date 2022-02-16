@@ -86,39 +86,21 @@ function setGridEvent(grid, data, selected) {
 		grid.on('response', function(ev) {
 			try {
 				var responseObj = JSON.parse(ev.xhr.response);
-				
-				console.log(responseObj['hashMap']['data']);
-				
-				grid.resetData(
-					responseObj['hashMap']['data']['contents'],
-					responseObj['hashMap']['data']['pagination']
-				);
-				
-				/*
-				grid.resetData(
-					responseObj['hashMap']['data']['contents'],
-					responseObj['hashMap']['data']['pagination']
-				);
-				*/
-				console.log(responseObj['hashMap']);
-				/*
-				if (responseObj.message) {
-					confirm(responseObj.message);	
-				} else {
-					grid.resetData(responseObj[data]);	
-				}*/
+				if (responseObj.message) { confirm(responseObj.message); }
 			} catch (error) {
 				confirm("요청처리를 실패하였습니다.");
 			}
 		});	
 		
-		//gridNotice.on('successResponse', function(ev) {
+		//grid.on('successResponse', function(ev) {
 		//	console.log('결과가 true인 경우');
 		//});
-		//gridNotice.on('failResponse', function(ev) {
+		
+		//grid.on('failResponse', function(ev) {
 		//	console.log('결과가 false인 경우');
 		//});
-		//gridNotice.on('errorResponse', function(ev) {
+		
+		//grid.on('errorResponse', function(ev) {
 		//	console.log('오류가 발생한 경우');
 		//});
 	}
@@ -127,10 +109,72 @@ function setGridEvent(grid, data, selected) {
 /*********************************************************
  * TUI.GRID datasource
  ******************************************************** */
-function setGridData(url) {
+function setReadData(url) {
 	var datasource = {
 		contentType: 'application/x-www-form-urlencoded',
-		api: { readData: { url: url, method: 'POST' } },
+		api: { 
+			readData: { url: url, method: 'POST' }
+		},
+		hideLoadingBar: true,
+		initialRequest: false 
+	};
+	return datasource;
+}
+
+/*********************************************************
+ * TUI.GRID createData datasource
+ ******************************************************** */
+function setCreateData(url) {
+	var datasource = {
+		contentType: 'application/x-www-form-urlencoded',
+		api: { 
+			createData: { url: url, method: 'POST' }
+		},
+		hideLoadingBar: true,
+		initialRequest: false 
+	};
+	return datasource;
+}
+
+/*********************************************************
+ * TUI.GRID updateData datasource
+ ******************************************************** */
+function setUpdateData(url) {
+	var datasource = {
+		contentType: 'application/x-www-form-urlencoded',
+		api: { 
+			updateData: { url: url, method: 'POST' }
+		},
+		hideLoadingBar: true,
+		initialRequest: false 
+	};
+	return datasource;
+}
+
+/*********************************************************
+ * TUI.GRID deleteData datasource
+ ******************************************************** */
+function setDeleteData(url) {
+	var datasource = {
+		contentType: 'application/x-www-form-urlencoded',
+		api: { 
+			deleteData: { url: url, method: 'POST' }
+		},
+		hideLoadingBar: true,
+		initialRequest: false 
+	};
+	return datasource;
+}
+
+/*********************************************************
+ * TUI.GRID modifyData datasource
+ ******************************************************** */
+function setModifyData(url) {
+	var datasource = {
+		contentType: 'application/x-www-form-urlencoded',
+		api: { 
+			modifyData: { url: url, method: 'POST' }
+		},
 		hideLoadingBar: true,
 		initialRequest: false 
 	};
