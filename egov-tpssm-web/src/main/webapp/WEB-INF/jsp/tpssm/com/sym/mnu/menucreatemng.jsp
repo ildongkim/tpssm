@@ -40,6 +40,7 @@ $(document).ready(function()
 		el: document.getElementById('gridAuth'),
 		bodyHeight: 450, scrollX: false,
 		rowHeaders: ['rowNum'],
+		data: setReadData("<c:url value='/cmm/authmngList.do'/>"),
 		columns: 
 		[
 			{header:'<spring:message code="comCopSecRam.authorManageVO.authorCode" />', name:'authorCode', align:'center'},
@@ -80,18 +81,10 @@ $(document).ready(function()
  * 권한목록의 데이터검색 처리 함수
  ******************************************************** */
 function searchAuthList() {
-	const searchKeyword = "";
-	$.ajax({
-		url : "<c:url value='/cmm/authmngList.do'/>",
-		method :"POST",
-		data : {"searchKeyword":searchKeyword},
-		dataType : "JSON",
-		success : function(result){
-			if (result['authorManageVOList'] != null) {
-				gridAuth.resetData(result['authorManageVOList']);
-				gridMenu.clear();
-			}
-		} 
+	const params = {"searchKeyword":$("#searchKeyword").val()};
+	gridAuth.readData(1, params);
+	gridAuth.on('beforeRequest', function(ev) {
+		gridMenu.clear();
 	});
 }
 
@@ -155,7 +148,7 @@ function insertMenuCreatList() {
 		<ul>
 			<li><div style="line-height:4px;">&nbsp;</div><div><spring:message code="comCopSecRam.authorManageVO.authorNm" /> : </div></li>
 			<li>
-				<input class="s_input" name="searchKeyword" type="text" size="35" 
+				<input class="s_input" name="searchKeyword" id="searchKeyword" type="text" size="35" 
 					title="<spring:message code="title.search" /> <spring:message code="input.input" />" 
 					value='<c:out value="${searchVO.searchKeyword}"/>'  maxlength="155" >
 				<span class="btn_b" onclick="searchAuthList(); return false;">
