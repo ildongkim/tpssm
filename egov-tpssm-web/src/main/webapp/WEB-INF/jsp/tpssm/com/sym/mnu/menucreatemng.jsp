@@ -4,7 +4,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="validator" uri="http://www.springmodules.org/tags/commons-validator" %>
-<c:set var="pageTitle"><spring:message code="comSymMnuMcm.menu.title"/></c:set>
+<c:set var="pageTitle"><spring:message code="comSymMnuMcm.menuManageVO.title"/></c:set>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -14,10 +14,10 @@
 	<meta name="description" content="" />
 	<meta name="author" content="" />
     <title>${pageTitle}<spring:message code="title.list" /></title>
+    <link href="<c:url value="/css/egovframework/com/cmm/jqueryui.css"/>" rel="stylesheet" type="text/css">
     <link href="<c:url value='/modules/tui-grid/dist/tui-grid.min.css' />" rel="stylesheet" type="text/css">
     <link href="<c:url value="/css/egovframework/com/com.css"/>" rel="stylesheet" type="text/css">
     <link href="<c:url value="/css/egovframework/com/button.css"/>" rel="stylesheet" type="text/css">
-    <link href="<c:url value="/css/egovframework/com/cmm/jqueryui.css"/>" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/jquery.js'/>" ></script>
     <script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/jqueryui.js'/>" ></script>
     <script type="text/javascript" src="<c:url value='/modules/tui-grid/dist/tui-grid.js'/>" ></script>
@@ -37,15 +37,14 @@ $(document).ready(function()
 {
 	//1.권한목록
 	gridAuth = new tui.Grid({
-		el: document.getElementById('gridAuth'), // Container element
-		scrollX: false,
-		bodyHeight: 450,
+		el: document.getElementById('gridAuth'),
+		bodyHeight: 450, scrollX: false,
 		rowHeaders: ['rowNum'],
 		columns: 
 		[
-			{header:'<spring:message code="comCopSecRam.regist.authorCode" />',     name:'authorCode',    align:'center'},
-			{header:'<spring:message code="comCopSecRam.regist.authorNm" />',       name:'authorNm',      align:'center'},
-			{header:'<spring:message code="comCopSecRam.regist.authorDc" />',       name:'authorDc',      align:'center'}
+			{header:'<spring:message code="comCopSecRam.authorManageVO.authorCode" />', name:'authorCode', align:'center'},
+			{header:'<spring:message code="comCopSecRam.authorManageVO.authorNm" />',   name:'authorNm',   align:'center'},
+			{header:'<spring:message code="comCopSecRam.authorManageVO.authorDc" />',   name:'authorDc',   align:'center'}
 		]
 	});
 	
@@ -59,9 +58,8 @@ $(document).ready(function()
 	
 	//4.트리메뉴목록
 	gridMenu = new tui.Grid({
-		el: document.getElementById('gridUpperMenu'), // Container element
-		scrollX: false,
-		bodyHeight: 450,
+		el: document.getElementById('gridUpperMenu'),
+		bodyHeight: 450, scrollX: false,
 		rowHeaders: ['checkbox'],
 		treeColumnOptions: {
 			name: 'menuNm',
@@ -70,7 +68,7 @@ $(document).ready(function()
 		},
 		columns: 
 		[
-			{header:'<spring:message code="tpssmMnu.menuMng.menuNm" />', name:'menuNm'}
+			{header:'<spring:message code="comSymMnuMcm.menuManageVO.menuNm" />', name:'menuNm'}
 		]
 	});
 	
@@ -152,12 +150,14 @@ function insertMenuCreatList() {
 <form:form commandName="menuManageVO" name="menuManageVO" method="post">
 
 <div class="board">
-	<h1 style="background-position:left 3px"><spring:message code="comSymMnuMpm.menuList.pageTop.title" /></h1><!-- 메뉴 목록 -->
-	<div class="search_box" title="<spring:message code="common.searchCondition.msg" />"><!-- 이 레이아웃은 하단 정보를 대한 검색 정보로 구성되어 있습니다. -->
+	<h1 style="background-position:left 3px"><spring:message code="comSymMnuMcm.menuManageVO.pageTop.title" /></h1>
+	<div class="search_box" title="<spring:message code="common.searchCondition.msg" />">
 		<ul>
-			<li><div style="line-height:4px;">&nbsp;</div><div><spring:message code="comCopSecRam.list.searchKeywordText" /> : </div></li>
+			<li><div style="line-height:4px;">&nbsp;</div><div><spring:message code="comCopSecRam.authorManageVO.authorNm" /> : </div></li>
 			<li>
-				<input class="s_input" name="searchKeyword" type="text"  size="35" title="<spring:message code="title.search" /> <spring:message code="input.input" />" value='<c:out value="${searchVO.searchKeyword}"/>'  maxlength="155" >
+				<input class="s_input" name="searchKeyword" type="text" size="35" 
+					title="<spring:message code="title.search" /> <spring:message code="input.input" />" 
+					value='<c:out value="${searchVO.searchKeyword}"/>'  maxlength="155" >
 				<span class="btn_b" onclick="searchAuthList(); return false;">
 					<a href="#"><spring:message code="button.inquire" /></a>
 				</span>				

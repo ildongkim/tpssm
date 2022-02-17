@@ -4,7 +4,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="validator" uri="http://www.springmodules.org/tags/commons-validator" %>
-<c:set var="pageTitle"><spring:message code="comSymCcmCca.code.title"/></c:set>
+<c:set var="pageTitle"><spring:message code="comSymCcmCca.cmmnCodeVO.title"/></c:set>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -14,13 +14,13 @@
 	<meta name="description" content="" />
 	<meta name="author" content="" />
     <title>${pageTitle}<spring:message code="title.list" /></title>
+    <link href="<c:url value="/css/egovframework/com/cmm/jqueryui.css"/>" rel="stylesheet" type="text/css">
     <link href="<c:url value='/modules/tui-grid/dist/tui-grid.min.css' />" rel="stylesheet" type="text/css">
     <link href="<c:url value="/css/egovframework/com/com.css"/>" rel="stylesheet" type="text/css">
     <link href="<c:url value="/css/egovframework/com/button.css"/>" rel="stylesheet" type="text/css">
-    <link href="<c:url value="/css/egovframework/com/cmm/jqueryui.css"/>" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/jquery.js'/>" ></script>
     <script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/jqueryui.js'/>" ></script>
-    <script type="text/javascript" src="<c:url value='/modules/tui-grid/dist/tui-grid.min.js'/>" ></script>
+    <script type="text/javascript" src="<c:url value='/modules/tui-grid/dist/tui-grid.js'/>" ></script>
     <script type="text/javascript" src="<c:url value='/js/tpssm/com/com.js'/>" ></script>
     <script type="text/javascript" src="<c:url value="/cmm/init/validator.do"/>"></script>
     <validator:javascript formName="cmmnCodeVO" staticJavascript="false" xhtml="true" cdata="false"/>
@@ -37,35 +37,35 @@ $(document).ready(function()
 {
 	//1.코드목록 그리드 설정
 	gridCode = new tui.Grid({
-		el: document.getElementById('gridCode'), // Container element
+		el: document.getElementById('gridCode'),
 		bodyHeight: 200, scrollX: false,
-		data: setReadData("<c:url value='/cmm/cmmnCodeList.do'/>"),
 		rowHeaders: ['rowNum'],
+		data: setReadData("<c:url value='/cmm/cmmnCodeList.do'/>"),
 		columns: 
 		[
-			{header:'<spring:message code="comSymCcmCca.cmmnCodeVO.codeId" />',   name:'codeId', align:'center'},
-			{header:'<spring:message code="comSymCcmCca.cmmnCodeVO.codeIdNm" />',   name:'codeIdNm', align:'center'},
-			{header:'<spring:message code="comSymCcmCca.cmmnCodeVO.useAt" />',   name:'useAt', align:'center'},
+			{header:'<spring:message code="comSymCcmCca.cmmnCodeVO.codeId" />',          name:'codeId',        align:'center'},
+			{header:'<spring:message code="comSymCcmCca.cmmnCodeVO.codeIdNm" />',        name:'codeIdNm',      align:'center'},
+			{header:'<spring:message code="comSymCcmCca.cmmnCodeVO.useAt" />',           name:'useAt',         align:'center'},
 			{header:'<spring:message code="comSymCcmCca.cmmnCodeVO.lastUpdtPnttm" />',   name:'lastUpdtPnttm', align:'center'}
 		]
 	});
 	
 	//2.코드목록의 이벤트 설정
-	setGridEvent(gridCode, 'egovMapList');
+	setGridEvent(gridCode);
 	
 	//3.코드목록의 Click 이벤트
 	gridCode.on('click', function (ev) {
 		setViewCodeClick(); //화면처리
 		searchCodeDtlList(gridCode.getValue(ev.rowKey, 'codeId'));
-		setCodeList(gridCode.getRow(ev.rowKey), 1);
+		setCodeList(gridCode.getRow(ev.rowKey));
 	});
 	
 	//4.상세코드목록
 	gridCodeDtl = new tui.Grid({
-		el: document.getElementById('gridCodeDtl'), // Container element
+		el: document.getElementById('gridCodeDtl'),
 		bodyHeight: 200, scrollX: false,
-		data: setReadData("<c:url value='/cmm/cmmnCodeDtlList.do'/>"),
 		rowHeaders: ['rowNum'],
+		data: setReadData("<c:url value='/cmm/cmmnCodeDtlList.do'/>"),
 		columns: 
 		[
 			{header:'<spring:message code="comSymCcmCde.cmmnDetailCodeVO.code" />',   name:'code',   align:'center'},
@@ -74,10 +74,7 @@ $(document).ready(function()
 		]
 	});
 
-	//5.상세코드목록의 이벤트 설정
-	setGridEvent(gridCodeDtl, 'egovMapList', false);
-	
-	//6.코드목록의 데이터검색
+	//5.코드목록의 데이터검색
 	searchCodeList();
 });
 
@@ -162,7 +159,7 @@ function deleteCodeList(form) {
 /* ********************************************************
  * 폼입력 정보의 데이터바인딩 처리 함수
  ******************************************************** */
-function setCodeList(data, unit) {
+function setCodeList(data) {
 	if (data != null) {
 		document.cmmnCodeVO.codeId.value=isNullToString(data["codeId"]);
 		document.cmmnCodeVO.codeIdNm.value=isNullToString(data["codeIdNm"]);
@@ -222,15 +219,21 @@ function setViewNewClick()  {
 <form:form commandName="cmmnCodeVO" name="cmmnCodeVO" method="post">
 
 <div class="board">
-	<h1 style="background-position:left 3px"><spring:message code="comSymCcmCca.cmmnCodeVO.pageTop.title" /></h1><!-- 공통코드 -->
-	<div class="search_box" title="<spring:message code="common.searchCondition.msg" />"><!-- 이 레이아웃은 하단 정보를 대한 검색 정보로 구성되어 있습니다. -->
+	<h1 style="background-position:left 3px"><spring:message code="comSymCcmCca.cmmnCodeVO.pageTop.title" /></h1>
+	<div class="search_box" title="<spring:message code="common.searchCondition.msg" />">
 		<ul>
 			<li>
 				<select name="searchCondition" id="searchCondition" title="<spring:message code="title.searchCondition" />">
-					<option value="1"  <c:if test="${searchVO.searchCondition == '1'}">selected="selected"</c:if> ><spring:message code="comSymCcmCca.cmmnCodeVO.codeId" /></option><!-- 코드ID -->
-					<option value="2"  <c:if test="${searchVO.searchCondition == '2'}">selected="selected"</c:if> ><spring:message code="comSymCcmCca.cmmnCodeVO.codeIdNm" /></option><!-- 코드ID명 -->
+					<option value="1"  <c:if test="${searchVO.searchCondition == '1'}">selected="selected"</c:if> >
+						<spring:message code="comSymCcmCca.cmmnCodeVO.codeId" />
+					</option>
+					<option value="2"  <c:if test="${searchVO.searchCondition == '2'}">selected="selected"</c:if> >
+						<spring:message code="comSymCcmCca.cmmnCodeVO.codeIdNm" />
+					</option>
 				</select>
-				<input class="s_input" name="searchKeyword" id="searchKeyword" type="text"  size="35" title="<spring:message code="title.search" /> <spring:message code="input.input" />" value='<c:out value="${searchVO.searchKeyword}"/>'  maxlength="155" >
+				<input class="s_input" name="searchKeyword" id="searchKeyword" type="text" size="35" 
+					title="<spring:message code="title.search" /> <spring:message code="input.input" />" 
+					value='<c:out value="${searchVO.searchKeyword}"/>' maxlength="155">
 				<span class="btn_b" onclick="searchCodeList(); return false;">
 					<a href="#"><spring:message code="button.inquire" /></a>
 				</span>				
@@ -277,25 +280,25 @@ function setViewNewClick()  {
 				<col style="" />
 			</colgroup>
 			<tr>
-				<th><spring:message code="comSymCcmCca.cmmnCodeVO.codeId" /> <span class="pilsu">*</span></th><!-- 코드ID -->
+				<th><spring:message code="comSymCcmCca.cmmnCodeVO.codeId" /> <span class="pilsu">*</span></th>
 				<td class="left">
-				<input name="codeId" id="codeId" type="text" value=""  maxlength="10" title="<spring:message code="comSymCcmCca.cmmnCodeVO.codeId" />" style="width:190px"/>
+				<input name="codeId" id="codeId" type="text" maxlength="10" title="<spring:message code="comSymCcmCca.cmmnCodeVO.codeId" />" style="width:190px"/>
 				</td>
 			</tr>
 			<tr>
-				<th><spring:message code="comSymCcmCca.cmmnCodeVO.codeIdNm" /> <span class="pilsu">*</span></th><!-- 코드ID명 -->
+				<th><spring:message code="comSymCcmCca.cmmnCodeVO.codeIdNm" /> <span class="pilsu">*</span></th>
 				<td class="left">
-				<input name="codeIdNm" type="text" value=""  maxlength="10" title="<spring:message code="comSymCcmCca.cmmnCodeVO.codeIdNm" />" style="width:190px"/>
+				<input name="codeIdNm" type="text" maxlength="10" title="<spring:message code="comSymCcmCca.cmmnCodeVO.codeIdNm" />" style="width:190px"/>
 				</td>
 			</tr>
 			<tr>
-				<th><spring:message code="comSymCcmCca.cmmnCodeVO.codeIdDc" /></th><!-- 코드ID설명 -->
+				<th><spring:message code="comSymCcmCca.cmmnCodeVO.codeIdDc" /></th>
 				<td width="70%" class="left">
-				<textarea name="codeIdDc" class="textarea"  cols="45" rows="8"  style="width:350px;" title="<spring:message code="comSymCcmCca.cmmnCodeVO.codeIdDc" />"></textarea>
+				<textarea name="codeIdDc" class="textarea" cols="45" rows="8" style="width:350px;" title="<spring:message code="comSymCcmCca.cmmnCodeVO.codeIdDc" />"></textarea>
 				</td>
 			</tr>
 			<tr>
-				<th><spring:message code="comSymCcmCca.cmmnCodeVO.useAt" /></th><!-- 사용여부 -->
+				<th><spring:message code="comSymCcmCca.cmmnCodeVO.useAt" /></th>
 				<td width="70%" class="left">
 				<select name="useAt" title="<spring:message code="input.input" />" >
 					<option value="Y"  label="<spring:message code="input.yes" />"/>

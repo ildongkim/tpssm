@@ -2,11 +2,11 @@ package egovframework.com.sec.ram.service.impl;
 
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
+import egovframework.com.cmm.ComDefaultVO;
 import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 import egovframework.com.sec.ram.service.AuthorManage;
-import egovframework.com.sec.ram.service.AuthorManageVO;
-
-import org.springframework.stereotype.Repository;
 
 /**
  * 권한관리에 대한 DAO 클래스를 정의한다.
@@ -34,9 +34,8 @@ public class AuthorManageDAO extends EgovComAbstractDAO {
 	 * @return List<AuthorManageVO>
 	 * @exception Exception
 	 */
-    @SuppressWarnings("unchecked")
-	public List<AuthorManageVO> selectAuthorList(AuthorManageVO authorManageVO) throws Exception {
-        return (List<AuthorManageVO>) list("authorManageDAO.selectAuthorList", authorManageVO);
+	public List<?> selectAuthorList(ComDefaultVO searchVO) throws Exception {
+        return list("authorManageDAO.selectAuthorList", searchVO);
     }
 	
 	/**
@@ -49,51 +48,11 @@ public class AuthorManageDAO extends EgovComAbstractDAO {
     }
 
     /**
-	 * 권한을 수정한다.
-	 * @param authorManage AuthorManage
-	 * @exception Exception
-	 */
-    public void updateAuthor(AuthorManage authorManage) throws Exception {
-        update("authorManageDAO.updateAuthor", authorManage);
-    }
-
-    /**
 	 * 권한을 삭제한다.
 	 * @param authorManage AuthorManage
 	 * @exception Exception
 	 */
     public void deleteAuthor(AuthorManage authorManage) throws Exception {
         delete("authorManageDAO.deleteAuthor", authorManage);
-    }
-
-    /**
-	 * 권한을 조회한다.
-	 * @param authorManageVO AuthorManageVO
-	 * @return AuthorManageVO
-	 * @exception Exception
-	 */
-    public AuthorManageVO selectAuthor(AuthorManageVO authorManageVO) throws Exception {
-        return (AuthorManageVO) selectOne("authorManageDAO.selectAuthor", authorManageVO);
-    }
-
-    /**
-	 * 권한목록 총 갯수를 조회한다.
-	 * @param authorManageVO AuthorManageVO
-	 * @return int
-	 * @exception Exception
-	 */
-    public int selectAuthorListTotCnt(AuthorManageVO authorManageVO)  throws Exception {
-        return (Integer)selectOne("authorManageDAO.selectAuthorListTotCnt", authorManageVO);
-    }
-    
-    /**
-	 * 모든 권한목록을 조회한다.
-	 * @param authorManageVO AuthorManageVO
-	 * @return List<AuthorManageVO>
-	 * @exception Exception
-	 */
-    @SuppressWarnings("unchecked")
-	public List<AuthorManageVO> selectAuthorAllList(AuthorManageVO authorManageVO) throws Exception {
-        return (List<AuthorManageVO>) list("authorManageDAO.selectAuthorAllList", authorManageVO);
-    }    
+    }  
 }

@@ -4,7 +4,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="validator" uri="http://www.springmodules.org/tags/commons-validator" %>
-<c:set var="pageTitle"><spring:message code="comCopBbs.bbsmst.title"/></c:set>
+<c:set var="pageTitle"><spring:message code="comCopBbs.boardMasterVO.title"/></c:set>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -14,13 +14,13 @@
 	<meta name="description" content="" />
 	<meta name="author" content="" />
     <title>${pageTitle}<spring:message code="title.list" /></title>
+    <link href="<c:url value="/css/egovframework/com/cmm/jqueryui.css"/>" rel="stylesheet" type="text/css">
     <link href="<c:url value='/modules/tui-grid/dist/tui-grid.min.css' />" rel="stylesheet" type="text/css">
     <link href="<c:url value="/css/egovframework/com/com.css"/>" rel="stylesheet" type="text/css">
     <link href="<c:url value="/css/egovframework/com/button.css"/>" rel="stylesheet" type="text/css">
-    <link href="<c:url value="/css/egovframework/com/cmm/jqueryui.css"/>" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/jquery.js'/>" ></script>
     <script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/jqueryui.js'/>" ></script>
-    <script type="text/javascript" src="<c:url value='/modules/tui-grid/dist/tui-grid.min.js'/>" ></script>
+    <script type="text/javascript" src="<c:url value='/modules/tui-grid/dist/tui-grid.js'/>" ></script>
     <script type="text/javascript" src="<c:url value='/js/tpssm/com/com.js'/>" ></script>
     <script type="text/javascript" src="<c:url value="/cmm/init/validator.do"/>"></script>
     <validator:javascript formName="boardMasterVO" staticJavascript="false" xhtml="true" cdata="false"/>
@@ -37,14 +37,14 @@ $(document).ready(function()
 	//1.게시판목록
 	gridBBS = new tui.Grid({
 		el: document.getElementById('gridBBS'), // Container element
-		scrollX: false,
-		bodyHeight: 150,
+		bodyHeight: 150, scrollX: false,
 		rowHeaders: ['rowNum'],
+		data: setReadData("<c:url value='/cmm/bbsmstinfs.do'/>"),
 		columns: 
 		[
-			{header:'<spring:message code="comCopBbs.boardMasterVO.list.bbsNm" />',        name:'bbsNm',        align:'center'},
-			{header:'<spring:message code="comCopBbs.boardMasterVO.list.bbsTyCode" />',    name:'bbsTyCodeNm',  align:'center'},
-			{header:'<spring:message code="comCopBbs.boardMasterVO.list.useAt" />',        name:'useAt',        align:'center'}
+			{header:'<spring:message code="comCopBbs.boardMasterVO.bbsNm" />',        name:'bbsNm',        align:'center'},
+			{header:'<spring:message code="comCopBbs.boardMasterVO.bbsTyCode" />',    name:'bbsTyCodeNm',  align:'center'},
+			{header:'<spring:message code="comCopBbs.boardMasterVO.useAt" />',        name:'useAt',        align:'center'}
 		]
 	});
 	
@@ -66,19 +66,8 @@ $(document).ready(function()
 function searchBBSList() {
 	//화면처리
 	setViewSearch();
-	
-	const bbsName = "";
-	$.ajax({
-		url : "<c:url value='/cmm/bbsmstinfs.do'/>",
-		method :"POST",
-		data : {"bbsName":bbsName},
-		dataType : "JSON",
-		success : function(result){
-			if (result['boardMasterVOList'] != null) {
-				gridBBS.resetData(result['boardMasterVOList']);
-			}
-		} 
-	});
+	const params = {"searchKeyword":$("#searchKeyword").val()};
+	gridBBS.readData(1, params);
 }
 
 /* ********************************************************
@@ -162,7 +151,8 @@ function setBBSList(data) {
 function setViewSearch() {
 	
 	//입력값공백처리
-	$('.wTable input').val('');
+	$('.wTable input[type=text]').val('');
+	$('.wTable input[type=number]').val(0);
 	$('.wTable select').val('Y');
 	$('.wTable textarea').val('');
 	
@@ -179,7 +169,8 @@ function setViewSearch() {
 function setViewNewClick() {
 	
 	//입력값공백처리
-	$('.wTable input').val('');
+	$('.wTable input[type=text]').val('');
+	$('.wTable input[type=number]').val(0);
 	$('.wTable select').val('Y');
 	$('.wTable textarea').val('');
 	
@@ -193,12 +184,14 @@ function setViewNewClick() {
 <form:form commandName="boardMasterVO" name="boardMasterVO" id="boardMasterVO" method="post">
 
 <div class="board">
-	<h1 style="background-position:left 3px"><spring:message code="comCopBbs.boardMasterVO.title" /></h1>
+	<h1 style="background-position:left 3px"><spring:message code="comCopBbs.boardMasterVO.pageTop.title" /></h1>
 	<div class="search_box" title="<spring:message code="common.searchCondition.msg" />"><!-- 이 레이아웃은 하단 정보를 대한 검색 정보로 구성되어 있습니다. -->
 		<ul>
-			<li><div style="line-height:4px;">&nbsp;</div><div><spring:message code="comCopBbs.boardMasterVO.detail.bbsNm" /> : </div></li>
+			<li><div style="line-height:4px;">&nbsp;</div><div><spring:message code="comCopBbs.boardMasterVO.bbsNm" /> : </div></li>
 			<li>
-				<input class="s_input" name="searchKeyword" type="text"  size="35" title="<spring:message code="title.search" /> <spring:message code="input.input" />" value='<c:out value="${searchVO.searchKeyword}"/>'  maxlength="155" >
+				<input class="s_input" name="searchKeyword" id="searchKeyword" type="text" size="35" 
+				title="<spring:message code="title.search" /> <spring:message code="input.input" />" 
+				value='<c:out value="${searchVO.searchKeyword}"/>'  maxlength="155" >
 				<span class="btn_b" onclick="searchBBSList(); return false;">
 					<a href="#"><spring:message code="button.inquire" /></a>
 				</span>				
@@ -240,19 +233,19 @@ function setViewNewClick() {
 				<col style="" />
 			</colgroup>
 			<tr>
-				<th><spring:message code="comCopBbs.boardMasterVO.detail.bbsId" /> <span class="pilsu">*</span></th>
+				<th><spring:message code="comCopBbs.boardMasterVO.bbsId" /> <span class="pilsu">*</span></th>
 				<td class="left">
-				<input name="bbsId" id="bbsId" type="text" value=""  maxlength="20" title="<spring:message code="comCopBbs.boardMasterVO.detail.bbsId" />" style="width:190px"/>
+				<input name="bbsId" id="bbsId" type="text" maxlength="20" title="<spring:message code="comCopBbs.boardMasterVO.bbsId" />" style="width:190px"/>
 				</td>
 			</tr>
 			<tr>
-				<th><spring:message code="comCopBbs.boardMasterVO.detail.bbsNm" /> <span class="pilsu">*</span></th>
+				<th><spring:message code="comCopBbs.boardMasterVO.bbsNm" /> <span class="pilsu">*</span></th>
 				<td class="left">
-				<input name="bbsNm" type="text" value=""  maxlength="50" title="<spring:message code="comCopBbs.boardMasterVO.detail.bbsNm" />" style="width:190px"/>
+				<input name="bbsNm" type="text" maxlength="50" title="<spring:message code="comCopBbs.boardMasterVO.bbsNm" />" style="width:190px"/>
 				</td>
 			</tr>
 			<tr>
-				<th><spring:message code="comCopBbs.boardMasterVO.detail.bbsTyCode" /></th>
+				<th><spring:message code="comCopBbs.boardMasterVO.bbsTyCode" /> <span class="pilsu">*</span></th>
 				<td width="70%" class="left">
 				<select name="bbsTyCode" title="<spring:message code="input.input" />" >
 					<c:forEach var="bbsTyCode" items="${bbsTyCode}">
@@ -262,41 +255,41 @@ function setViewNewClick() {
 				</td>
 			</tr>
 			<tr>
-				<th><spring:message code="comCopBbs.boardMasterVO.detail.bbsIntrcn" /> <span class="pilsu">*</span></th>
+				<th><spring:message code="comCopBbs.boardMasterVO.bbsIntrcn" /> <span class="pilsu">*</span></th>
 				<td class="left">
-				<textarea name="bbsIntrcn" class="textarea"  cols="45" rows="8"  style="width:350px;" title="<spring:message code="comCopBbs.boardMasterVO.detail.bbsIntrcn" />"></textarea>
+				<textarea name="bbsIntrcn" class="textarea" cols="45" rows="8" style="width:350px;" title="<spring:message code="comCopBbs.boardMasterVO.bbsIntrcn" />"></textarea>
 				</td>
 			</tr>
 			<tr>
-				<th><spring:message code="comCopBbs.boardMasterVO.detail.fileAtchPosblAt" /></th>
+				<th><spring:message code="comCopBbs.boardMasterVO.fileAtchPosblAt" /></th>
 				<td width="70%" class="left">
 				<select name="fileAtchPosblAt" title="<spring:message code="input.input" />" >
-					<option value="Y"  label="<spring:message code="input.yes" />"/>
-					<option value="N"  label="<spring:message code="input.no" />"/>
+					<option value="Y" label="<spring:message code="input.yes" />"/>
+					<option value="N" label="<spring:message code="input.no" />"/>
 				</select>
 				</td>
 			</tr>
 			<tr>
-				<th><spring:message code="comCopBbs.boardMasterVO.detail.atchPosblFileNumber" /></th>
+				<th><spring:message code="comCopBbs.boardMasterVO.atchPosblFileNumber" /></th>
 				<td width="70%" class="left">
-				<input name="atchPosblFileNumber" type="text" value=""  maxlength="100" title="<spring:message code="comCopBbs.boardMasterVO.detail.atchPosblFileNumber" />" style="width:190px"/>
+				<input name="atchPosblFileNumber" type="number" min=0 max=5 step=1 maxlength="1" title="<spring:message code="comCopBbs.boardMasterVO.atchPosblFileNumber" />" style="width:190px"/>
 				</td>
 			</tr>
 			<tr>
-				<th><spring:message code="comCopBbs.boardMasterVO.detail.replyPosblAt" /></th>
+				<th><spring:message code="comCopBbs.boardMasterVO.replyPosblAt" /></th>
 				<td width="70%" class="left">
 				<select name="replyPosblAt" title="<spring:message code="input.input" />" >
-					<option value="Y"  label="<spring:message code="input.yes" />"/>
-					<option value="N"  label="<spring:message code="input.no" />"/>
+					<option value="Y" label="<spring:message code="input.yes" />"/>
+					<option value="N" label="<spring:message code="input.no" />"/>
 				</select>
 				</td>
-			</tr>				
+			</tr>
 			<tr>
-				<th><spring:message code="comCopBbs.boardMasterVO.detail.useAt" /></th><!-- 사용여부 -->
+				<th><spring:message code="comCopBbs.boardMasterVO.useAt" /></th><!-- 사용여부 -->
 				<td width="70%" class="left">
 				<select name="useAt" title="<spring:message code="input.input" />" >
-					<option value="Y"  label="<spring:message code="input.yes" />"/>
-					<option value="N"  label="<spring:message code="input.no" />"/>
+					<option value="Y" label="<spring:message code="input.yes" />"/>
+					<option value="N" label="<spring:message code="input.no" />"/>
 				</select>
 				</td>
 			</tr>

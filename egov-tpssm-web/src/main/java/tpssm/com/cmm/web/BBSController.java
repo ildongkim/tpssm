@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springmodules.validation.commons.DefaultBeanValidator;
 
 import egovframework.com.cmm.ComDefaultCodeVO;
+import egovframework.com.cmm.ComDefaultVO;
 import egovframework.com.cmm.EgovMessageSource;
 import egovframework.com.cmm.LoginVO;
 import egovframework.com.cmm.service.EgovCmmUseService;
@@ -29,8 +30,10 @@ import egovframework.com.cop.bbs.service.BoardMasterVO;
 import egovframework.com.cop.bbs.service.BoardVO;
 import egovframework.com.cop.bbs.service.EgovArticleService;
 import egovframework.com.cop.bbs.service.EgovBBSMasterService;
+import egovframework.com.sym.ccm.cca.service.CmmnCodeVO;
 import egovframework.com.utl.fcc.service.EgovNumberUtil;
 import egovframework.com.utl.fcc.service.EgovStringUtil;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
 
 /**
  * 게시판 서비스를 처리하는 컨트롤러 클래스
@@ -99,10 +102,13 @@ public class BBSController {
     	ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("jsonView");
 		
-		BoardMasterVO boardMasterVO = new BoardMasterVO();
-		boardMasterVO.setBbsId(EgovStringUtil.isNullToString(commandMap.get("bbsId")));
-		List<?> bbsMstList = egovBBSMasterService.selectBBSMasterInfs(boardMasterVO);
-		modelAndView.addObject(bbsMstList);
+		ComDefaultVO searchVO = new ComDefaultVO();
+		searchVO.setSearchKeyword(EgovStringUtil.isNullToString(commandMap.get("searchKeyword")));
+		
+		EgovMap contents = new EgovMap();
+		contents.put("contents", egovBBSMasterService.selectBBSMasterInfs(searchVO));
+		modelAndView.addObject("data", contents);
+		modelAndView.addObject("result", true);
 		
 		return modelAndView;
     }
@@ -117,18 +123,18 @@ public class BBSController {
      */
     @PostMapping("/cmm/bbsmstInsert.do")
     public ModelAndView insertBBSMaster(
-    		@ModelAttribute("boardMaster") BoardMaster boardMaster,
+    		@ModelAttribute("boardMasterVO") BoardMasterVO boardMasterVO,
     		BindingResult bindingResult) throws Exception {
     	ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("jsonView");
 		
-    	beanValidator.validate(boardMaster, bindingResult); //validation 수행
+    	beanValidator.validate(boardMasterVO, bindingResult); //validation 수행
 		if (bindingResult.hasErrors()) { 
 			modelAndView.addObject("message", egovMessageSource.getMessage("fail.common.save"));
 		} else {
 	    	LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
-	    	boardMaster.setFrstRegisterId((user == null || user.getUniqId() == null) ? "" : user.getUniqId());
-	    	egovBBSMasterService.insertBBSMasterInf(boardMaster);
+	    	boardMasterVO.setFrstRegisterId((user == null || user.getUniqId() == null) ? "" : user.getUniqId());
+	    	egovBBSMasterService.insertBBSMasterInf(boardMasterVO);
 		}
 		
 		return modelAndView;
@@ -141,10 +147,10 @@ public class BBSController {
 	 * @exception Exception
      */
     @RequestMapping(value="/cmm/bbsmstDelete.do")
-    public ModelAndView deleteBBSMaster(@ModelAttribute("boardMaster") BoardMaster boardMaster) throws Exception {
+    public ModelAndView deleteBBSMaster(@ModelAttribute("boardMasterVO") BoardMasterVO boardMasterVO) throws Exception {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("jsonView");
-		egovBBSMasterService.deleteBBSMasterInf(boardMaster);
+		egovBBSMasterService.deleteBBSMasterInf(boardMasterVO);
     	return modelAndView;
     }
     
@@ -164,6 +170,7 @@ public class BBSController {
 			boardVO.setBbsId(EgovStringUtil.isNullToString(commandMap.get("bbsId")));
 			boardVO.setPage(EgovNumberUtil.isNullToZero(commandMap.get("page")));
 			boardVO.setPerPage(EgovNumberUtil.isNullToZero(commandMap.get("perPage")));
+			boardVO.setSearchWrd(EgovStringUtil.isNullToString(commandMap.get("searchKeyword")));
 			modelAndView.addObject("result", true);
 			modelAndView.addObject("data", egovArticleService.selectNoticeArticleList(boardVO));
 		} else {

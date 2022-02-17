@@ -9344,6 +9344,7 @@ function handleReadyStateChange(xhr, options) {
     if (gridEvent.isStopped()) {
         return;
     }
+    gridEvent = new gridEvent_1.default({ xhr: xhr }); //Add Script : Harry 2022-02-17
     if (xhr.status === 200) {
         var response = JSON.parse(xhr.responseText);
         if (response.result) {

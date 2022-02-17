@@ -3,33 +3,21 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="authorManageDAO">
 
-    <resultMap id="author" type="egovframework.com.sec.ram.service.AuthorManageVO">
-        <result property="authorCode" column="AUTHOR_CODE"/>
-        <result property="authorNm" column="AUTHOR_NM"/>
-        <result property="authorDc" column="AUTHOR_DC"/>
-        <result property="authorCreatDe" column="AUTHOR_CREAT_DE"/>
-    </resultMap>
-
-    <select id="selectAuthorList" parameterType="egovframework.com.sec.ram.service.AuthorManageVO" resultMap="author">
-            SELECT
-                   AUTHOR_CODE, AUTHOR_NM, AUTHOR_DC, AUTHOR_CREAT_DE, USE_AT
+    <select id="selectAuthorList" parameterType="comDefaultVO" resultType="egovMap">
+        
+            SELECT AUTHOR_CODE, AUTHOR_NM, AUTHOR_DC, AUTHOR_CREAT_DE, USE_AT
               FROM COMTNAUTHORINFO
-             WHERE 1=1
-            <if test="searchCondition == 1">AND
-                AUTHOR_NM LIKE CONCAT('%' , #{searchKeyword}, '%')
-            </if>
-            ORDER BY AUTHOR_CREAT_DE DESC
-            LIMIT #{recordCountPerPage} OFFSET #{firstIndex}      
+             WHERE AUTHOR_NM LIKE CONCAT('%' , #{searchKeyword}, '%')
+             ORDER BY AUTHOR_CREAT_DE DESC
     </select>
 
-	<!-- Modify Script : Harry 2022-02-12  -->
-    <insert id="insertAuthor" parameterType="egovframework.com.sec.ram.service.AuthorManage">
+    <insert id="insertAuthor">
         
 			INSERT INTO COMTNAUTHORINFO 
 				(AUTHOR_CODE, AUTHOR_NM, AUTHOR_DC, AUTHOR_CREAT_DE, USE_AT,
 				FRST_REGIST_PNTTM, FRST_REGISTER_ID, LAST_UPDT_PNTTM, LAST_UPDUSR_ID)
 			VALUES 
-				(#{authorCode}, #{authorNm}, #{authorDc}, SYSDATETIME, #{useAt}, 
+				(#{authorCode}, #{authorNm}, #{authorDc}, sysdate(), #{useAt}, 
 				sysdate(), #{registerId}, sysdate(), #{registerId})
 			ON DUPLICATE KEY UPDATE
 				AUTHOR_NM = #{authorNm},
@@ -39,40 +27,8 @@
 				LAST_UPDT_PNTTM = sysdate(), 
 				LAST_UPDUSR_ID = #{registerId}
     </insert>
-
-    <update id="updateAuthor" parameterType="egovframework.com.sec.ram.service.AuthorManage">
-        
-            UPDATE COMTNAUTHORINFO 
-               SET AUTHOR_NM=#{authorNm}
-                 , AUTHOR_DC=#{authorDc}
-             WHERE AUTHOR_CODE=#{authorCode}
-        
-    </update>
     
     <delete id="deleteAuthor">
             DELETE FROM COMTNAUTHORINFO WHERE AUTHOR_CODE=#{authorCode}
     </delete>
-    
-    <select id="selectAuthor" resultMap="author">
-        
-            SELECT AUTHOR_CODE, AUTHOR_NM, AUTHOR_DC, AUTHOR_CREAT_DE
-              FROM COMTNAUTHORINFO 
-             WHERE AUTHOR_CODE=#{authorCode}
-        
-    </select>
-    
-    <select id="selectAuthorListTotCnt" parameterType="egovframework.com.sec.ram.service.AuthorManageVO" resultType="int">
-            SELECT COUNT(*) totcnt
-            FROM COMTNAUTHORINFO
-            WHERE 1=1
-            <if test="searchCondition == 1">AND
-                AUTHOR_NM LIKE CONCAT('%' , #{searchKeyword}, '%')
-            </if> 
-    </select>
-    
-    <select id="selectAuthorAllList" parameterType="egovframework.com.sec.ram.service.AuthorManageVO" resultMap="author">
-            SELECT
-                   AUTHOR_CODE, AUTHOR_NM, AUTHOR_DC, AUTHOR_CREAT_DE
-              FROM COMTNAUTHORINFO
-    </select>
 </mapper>

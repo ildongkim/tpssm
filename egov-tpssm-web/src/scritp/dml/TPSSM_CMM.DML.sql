@@ -22,6 +22,11 @@ VALUES ('STPLAT_0000000000001', '개인정보의 수집 및 이용목적-개인�
 INSERT INTO comtnstplatinfo (USE_STPLAT_ID, USE_STPLAT_CN, INFO_PROVD_AGRE_CN) 
 VALUES ('STPLAT_0000000000002', '개인정보의 수집 및 이용목적-기업회원', '제1조(목적 등)-기업회원');
 
+/* 공통코드시스템 */
+INSERT INTO com.comtccmmnclcode
+(CL_CODE, CL_CODE_NM, CL_CODE_DC, USE_AT, FRST_REGIST_PNTTM, FRST_REGISTER_ID, LAST_UPDT_PNTTM, LAST_UPDUSR_ID)
+VALUES('COM', '출입신청심의시스템', '출입신청심의시스템', 'Y', '2021-02-17 00:00:00', 'SYSTEM', '2021-02-17 00:00:00', 'SYSTEM');
+
 /* 공통코드상세 : 성별 */
 INSERT INTO comtccmmndetailcode (CODE_ID, CODE, CODE_NM, CODE_DC, USE_AT) VALUES ('COM014', 'F', '여자', '여자', 'Y');
 INSERT INTO comtccmmndetailcode (CODE_ID, CODE, CODE_NM, CODE_DC, USE_AT) VALUES ('COM014', 'M', '남자', '남자', 'Y');

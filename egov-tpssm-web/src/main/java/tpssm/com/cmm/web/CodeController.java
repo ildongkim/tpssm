@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springmodules.validation.commons.DefaultBeanValidator;
 
+import egovframework.com.cmm.ComDefaultVO;
 import egovframework.com.cmm.EgovMessageSource;
 import egovframework.com.cmm.LoginVO;
 import egovframework.com.cmm.util.EgovUserDetailsHelper;
@@ -27,6 +28,7 @@ import egovframework.com.sym.ccm.cca.service.EgovCcmCmmnCodeManageService;
 import egovframework.com.sym.ccm.cde.service.CmmnDetailCodeVO;
 import egovframework.com.sym.ccm.cde.service.EgovCcmCmmnDetailCodeManageService;
 import egovframework.com.utl.fcc.service.EgovStringUtil;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
 
 /**
  * 코드관리 서비스를 처리하는 컨트롤러 클래스
@@ -83,29 +85,14 @@ public class CodeController {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("jsonView");
 
-		CmmnCodeVO searchVO = new CmmnCodeVO();
+		ComDefaultVO searchVO = new ComDefaultVO();
 		searchVO.setSearchCondition(EgovStringUtil.isNullToString(commandMap.get("searchCondition")));
 		searchVO.setSearchKeyword(EgovStringUtil.isNullToString(commandMap.get("searchKeyword")));
-		List<?> cmmnCodeList = cmmnCodeManageService.selectCmmnCodeList(searchVO);
-		modelAndView.addObject(cmmnCodeList);
 		
-		return modelAndView;
-	}
-	
-	/**
-	 * 코드상세목록을 조회
-	 * @return result - List
-	 * @exception Exception
-	 */
-	@PostMapping(value="/cmm/cmmnCodeDtlList.do")
-	public ModelAndView selectCodeDtlList(@RequestParam Map<String, Object> commandMap) throws Exception {
-		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("jsonView");
-
-		CmmnDetailCodeVO cmmnDtlCodeVO = new CmmnDetailCodeVO();
-		cmmnDtlCodeVO.setCodeId(EgovStringUtil.isNullToString(commandMap.get("codeId")));
-    	List<?> CmmnDtlCodeList = cmmnDetailCodeManageService.selectCmmnDetailCodeList(cmmnDtlCodeVO);
-		modelAndView.addObject(CmmnDtlCodeList);
+		EgovMap contents = new EgovMap();
+		contents.put("contents", cmmnCodeManageService.selectCmmnCodeList(searchVO));
+		modelAndView.addObject("data", contents);
+		modelAndView.addObject("result", true);
 		
 		return modelAndView;
 	}
@@ -163,7 +150,28 @@ public class CodeController {
 		
     	return modelAndView;
     }
-    
+	
+	/**
+	 * 코드상세목록을 조회
+	 * @return result - List
+	 * @exception Exception
+	 */
+	@PostMapping(value="/cmm/cmmnCodeDtlList.do")
+	public ModelAndView selectCodeDtlList(@RequestParam Map<String, Object> commandMap) throws Exception {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("jsonView");
+
+		CmmnDetailCodeVO cmmnDtlCodeVO = new CmmnDetailCodeVO();
+		cmmnDtlCodeVO.setCodeId(EgovStringUtil.isNullToString(commandMap.get("codeId")));
+		
+		EgovMap contents = new EgovMap();
+		contents.put("contents", cmmnDetailCodeManageService.selectCmmnDetailCodeList(cmmnDtlCodeVO));
+		modelAndView.addObject("data", contents);
+		modelAndView.addObject("result", true);
+		
+		return modelAndView;
+	}
+	
     /**
      * 코드상세정보를 등록한다
      * 코드셍세정보 화면으로 이동한다

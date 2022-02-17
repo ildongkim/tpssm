@@ -20,50 +20,9 @@
 			     ,  COMTCCMMNCODE       B
 			 WHERE 	A.CODE_ID = B.CODE_ID
 			   AND  A.CODE_ID = #{codeId}
+			 ORDER  BY A.CODE
 	</select>
 
-	<select id="selectCmmnDetailCodeListTotCnt" parameterType="egovframework.com.sym.ccm.cde.service.CmmnDetailCodeVO" resultType="int">
-		
-		<![CDATA[
-			SELECT  COUNT(*) totcnt
-			  FROM  COMTCCMMNDETAILCODE A
-			     ,  COMTCCMMNCODE       B
-			 WHERE 	B.USE_AT  = 'Y'
-			   AND  A.CODE_ID = B.CODE_ID
-		]]>	   
-		
-			<if test="searchCondition == 1">	<![CDATA[	AND
-				A.CODE_ID LIKE CONCAT ('%', #{searchKeyword},'%')	]]>
-			</if>
-			<if test="searchCondition == 2">	<![CDATA[	AND
-				A.CODE    LIKE CONCAT ('%', #{searchKeyword},'%')	]]>
-			</if>
-			<if test="searchCondition == 3">	<![CDATA[	AND
-				A.CODE_NM LIKE CONCAT ('%', #{searchKeyword},'%')	]]>
-			</if>
-			
-	</select>
-
-	<select id="selectCmmnDetailCodeDetail" parameterType="egovframework.com.sym.ccm.cde.service.CmmnDetailCodeVO" resultType="egovframework.com.sym.ccm.cde.service.CmmnDetailCodeVO">
-		
-		<![CDATA[
-            SELECT  A.CODE_ID    codeId
-                 ,  B.CODE_ID_NM codeIdNm
-                 ,  A.CODE       code
-                 ,  A.CODE_NM    codeNm
-                 ,  A.CODE_DC    codeDc
-                 ,  A.USE_AT     useAt
-              FROM  COMTCCMMNDETAILCODE A
-                 ,  COMTCCMMNCODE       B
-             WHERE  B.USE_AT  = 'Y'
-               AND  A.CODE_ID = B.CODE_ID
-			   AND  A.CODE_ID = #{codeId}
-			   AND  A.CODE    = #{code}
-		]]>	   
-		
-	</select>
-
-	<!-- Modify Script : Harry 2022-02-11  -->
 	<insert id="insertCmmnDetailCode">
 
 	        INSERT INTO COMTCCMMNDETAILCODE
@@ -80,22 +39,6 @@
 				LAST_UPDUSR_ID = #{frstRegisterId}
 	</insert>
 
-	<update id="updateCmmnDetailCode">
-		
-		<![CDATA[
-            UPDATE  COMTCCMMNDETAILCODE
-               SET  CODE_NM           = #{codeNm}
-                 ,  CODE_DC           = #{codeDc}
-                 ,  USE_AT            = #{useAt}
-                 ,  LAST_UPDT_PNTTM = sysdate()
-                 ,  LAST_UPDUSR_ID    = #{lastUpdusrId}
-             WHERE  CODE_ID   = #{codeId}
-               AND  CODE      = #{code}
-         ]]>      
-		
-	</update>
-
-	<!-- Modify Script : Harry 2022-02-11  -->
 	<delete id="deleteCmmnDetailCode">
             DELETE FROM COMTCCMMNDETAILCODE WHERE CODE_ID = #{codeId} AND CODE = #{code}
 	</delete>

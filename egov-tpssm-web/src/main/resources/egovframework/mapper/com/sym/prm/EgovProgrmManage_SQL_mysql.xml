@@ -59,19 +59,6 @@
 		 WHERE PROGRM_FILE_NM = #{searchKeyword}
 		
 	</select>
-
-	<select id="selectProgrm_D" resultType="egovframework.com.sym.prm.service.ProgrmManageVO">
-		
-			SELECT
-				  PROGRM_FILE_NM AS progrmFileNm 
-				, PROGRM_STRE_PATH AS progrmStrePath 
-				, PROGRM_KOREAN_NM AS progrmKoreanNm 
-				, PROGRM_DC AS progrmDc 
-				, URL AS URL
-			FROM COMTNPROGRMLIST
-			WHERE PROGRM_FILE_NM = #{progrmFileNm}
-		
-	</select>
 	
 	<!-- Modify Script : Harry 2022-02-22  -->
 	<insert id="insertProgrm_S">
@@ -93,29 +80,12 @@
 				LAST_UPDUSR_ID = #{registerId}
 	</insert>
 
-	<update id="updateProgrm_S">
-		
-			UPDATE COMTNPROGRMLIST 
-			SET PROGRM_STRE_PATH=#{progrmStrePath}
-				, PROGRM_KOREAN_NM=#{progrmKoreanNm}
-				, PROGRM_DC      =#{progrmDc}
-				, URL            =#{URL}
-			WHERE PROGRM_FILE_NM=#{progrmFileNm}
-		
-	</update>
-
 	<delete id="deleteProgrm_S">
 		                          
 			DELETE FROM COMTNPROGRMLIST              
 			WHERE PROGRM_FILE_NM=#{progrmFileNm}                 
 		                                
-	</delete> 
-
-	<delete id="progrmManageDAO.deleteAllProgrm">
-		                          
-			DELETE FROM COMTNPROGRMLIST              
-		                                
-	</delete> 
+	</delete>
 
 	<!-- 메뉴정보 총건수 조회 -->
 	<select id="selectProgrmListTotCnt" parameterType="egovframework.com.sym.prm.service.ProgrmManageVO" resultType="int">

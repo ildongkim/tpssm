@@ -4,7 +4,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="validator" uri="http://www.springmodules.org/tags/commons-validator" %>
-<c:set var="pageTitle"><spring:message code="comSymMnuMpm.menu.title"/></c:set>
+<c:set var="pageTitle"><spring:message code="comSymMnuMpm.menuManageVO.title"/></c:set>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -14,13 +14,13 @@
 	<meta name="description" content="" />
 	<meta name="author" content="" />
     <title>${pageTitle}<spring:message code="title.list" /></title>
+    <link href="<c:url value="/css/egovframework/com/cmm/jqueryui.css"/>" rel="stylesheet" type="text/css">
     <link href="<c:url value='/modules/tui-grid/dist/tui-grid.min.css' />" rel="stylesheet" type="text/css">
     <link href="<c:url value="/css/egovframework/com/com.css"/>" rel="stylesheet" type="text/css">
     <link href="<c:url value="/css/egovframework/com/button.css"/>" rel="stylesheet" type="text/css">
-    <link href="<c:url value="/css/egovframework/com/cmm/jqueryui.css"/>" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/jquery.js'/>" ></script>
     <script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/jqueryui.js'/>" ></script>
-    <script type="text/javascript" src="<c:url value='/modules/tui-grid/dist/tui-grid.min.js'/>" ></script>
+    <script type="text/javascript" src="<c:url value='/modules/tui-grid/dist/tui-grid.js'/>" ></script>
     <script type="text/javascript" src="<c:url value='/js/tpssm/com/com.js'/>" ></script>
     <script type="text/javascript" src="<c:url value="/cmm/init/validator.do"/>"></script>
     <validator:javascript formName="menuManageVO" staticJavascript="false" xhtml="true" cdata="false"/>
@@ -39,9 +39,8 @@ $(document).ready(function()
 {
 	//1.트리메뉴목록
 	gridMenu = new tui.Grid({
-		el: document.getElementById('gridUpperMenu'), // Container element
-		scrollX: false,
-		bodyHeight: 200,
+		el: document.getElementById('gridUpperMenu'),
+		bodyHeight: 200, scrollX: false,
 		treeColumnOptions: {
 			name: 'menuNm',
 			useIcon: true,
@@ -49,7 +48,7 @@ $(document).ready(function()
 		},
 		columns: 
 		[
-			{header:'<spring:message code="tpssmMnu.menuMng.menuNm" />', name:'menuNm'}
+			{header:'<spring:message code="comSymMnuMpm.menuManageVO.menuNm" />', name:'menuNm'}
 		]
 	});
 	
@@ -59,23 +58,23 @@ $(document).ready(function()
 	//3.트리메뉴목록의 Click 이벤트
 	gridMenu.on('click', function (ev) {
 		setViewMenuClick(); //화면처리
-		searchMenuMngList(gridMenu.getValue(ev.rowKey, 'menuNo'),'S');
+		searchMenuMngList(gridMenu.getValue(ev.rowKey, 'menuNo'));
 		setMenuList(gridMenu.getRow(ev.rowKey));
 		gridMenuRowKey = ev.rowKey;
 	});
 	
 	//4.하위메뉴목록
 	gridMenuDtl = new tui.Grid({
-		el: document.getElementById('gridMenuDtl'), // Container element
-		scrollX: false,
+		el: document.getElementById('gridMenuDtl'),
+		bodyHeight: 200, scrollX: false,
 		rowHeaders: ['rowNum'],
-		bodyHeight: 200,
+		data: setReadData("<c:url value='/cmm/menumngList.do'/>"),
 		columns: 
 		[
-			{header:'<spring:message code="tpssmMnu.menuMng.menuNm" />',        name:'menuNm',       align:'center'},
-			{header:'<spring:message code="tpssmMnu.menuMng.progrmFileNm" />',  name:'progrmFileNm', align:'center'},
-			{header:'<spring:message code="tpssmMnu.menuMng.menuOrdr" />',      name:'menuOrdr',     align:'center'},
-			{header:'<spring:message code="tpssmMnu.menuMng.useAt" />',         name:'useAt',        align:'center'}
+			{header:'<spring:message code="comSymMnuMpm.menuManageVO.menuNm" />',        name:'menuNm',       align:'center'},
+			{header:'<spring:message code="comSymMnuMpm.menuManageVO.progrmFileNm" />',  name:'progrmFileNm', align:'center'},
+			{header:'<spring:message code="comSymMnuMpm.menuManageVO.menuOrdr" />',      name:'menuOrdr',     align:'center'},
+			{header:'<spring:message code="comSymMnuMpm.menuManageVO.useAt" />',         name:'useAt',        align:'center'}
 		]
 	});
 	
@@ -148,19 +147,14 @@ function setMenuList(data) {
 /* ********************************************************
  * 하위메뉴목록의 데이터검색 처리 함수
  ******************************************************** */
-function searchMenuMngList(menuNo, mode) {
-	$.ajax({
-		url : "<c:url value='/cmm/menumngList.do'/>",
-		method :"POST",
-		data : {"menuNo":menuNo},
-		dataType : "JSON",
-		success : function(result){
-			gridMenuDtl.clear();
-			if (result['egovMapList'] != null) {
-				gridMenuDtl.resetData(result['egovMapList']);
-				if (mode == 'D') { gridMenuDtl.focusAt(gridMenuDtl.getRowCount()-1,1,true); }
-			}			
-		} 
+function searchMenuMngList(menuNo) {
+	const params = {"menuNo":menuNo};
+	gridMenuDtl.readData(1, params);
+	gridMenuDtl.on('beforeRequest', function(ev) {
+		gridMenuDtl.clear();
+	});
+	gridMenuDtl.on('successResponse', function(ev) {
+		//gridMenuDtl.focusAt(gridMenuDtl.getRowCount()-1,1,true);
 	});
 }
 
@@ -181,7 +175,7 @@ function insertMenuList(form) {
 						confirm(result['message']);	
 					} else {
 						if (result['upperMenuId'] != null) {
-							searchMenuMngList(result['upperMenuId'], 'I');
+							searchMenuMngList(result['upperMenuId']);
 						}
 					}
 				},
@@ -212,7 +206,7 @@ function deleteMenuList(form) {
 					confirm(result['message']);	
 				} else {
 					if (result['upperMenuId'] != null) {
-						searchMenuMngList(result['upperMenuId'],'D');
+						searchMenuMngList(result['upperMenuId']);
 					}
 				}
 			},
@@ -360,10 +354,10 @@ function setViewNewClick()  {
 <form:form commandName="menuManageVO" name="menuManageVO" method="post">
 
 <div class="board">
-	<h1 style="background-position:left 3px"><spring:message code="comSymMnuMpm.menuList.pageTop.title" /></h1><!-- 메뉴 목록 -->
-	<div class="search_box" title="<spring:message code="common.searchCondition.msg" />"><!-- 이 레이아웃은 하단 정보를 대한 검색 정보로 구성되어 있습니다. -->
+	<h1 style="background-position:left 3px"><spring:message code="comSymMnuMpm.menuManageVO.pageTop.title" /></h1>
+	<div class="search_box" title="<spring:message code="common.searchCondition.msg" />">
 		<ul>
-			<li><div style="line-height:4px;">&nbsp;</div><div><spring:message code="tpssmMnu.menuMng.upperMenuNm" /> : </div></li><!-- 상위메뉴명 -->
+			<li><div style="line-height:4px;">&nbsp;</div><div><spring:message code="comSymMnuMpm.menuManageVO.upperMenuNm" /> : </div></li>
 			<li>
 				<select name="searchCondition" id="searchCondition" title="<spring:message code="title.searchCondition" />">
 					<c:forEach var="menu" items="${upperMenuList}">
@@ -415,45 +409,47 @@ function setViewNewClick()  {
 				<col style="" />
 			</colgroup>
 			<tr>
-				<th><spring:message code="comSymMnuMpm.menuList.upperMenuId" /> <span class="pilsu">*</span></th><!-- 상위메뉴No -->
+				<th><spring:message code="comSymMnuMpm.menuManageVO.upperMenuId" /> <span class="pilsu">*</span></th>
 				<td class="left">
-				<input name="upperMenuId" type="text" value=""  maxlength="10" title="<spring:message code="comSymMnuMpm.menuList.upperMenuId" />" style="width:190px"/>
+				<input name="upperMenuId" type="text" maxlength="10" title="<spring:message code="comSymMnuMpm.menuManageVO.upperMenuId" />" style="width:190px"/>
 				</td>
 			</tr>
 			<tr>
-				<th><spring:message code="comSymMnuMpm.menuList.menuNo" /> <span class="pilsu">*</span></th><!-- 메뉴No -->
+				<th><spring:message code="comSymMnuMpm.menuManageVO.menuNo" /> <span class="pilsu">*</span></th>
 				<td class="left">
-				<input name="menuNo" type="text" value=""  maxlength="10" title="<spring:message code="comSymMnuMpm.menuList.menuNo" />" style="width:68px"/>
+				<input name="menuNo" type="text" maxlength="10" title="<spring:message code="comSymMnuMpm.menuManageVO.menuNo" />" style="width:68px"/>
 				</td>
 			</tr>
 			<tr>
-				<th><spring:message code="comSymMnuMpm.menuList.menuNm" /> <span class="pilsu">*</span></th><!-- 메뉴명 -->
+				<th><spring:message code="comSymMnuMpm.menuManageVO.menuNm" /> <span class="pilsu">*</span></th>
 				<td class="left">
-				<input name="menuNm" type="text" size="30" value=""  maxlength="30" title="<spring:message code="comSymMnuMpm.menuList.menuNm" />">
+				<input name="menuNm" type="text" size="30" maxlength="30" title="<spring:message code="comSymMnuMpm.menuManageVO.menuNm" />">
 				</td>
 			</tr>
 			<tr>
-				<th><spring:message code="comSymMnuMpm.menuList.menuOrdr" /> <span class="pilsu">*</span></th><!-- 메뉴순서 -->
+				<th><spring:message code="comSymMnuMpm.menuManageVO.menuOrdr" /> <span class="pilsu">*</span></th>
 				<td class="left">
-				<input name="menuOrdr" type="text" value=""  maxlength="10" title="<spring:message code="comSymMnuMpm.menuList.menuOrdr" />" style="width:68px"/>
+				<input name="menuOrdr" type="text" maxlength="10" title="<spring:message code="comSymMnuMpm.menuManageVO.menuOrdr" />" style="width:68px"/>
 				</td>
 			</tr>
 			<tr>
-				<th><spring:message code="comSymMnuMpm.menuList.progrmFileNm" /> <span class="pilsu">*</span></th><!-- 파일명 -->
+				<th><spring:message code="comSymMnuMpm.menuManageVO.progrmFileNm" /> <span class="pilsu">*</span></th>
 				<td class="left">
-				<input name="progrmFileNm" type="text" size="30" value=""  maxlength="60" title="<spring:message code="comSymMnuMpm.menuList.progrmFileNm" />" style="width:190px"/>
-				<a id="popupProgrmFileNm" href="#" target="_blank" title="<spring:message code="comSymMnuMpm.menuList.progrmFileNm" />" style="selector-dummy:expression(this.hideFocus=false);"><img src="<c:url value='/images/egovframework/com/cmm/icon/search2.gif' />"
-				alt='' width="15" height="15" />(<spring:message code="comSymMnuMpm.menuList.searchFileNm" />)</a>
+				<input name="progrmFileNm" type="text" size="30" maxlength="60" title="<spring:message code="comSymMnuMpm.menuManageVO.progrmFileNm" />" style="width:190px"/>
+				<a id="popupProgrmFileNm" href="#" target="_blank" 
+					title="<spring:message code="comSymMnuMpm.menuManageVO.progrmFileNm" />" 
+					style="selector-dummy:expression(this.hideFocus=false);"><img src="<c:url value='/images/egovframework/com/cmm/icon/search2.gif' />"
+					alt='' width="15" height="15" />(<spring:message code="comSymMnuMpm.menuManageVO.progrmFileNm" />)</a>
 				</td>
 			</tr>
 			<tr>
-				<th><spring:message code="comSymMnuMpm.menuList.menuDc" /></th><!-- 메뉴설명 -->
+				<th><spring:message code="comSymMnuMpm.menuManageVO.menuDc" /></th>
 				<td width="70%" class="left">
-				<textarea name="menuDc" class="textarea"  cols="45" rows="8"  style="width:350px;" title="<spring:message code="comSymMnuMpm.menuList.menuDc" />"></textarea>
+				<textarea name="menuDc" class="textarea" cols="45" rows="8" style="width:350px;" title="<spring:message code="comSymMnuMpm.menuManageVO.menuDc" />"></textarea>
 				</td>
 			</tr>
 			<tr>
-				<th><spring:message code="comSymMnuMpm.menuList.useAt" /></th><!-- 사용여부 -->
+				<th><spring:message code="comSymMnuMpm.menuManageVO.useAt" /></th>
 				<td width="70%" class="left">
 				<select name="useAt" title="<spring:message code="input.input" />" >
 					<option value="Y"  label="<spring:message code="input.yes" />"/>

@@ -6,8 +6,8 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import egovframework.com.cmm.ComDefaultVO;
 import egovframework.com.sym.ccm.cca.service.CmmnCode;
-import egovframework.com.sym.ccm.cca.service.CmmnCodeVO;
 import egovframework.com.sym.ccm.cca.service.EgovCcmCmmnCodeManageService;
 import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
 
@@ -36,36 +36,11 @@ public class EgovCcmCmmnCodeManageServiceImpl extends EgovAbstractServiceImpl im
     private CmmnCodeManageDAO cmmnCodeManageDAO;
     
 	/**
-	 * 공통코드 총 갯수를 조회한다.
-	 */
-	@Override
-	public int selectCmmnCodeListTotCnt(CmmnCodeVO searchVO) throws Exception {
-        return cmmnCodeManageDAO.selectCmmnCodeListTotCnt(searchVO);
-	}
-
-	/**
 	 * 공통코드 목록을 조회한다.
 	 */
 	@Override
-	public List<?> selectCmmnCodeList(CmmnCodeVO searchVO) throws Exception {
+	public List<?> selectCmmnCodeList(ComDefaultVO searchVO) throws Exception {
 		return cmmnCodeManageDAO.selectCmmnCodeList(searchVO);
-	}
-
-	/**
-	 * 공통코드 상세항목을 조회한다.
-	 */
-	@Override
-	public CmmnCodeVO selectCmmnCodeDetail(CmmnCodeVO cmmnCodeVO) throws Exception{
-		CmmnCodeVO ret = cmmnCodeManageDAO.selectCmmnCodeDetail(cmmnCodeVO);
-    	return ret;
-	}
-
-	/**
-	 * 공통코드를 수정한다.
-	 */
-	@Override
-	public void updateCmmnCode(CmmnCodeVO cmmnCodeVO) throws Exception {
-		cmmnCodeManageDAO.updateCmmnCode(cmmnCodeVO);
 	}
 
 	/**
@@ -76,7 +51,7 @@ public class EgovCcmCmmnCodeManageServiceImpl extends EgovAbstractServiceImpl im
 		cmmnCodeManageDAO.insertCmmnCode(cmmnCode);
 		
 	}
-
+	
 	/**
 	 * 공통코드를 삭제한다.
 	 */

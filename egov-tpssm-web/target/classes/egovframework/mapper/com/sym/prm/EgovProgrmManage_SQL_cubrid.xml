@@ -51,28 +51,6 @@
 	    WHERE PROGRM_KOREAN_NM like  '%'|| #{searchKeyword}||'%'
 		
 	</select>
-
-	<!-- 파일명존재여부 조회 -->
-	<select id="selectProgrmNMTotCnt" parameterType="comDefaultVO" resultType="int">
-		
-		SELECT COUNT(*) AS "totcnt"
-		  FROM COMTNPROGRMLIST
-		 WHERE PROGRM_FILE_NM = #{searchKeyword}
-		
-	</select>
-
-	<select id="selectProgrm_D" resultType="egovframework.com.sym.prm.service.ProgrmManageVO">
-		
-			SELECT
-				  PROGRM_FILE_NM   AS "progrmFileNm" 
-				, PROGRM_STRE_PATH AS "progrmStrePath" 
-				, PROGRM_KOREAN_NM  AS "progrmKoreanNm" 
-				, PROGRM_DC        AS "progrmDc" 
-				, URL              AS "URL"
-			FROM COMTNPROGRMLIST
-			WHERE PROGRM_FILE_NM = #{progrmFileNm}
-		
-	</select>
 	
 	<!-- Modify Script : Harry 2022-02-09  -->
 	<insert id="insertProgrm_S">
@@ -97,28 +75,11 @@
 				(#{progrmFileNm}, SUBSTR(#{URL},1,INSTR(#{URL}, '/', -1 )), #{progrmKoreanNm}, #{progrmDc}, #{URL}, #{useAt}, 
 				SYSDATETIME, #{registerId}, SYSDATETIME, #{registerId})
 	</insert>
-
-	<update id="updateProgrm_S">
-		
-			UPDATE COMTNPROGRMLIST 
-			SET PROGRM_STRE_PATH=#{progrmStrePath}
-				, PROGRM_KOREAN_NM=#{progrmKoreanNm}
-				, PROGRM_DC      =#{progrmDc}
-				, URL            =#{URL}
-			WHERE PROGRM_FILE_NM=#{progrmFileNm}
-		
-	</update>
-
+	
 	<delete id="deleteProgrm_S">
 		                          
 			DELETE FROM COMTNPROGRMLIST              
 			WHERE PROGRM_FILE_NM=#{progrmFileNm}                 
-		                                
-	</delete> 
-
-	<delete id="deleteAllProgrm">
-		                          
-			DELETE FROM COMTNPROGRMLIST              
 		                                
 	</delete> 
 

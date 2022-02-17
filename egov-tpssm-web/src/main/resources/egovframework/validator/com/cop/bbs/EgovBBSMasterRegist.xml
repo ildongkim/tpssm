@@ -8,7 +8,7 @@
     <formset>
 		<form name="boardMasterVO">
 			<field property="bbsId" depends="required, maxlength">
-        		<arg0 key="comCopBbs.boardMasterVO.regist.bbsId" />
+        		<arg0 key="comCopBbs.boardMasterVO.bbsId" />
         		<arg1 key="20" resource="true"/>
 				<var>
 					<var-name>maxlength</var-name>
@@ -17,7 +17,7 @@
 			</field>
 			
 			<field property="bbsNm" depends="required, maxlength">
-        		<arg0 key="comCopBbs.boardMasterVO.regist.bbsNm" />
+        		<arg0 key="comCopBbs.boardMasterVO.bbsNm" />
         		<arg1 key="120" resource="true"/>
 				<var>
 					<var-name>maxlength</var-name>
@@ -26,7 +26,7 @@
 			</field>
 			
 			<field property="bbsIntrcn" depends="required, maxlength">
-        		<arg0 key="comCopBbs.boardMasterVO.regist.bbsIntrcn" />
+        		<arg0 key="comCopBbs.boardMasterVO.bbsIntrcn" />
         		<arg1 key="2000" resource="true"/>
 				<var>
 					<var-name>maxlength</var-name>
@@ -34,16 +34,16 @@
 				</var>
 			</field> 
 			<field property="bbsTyCode" depends="required">
-        		<arg0 key="comCopBbs.boardMasterVO.regist.bbsTyCode" />
+        		<arg0 key="comCopBbs.boardMasterVO.bbsTyCode" />
 			</field>			
 			<field property="replyPosblAt" depends="required">
-        		<arg0 key="comCopBbs.boardMasterVO.regist.replyPosblAt" />
+        		<arg0 key="comCopBbs.boardMasterVO.replyPosblAt" />
 			</field>	
 			<field property="fileAtchPosblAt" depends="required">
-        		<arg0 key="comCopBbs.boardMasterVO.regist.fileAtchPosblAt" />
+        		<arg0 key="comCopBbs.boardMasterVO.fileAtchPosblAt" />
 			</field>
 			<field property="useAt" depends="required">
-        		<arg0 key="comCopBbs.boardMasterVO.regist.useAt" />
+        		<arg0 key="comCopBbs.boardMasterVO.useAt" />
 			</field>		
 		</form>
     </formset>

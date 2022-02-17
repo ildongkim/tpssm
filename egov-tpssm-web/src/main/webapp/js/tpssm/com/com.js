@@ -60,50 +60,45 @@ tui.Grid.applyTheme('default', {
 /*********************************************************
  * TUI.GRID Event
  ******************************************************** */
-function setGridEvent(grid, data, selected) {
-	if (selected==null||selected==true) {
-		var selectedRowKey = null;
-		grid.on('focusChange', function (ev) {
-			if (selectedRowKey != null) {
-				grid.removeRowClassName(selectedRowKey, 'currentRow');
-			}
-			selectedRowKey = ev.rowKey;
-			grid.addRowClassName(selectedRowKey, 'currentRow');
-		});
-		
-		grid.on('dblclick', function (ev) {
-			return;
-		});	
-	}
+function setGridEvent(grid) {
+	var selectedRowKey = null;
+	grid.on('focusChange', function (ev) {
+		if (selectedRowKey != null) {
+			grid.removeRowClassName(selectedRowKey, 'currentRow');
+		}
+		selectedRowKey = ev.rowKey;
+		grid.addRowClassName(selectedRowKey, 'currentRow');
+	});
 	
-	if (data) {
-		//요청을 보내기 전 실행
-		grid.on('beforeRequest', function(ev) {
-			//grid.clear();
-		});
+	grid.on('dblclick', function (ev) {
+		return;
+	});
 	
-		//성공, 실패와 관계 없이 응답을 받았을 경우 실행
-		grid.on('response', function(ev) {
-			try {
-				var responseObj = JSON.parse(ev.xhr.response);
-				if (responseObj.message) { confirm(responseObj.message); }
-			} catch (error) {
-				confirm("요청처리를 실패하였습니다.");
-			}
-		});	
-		
-		//grid.on('successResponse', function(ev) {
-		//	console.log('결과가 true인 경우');
-		//});
-		
-		//grid.on('failResponse', function(ev) {
-		//	console.log('결과가 false인 경우');
-		//});
-		
-		//grid.on('errorResponse', function(ev) {
-		//	console.log('오류가 발생한 경우');
-		//});
-	}
+	//성공, 실패와 관계 없이 응답을 받았을 경우 실행
+	grid.on('response', function(ev) {
+		//console.log('성공, 실패와 관계 없이 응답을 받았을 경우 실행');
+	});
+	
+	grid.on('beforeRequest', function(ev) {
+		//console.log('요청을 보내기 전 실행');
+	});
+			
+	grid.on('successResponse', function(ev) {
+		//console.log('결과가 true인 경우');
+	});
+	
+	grid.on('failResponse', function(ev) {
+		try {
+			var responseObj = JSON.parse(ev.xhr.response);
+			if (responseObj.message) { confirm(responseObj.message); }
+		} catch (error) {
+			confirm("요청처리를 실패하였습니다.");
+		}
+	});
+	
+	grid.on('errorResponse', function(ev) {
+		confirm("요청처리를 실패하였습니다.");
+	});
 }
 
 /*********************************************************
@@ -114,66 +109,6 @@ function setReadData(url) {
 		contentType: 'application/x-www-form-urlencoded',
 		api: { 
 			readData: { url: url, method: 'POST' }
-		},
-		hideLoadingBar: true,
-		initialRequest: false 
-	};
-	return datasource;
-}
-
-/*********************************************************
- * TUI.GRID createData datasource
- ******************************************************** */
-function setCreateData(url) {
-	var datasource = {
-		contentType: 'application/x-www-form-urlencoded',
-		api: { 
-			createData: { url: url, method: 'POST' }
-		},
-		hideLoadingBar: true,
-		initialRequest: false 
-	};
-	return datasource;
-}
-
-/*********************************************************
- * TUI.GRID updateData datasource
- ******************************************************** */
-function setUpdateData(url) {
-	var datasource = {
-		contentType: 'application/x-www-form-urlencoded',
-		api: { 
-			updateData: { url: url, method: 'POST' }
-		},
-		hideLoadingBar: true,
-		initialRequest: false 
-	};
-	return datasource;
-}
-
-/*********************************************************
- * TUI.GRID deleteData datasource
- ******************************************************** */
-function setDeleteData(url) {
-	var datasource = {
-		contentType: 'application/x-www-form-urlencoded',
-		api: { 
-			deleteData: { url: url, method: 'POST' }
-		},
-		hideLoadingBar: true,
-		initialRequest: false 
-	};
-	return datasource;
-}
-
-/*********************************************************
- * TUI.GRID modifyData datasource
- ******************************************************** */
-function setModifyData(url) {
-	var datasource = {
-		contentType: 'application/x-www-form-urlencoded',
-		api: { 
-			modifyData: { url: url, method: 'POST' }
 		},
 		hideLoadingBar: true,
 		initialRequest: false 

@@ -35,56 +35,30 @@ public class EgovCcmCmmnDetailCodeManageServiceImpl extends EgovAbstractServiceI
     private CmmnDetailCodeManageDAO cmmnDetailCodeManageDAO;
     
 	/**
-	 * 공통상세코드 총 갯수를 조회한다.
-	 */
-	@Override
-	public int selectCmmnDetailCodeListTotCnt(CmmnDetailCodeVO searchVO) throws Exception {
-        return cmmnDetailCodeManageDAO.selectCmmnDetailCodeListTotCnt(searchVO);
-	}
-	
-	/**
 	 * 공통상세코드 목록을 조회한다.
 	 */
 	@Override
-	public List<?> selectCmmnDetailCodeList(CmmnDetailCodeVO searchVO) throws Exception {
-        return cmmnDetailCodeManageDAO.selectCmmnDetailCodeList(searchVO);
+	public List<?> selectCmmnDetailCodeList(CmmnDetailCodeVO cmmnDetailCodeVO) throws Exception {
+        return cmmnDetailCodeManageDAO.selectCmmnDetailCodeList(cmmnDetailCodeVO);
 	}
 
 	/**
-	 * 공통상세코드 상세항목을 조회한다.
+	 * 공통상세코드를 등록한다.
 	 * @throws Exception 
 	 */
 	@Override
-	public CmmnDetailCode selectCmmnDetailCodeDetail(CmmnDetailCodeVO cmmnDetailCodeVO) throws Exception {
-		CmmnDetailCode ret = cmmnDetailCodeManageDAO.selectCmmnDetailCodeDetail(cmmnDetailCodeVO);
-    	return ret;
+	public void insertCmmnDetailCode(CmmnDetailCode cmmnDetailCode) throws Exception {
+		cmmnDetailCodeManageDAO.insertCmmnDetailCode(cmmnDetailCode);
+		
 	}
-
+	
 	/**
 	 * 공통상세코드를 삭제한다.
 	 * @throws Exception 
 	 */
 	@Override
-	public void deleteCmmnDetailCode(CmmnDetailCodeVO cmmnDetailCodeVO) throws Exception {
-		cmmnDetailCodeManageDAO.deleteCmmnDetailCode(cmmnDetailCodeVO);
-		
-	}
-
-	/**
-	 * 공통상세코드를 등록한다.
-	 */
-	@Override
-	public void insertCmmnDetailCode(CmmnDetailCodeVO cmmnDetailCodeVO) throws Exception {
-		cmmnDetailCodeManageDAO.insertCmmnDetailCode(cmmnDetailCodeVO);
-		
-	}
-
-	/**
-	 * 공통상세코드를 수정한다.
-	 */
-	@Override
-	public void updateCmmnDetailCode(CmmnDetailCodeVO cmmnDetailCodeVO) throws Exception {
-		cmmnDetailCodeManageDAO.updateCmmnDetailCode(cmmnDetailCodeVO);
+	public void deleteCmmnDetailCode(CmmnDetailCode cmmnDetailCode) throws Exception {
+		cmmnDetailCodeManageDAO.deleteCmmnDetailCode(cmmnDetailCode);
 		
 	}
 	

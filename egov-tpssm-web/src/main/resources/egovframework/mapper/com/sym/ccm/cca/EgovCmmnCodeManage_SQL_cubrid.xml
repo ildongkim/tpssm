@@ -7,8 +7,7 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="CmmnCodeManage">
 
-	<!-- Modify Script : Harry 2022-02-07  -->
-	<select id="selectCmmnCodeList" parameterType="egovframework.com.sym.ccm.cca.service.CmmnCodeVO" resultType="egovMap">
+	<select id="selectCmmnCodeList" parameterType="comDefaultVO" resultType="egovMap">
 		
 			SELECT  A.CODE_ID
 			     ,  A.CODE_ID_NM
@@ -23,43 +22,9 @@
 			<if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isEquals(searchCondition,'2')">	<![CDATA[	AND
 				A.CODE_ID_NM LIKE '%' || #{searchKeyword} || '%'	]]>
 			</if>
+			ORDER  BY A.CODE_ID
 	</select>
 
-	<select id="selectCmmnCodeListTotCnt" parameterType="egovframework.com.sym.ccm.cca.service.CmmnCodeVO" resultType="int">
-		
-		<![CDATA[
-			SELECT  COUNT(*) totcnt
-			  FROM  COMTCCMMNCODE   A
-			     ,  COMTCCMMNCLCODE B
-			 WHERE  A.CL_CODE = B.CL_CODE
-			 ]]>
-		
-			<if test="searchCondition == 1">	<![CDATA[	AND
-				CODE_ID LIKE '%' || #{searchKeyword} || '%'	]]>
-			</if>
-			<if test="searchCondition == 2">	<![CDATA[	AND
-				CODE_ID_NM LIKE '%' || #{searchKeyword} || '%'	]]>
-			</if>
-	</select>
-
-	<select id="selectCmmnCodeDetail" parameterType="egovframework.com.sym.ccm.cca.service.CmmnCodeVO" resultType="egovframework.com.sym.ccm.cca.service.CmmnCodeVO">
-		
-		<![CDATA[
-            SELECT  B.CL_CODE_NM clCodeNm
-                 ,  A.CL_CODE    clCode
-                 ,  A.CODE_ID    codeId
-			     ,  A.CODE_ID_NM codeIdNm
-                 ,  A.CODE_ID_DC codeIdDc
-                 ,  A.USE_AT     useAt
-			  FROM  COMTCCMMNCODE   A
-			     ,  COMTCCMMNCLCODE B
-			 WHERE  A.CL_CODE = B.CL_CODE
-               AND  A.CODE_ID = #{codeId}
-               ]]>
-		
-	</select>
-
-	<!-- Modify Script : Harry 2022-02-07  -->
 	<insert id="insertCmmnCode">
 						
 			MERGE INTO COMTCCMMNCODE A
@@ -80,21 +45,6 @@
 					SYSDATETIME, #{frstRegisterId}, SYSDATETIME, #{frstRegisterId})
 	</insert>
 
-	<update id="updateCmmnCode">
-		
-		<![CDATA[
-            UPDATE  COMTCCMMNCODE
-               SET  CODE_ID_NM        = #{codeIdNm}
-                 ,  CODE_ID_DC        = #{codeIdDc}
-                 ,  USE_AT            = #{useAt}
-                 ,  LAST_UPDT_PNTTM = SYSDATETIME
-                 ,  LAST_UPDUSR_ID    = #{lastUpdusrId}
-             WHERE  CODE_ID           = #{codeId}
-             ]]>
-		
-	</update>
-
-	<!-- Modify Script : Harry 2022-02-07  -->
 	<delete id="deleteCmmnCode">
             DELETE FROM COMTCCMMNCODE WHERE CODE_ID = #{codeId}
 	</delete>

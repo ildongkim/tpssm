@@ -4,7 +4,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="validator" uri="http://www.springmodules.org/tags/commons-validator" %>
-<c:set var="pageTitle"><spring:message code="comSecRam.auth.title"/></c:set>
+<c:set var="pageTitle"><spring:message code="comCopSecRam.authorManageVO.title"/></c:set>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -20,7 +20,7 @@
     <link href="<c:url value="/css/egovframework/com/cmm/jqueryui.css"/>" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/jquery.js'/>" ></script>
     <script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/jqueryui.js'/>" ></script>
-    <script type="text/javascript" src="<c:url value='/modules/tui-grid/dist/tui-grid.min.js'/>" ></script>
+    <script type="text/javascript" src="<c:url value='/modules/tui-grid/dist/tui-grid.js'/>" ></script>
     <script type="text/javascript" src="<c:url value='/js/tpssm/com/com.js'/>" ></script>
     <script type="text/javascript" src="<c:url value="/cmm/init/validator.do"/>"></script>
     <validator:javascript formName="authorManageVO" staticJavascript="false" xhtml="true" cdata="false"/>
@@ -36,20 +36,20 @@ $(document).ready(function()
 {
 	//1.권한목록
 	gridAuth = new tui.Grid({
-		el: document.getElementById('gridAuth'), // Container element
-		bodyHeight: 200,
+		el: document.getElementById('gridAuth'),
+		bodyHeight: 200, scrollX: false,
 		rowHeaders: ['rowNum'],
+		data: setReadData("<c:url value='/cmm/authmngList.do'/>"),
 		columns: 
 		[
-			{header:'<spring:message code="comCopSecRam.regist.authorCode" />',     name:'authorCode'},
-			{header:'<spring:message code="comCopSecRam.regist.authorNm" />',       name:'authorNm'},
-			{header:'<spring:message code="comCopSecRam.regist.authorDc" />',       name:'authorDc'},
-			{header:'<spring:message code="comCopSecRam.regist.useAt" />',          name:'useAt',         align:'center'},
-			{header:'<spring:message code="comCopSecRam.regist.authorCreatDe" />',  name:'authorCreatDe', align:'center'}
+			{header:'<spring:message code="comCopSecRam.authorManageVO.authorCode" />',     name:'authorCode',    width:220},
+			{header:'<spring:message code="comCopSecRam.authorManageVO.authorNm" />',       name:'authorNm',      width:220},
+			{header:'<spring:message code="comCopSecRam.authorManageVO.useAt" />',          name:'useAt',         align:'center'},
+			{header:'<spring:message code="comCopSecRam.authorManageVO.authorCreatDe" />',  name:'authorCreatDe', width:120, align:'center'}
 		]
 	});
 	
-	//2.권한목록의 현재 Row 선택을 위한 이벤트 설정
+	//2.권한목록의 이벤트 설정
 	setGridEvent(gridAuth);
 	
 	//3.권한목록의 Click 이벤트
@@ -68,19 +68,8 @@ $(document).ready(function()
 function searchAuthList() {
 	//화면처리
 	setViewSearch();
-	
-	const searchKeyword = "";
-	$.ajax({
-		url : "<c:url value='/cmm/authmngList.do'/>",
-		method :"POST",
-		data : {"searchKeyword":searchKeyword},
-		dataType : "JSON",
-		success : function(result){
-			if (result['authorManageVOList'] != null) {
-				gridAuth.resetData(result['authorManageVOList']);
-			}
-		} 
-	});
+	const params = {"searchKeyword":$("#searchKeyword").val()};
+	gridAuth.readData(1, params);
 }
 
 /* ********************************************************
@@ -200,15 +189,17 @@ function setViewNewClick() {
 <form:form commandName="authorManageVO" name="authorManageVO" method="post">
 
 <div class="board">
-	<h1 style="background-position:left 3px"><spring:message code="comCopSecRam.title" /></h1>
-	<div class="search_box" title="<spring:message code="common.searchCondition.msg" />"><!-- 이 레이아웃은 하단 정보를 대한 검색 정보로 구성되어 있습니다. -->
+	<h1 style="background-position:left 3px"><spring:message code="comCopSecRam.authorManageVO.pageTop.title" /></h1>
+	<div class="search_box" title="<spring:message code="common.searchCondition.msg" />">
 		<ul>
-			<li><div style="line-height:4px;">&nbsp;</div><div><spring:message code="comCopSecRam.list.searchKeywordText" /> : </div></li><!-- 권한명 -->
+			<li><div style="line-height:4px;">&nbsp;</div><div><spring:message code="comCopSecRam.authorManageVO.authorNm" /> : </div></li>
 			<li>
-				<input class="s_input" name="searchKeyword" type="text"  size="35" title="<spring:message code="title.search" /> <spring:message code="input.input" />" value='<c:out value="${searchVO.searchKeyword}"/>'  maxlength="155" >
+				<input class="s_input" name="searchKeyword" id="searchKeyword" type="text"  size="35" 
+					title="<spring:message code="title.search" /> <spring:message code="input.input" />" 
+					value='<c:out value="${searchVO.searchKeyword}"/>'  maxlength="155" >
 				<span class="btn_b" onclick="searchAuthList(); return false;">
 					<a href="#"><spring:message code="button.inquire" /></a>
-				</span>				
+				</span>
 			</li>
 			<li>
 				<span class="btn_b new" onclick="setViewNewClick();">
@@ -219,7 +210,7 @@ function setViewNewClick() {
 				</span>
 				<span class="btn_b save" onclick="deleteAuthList(document.forms[0]); return false;">
 					<a href="#"><spring:message code="button.delete" /></a>
-				</span>				
+				</span>
 			</li>
 		</ul>
 	</div>
@@ -247,25 +238,25 @@ function setViewNewClick() {
 				<col style="" />
 			</colgroup>
 			<tr>
-				<th><spring:message code="comCopSecRam.regist.authorCode" /> <span class="pilsu">*</span></th>
+				<th><spring:message code="comCopSecRam.authorManageVO.authorCode" /> <span class="pilsu">*</span></th>
 				<td class="left">
-				<input name="authorCode" type="text" value=""  maxlength="10" title="<spring:message code="comCopSecRam.regist.authorCode" />" style="width:190px"/>
+				<input name="authorCode" type="text" maxlength="10" title="<spring:message code="comCopSecRam.authorManageVO.authorCode" />" style="width:190px"/>
 				</td>
 			</tr>
 			<tr>
-				<th><spring:message code="comCopSecRam.regist.authorNm" /> <span class="pilsu">*</span></th>
+				<th><spring:message code="comCopSecRam.authorManageVO.authorNm" /> <span class="pilsu">*</span></th>
 				<td class="left">
-				<input name="authorNm" type="text" value=""  maxlength="10" title="<spring:message code="comCopSecRam.regist.authorNm" />" style="width:190px"/>
+				<input name="authorNm" type="text" maxlength="10" title="<spring:message code="comCopSecRam.authorManageVO.authorNm" />" style="width:190px"/>
 				</td>
 			</tr>
 			<tr>
-				<th><spring:message code="comCopSecRam.regist.authorDc" /></th>
+				<th><spring:message code="comCopSecRam.authorManageVO.authorDc" /></th>
 				<td width="70%" class="left">
-				<textarea name="authorDc" class="textarea"  cols="45" rows="8"  style="width:350px;" title="<spring:message code="comCopSecRam.regist.authorDc" />"></textarea>
+				<textarea name="authorDc" class="textarea" cols="45" rows="8" style="width:350px;" title="<spring:message code="comCopSecRam.authorManageVO.authorDc" />"></textarea>
 				</td>
 			</tr>
 			<tr>
-				<th><spring:message code="comCopSecRam.regist.useAt" /></th>
+				<th><spring:message code="comCopSecRam.authorManageVO.useAt" /></th>
 				<td width="70%" class="left">
 				<select name="useAt" title="<spring:message code="input.input" />" >
 					<option value="Y"  label="<spring:message code="input.yes" />"/>

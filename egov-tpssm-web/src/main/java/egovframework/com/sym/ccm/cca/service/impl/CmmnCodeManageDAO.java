@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import egovframework.com.cmm.ComDefaultVO;
 import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 import egovframework.com.sym.ccm.cca.service.CmmnCode;
-import egovframework.com.sym.ccm.cca.service.CmmnCodeVO;
 
 /**
 *
@@ -27,16 +27,7 @@ import egovframework.com.sym.ccm.cca.service.CmmnCodeVO;
 */
 
 @Repository("CmmnCodeManageDAO")
-public class CmmnCodeManageDAO extends    EgovComAbstractDAO {
-
-   /**
-	 * 공통코드 총 갯수를 조회한다.
-     * @param searchVO
-     * @return int(공통코드 총 갯수)
-     */
-	public int selectCmmnCodeListTotCnt(CmmnCodeVO searchVO) throws Exception{
-		return (Integer)selectOne("CmmnCodeManage.selectCmmnCodeListTotCnt", searchVO);
-	}
+public class CmmnCodeManageDAO extends EgovComAbstractDAO {
 
    /**
 	 * 공통코드 목록을 조회한다.
@@ -44,26 +35,8 @@ public class CmmnCodeManageDAO extends    EgovComAbstractDAO {
      * @return List(공통코드 목록)
      * @throws Exception
      */
-	public List<?> selectCmmnCodeList(CmmnCodeVO searchVO) throws Exception{
+	public List<?> selectCmmnCodeList(ComDefaultVO searchVO) throws Exception{
 		 return list("CmmnCodeManage.selectCmmnCodeList", searchVO);
-	}
-
-	/**
-	 * 공통코드 상세항목을 조회한다.
-	 * @param cmmnCode
-	 * @return CmmnCode(공통코드)
-	 */
-	public CmmnCodeVO selectCmmnCodeDetail(CmmnCodeVO cmmnCodeVO) throws Exception{
-		return selectOne("CmmnCodeManage.selectCmmnCodeDetail", cmmnCodeVO);
-}
-
-	/**
-	 * 공통코드를 수정한다.
-	 * @param cmmnCode
-	 * @throws Exception
-	 */
-	public void updateCmmnCode(CmmnCode cmmnCode) throws Exception{
-		update("CmmnCodeManage.updateCmmnCode", cmmnCode);
 	}
 
 	/**
@@ -74,7 +47,7 @@ public class CmmnCodeManageDAO extends    EgovComAbstractDAO {
 	public void insertCmmnCode(CmmnCode cmmnCode) throws Exception{
 		insert("CmmnCodeManage.insertCmmnCode", cmmnCode);
 	}
-
+	
 	/**
 	 * 공통코드를 삭제한다.
 	 * @param cmmnCode

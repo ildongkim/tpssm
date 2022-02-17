@@ -13,7 +13,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -27,14 +26,17 @@ import egovframework.com.sec.ram.service.AuthorManageVO;
 import egovframework.com.sec.ram.service.EgovAuthorManageService;
 import egovframework.com.sec.rgm.service.AuthorGroupVO;
 import egovframework.com.sec.rgm.service.EgovAuthorGroupService;
+import egovframework.com.sym.ccm.cca.service.CmmnCodeVO;
 import egovframework.com.sym.mnu.mcm.service.EgovMenuCreateManageService;
 import egovframework.com.sym.mnu.mcm.service.MenuCreatVO;
 import egovframework.com.sym.mnu.mpm.service.EgovMenuManageService;
 import egovframework.com.sym.mnu.mpm.service.MenuManageVO;
 import egovframework.com.sym.prm.service.EgovProgrmManageService;
 import egovframework.com.sym.prm.service.ProgrmManageVO;
+import egovframework.com.utl.fcc.service.EgovNumberUtil;
 import egovframework.com.utl.fcc.service.EgovStringUtil;
 import egovframework.rte.fdl.property.EgovPropertyService;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
 import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 
 /**
@@ -176,12 +178,13 @@ public class MenuController {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("jsonView");
 		
-		String strMenuNo = EgovStringUtil.isNullToString(commandMap.get("menuNo"));
-		if ("".contentEquals(strMenuNo)) { return modelAndView; }
 		MenuManageVO menuManageVO = new MenuManageVO();
-		menuManageVO.setMenuNo(Integer.parseInt(strMenuNo));
-    	List<?> menulist = menuManageService.selectMenuManageList(menuManageVO);
-		modelAndView.addObject(menulist);
+		menuManageVO.setMenuNo(EgovNumberUtil.isNullToZero(commandMap.get("menuNo")));
+		
+		EgovMap contents = new EgovMap();
+		contents.put("contents", menuManageService.selectMenuManageList(menuManageVO));
+		modelAndView.addObject("data", contents);
+		modelAndView.addObject("result", true);
 		
 		return modelAndView;
 	}
@@ -302,10 +305,13 @@ public class MenuController {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("jsonView");
 		
-		ComDefaultVO comdefaultVO = new ComDefaultVO();
-		comdefaultVO.setSearchKeyword(EgovStringUtil.isNullToString(commandMap.get("programFileName")));
-    	List<?> menulist = progrmManageService.selectProgrmMngList(comdefaultVO);
-		modelAndView.addObject(menulist);
+		ComDefaultVO searchVO = new ComDefaultVO();
+		searchVO.setSearchKeyword(EgovStringUtil.isNullToString(commandMap.get("searchKeyword")));
+		
+		EgovMap contents = new EgovMap();
+		contents.put("contents", progrmManageService.selectProgrmMngList(searchVO));
+		modelAndView.addObject("data", contents);
+		modelAndView.addObject("result", true);
 		
 		return modelAndView;
 	}
@@ -360,10 +366,14 @@ public class MenuController {
 	public ModelAndView authorManageList(@RequestParam Map<String, Object> commandMap) throws Exception {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("jsonView");
+
+		ComDefaultVO searchVO = new ComDefaultVO();
+		searchVO.setSearchKeyword(EgovStringUtil.isNullToString(commandMap.get("searchKeyword")));
 		
-		AuthorManageVO authorManageVO = new AuthorManageVO();
-    	List<?> authlist = egovAuthorManageService.selectAuthorList(authorManageVO);
-		modelAndView.addObject(authlist);
+		EgovMap contents = new EgovMap();
+		contents.put("contents", egovAuthorManageService.selectAuthorList(searchVO));
+		modelAndView.addObject("data", contents);
+		modelAndView.addObject("result", true);
 		
 		return modelAndView;
 	}
@@ -456,9 +466,13 @@ public class MenuController {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("jsonView");
 		
-		AuthorGroupVO authorGroupVO = new AuthorGroupVO();
-    	List<?> authlist = egovAuthorGroupService.selectAuthorMberList(authorGroupVO);
-		modelAndView.addObject(authlist);
+		ComDefaultVO searchVO = new ComDefaultVO();
+		searchVO.setSearchKeyword(EgovStringUtil.isNullToString(commandMap.get("searchKeyword")));
+		
+		EgovMap contents = new EgovMap();
+		contents.put("contents", egovAuthorGroupService.selectAuthorMberList(searchVO));
+		modelAndView.addObject("data", contents);
+		modelAndView.addObject("result", true);
 		
 		return modelAndView;
 	}
@@ -475,8 +489,11 @@ public class MenuController {
 		
 		AuthorGroupVO authorGroupVO = new AuthorGroupVO();
 		authorGroupVO.setUniqId(EgovStringUtil.isNullToString(commandMap.get("uniqId")));
-    	List<?> authlist = egovAuthorGroupService.selectAuthorGroupList(authorGroupVO);
-		modelAndView.addObject(authlist);
+		
+		EgovMap contents = new EgovMap();
+		contents.put("contents", egovAuthorGroupService.selectAuthorGroupList(authorGroupVO));
+		modelAndView.addObject("data", contents);
+		modelAndView.addObject("result", true);
 		
 		return modelAndView;
 	}

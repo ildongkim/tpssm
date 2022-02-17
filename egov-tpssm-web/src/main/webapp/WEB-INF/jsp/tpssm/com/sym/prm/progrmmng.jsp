@@ -4,7 +4,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="validator" uri="http://www.springmodules.org/tags/commons-validator" %>
-<c:set var="pageTitle"><spring:message code="comSymPrm.progrm.title"/></c:set>
+<c:set var="pageTitle"><spring:message code="comSymPrm.progrmManageVO.title"/></c:set>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -14,13 +14,13 @@
 	<meta name="description" content="" />
 	<meta name="author" content="" />
     <title>${pageTitle}<spring:message code="title.list" /></title>
+    <link href="<c:url value="/css/egovframework/com/cmm/jqueryui.css"/>" rel="stylesheet" type="text/css">
     <link href="<c:url value='/modules/tui-grid/dist/tui-grid.min.css' />" rel="stylesheet" type="text/css">
     <link href="<c:url value="/css/egovframework/com/com.css"/>" rel="stylesheet" type="text/css">
     <link href="<c:url value="/css/egovframework/com/button.css"/>" rel="stylesheet" type="text/css">
-    <link href="<c:url value="/css/egovframework/com/cmm/jqueryui.css"/>" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/jquery.js'/>" ></script>
     <script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/jqueryui.js'/>" ></script>
-    <script type="text/javascript" src="<c:url value='/modules/tui-grid/dist/tui-grid.min.js'/>" ></script>
+    <script type="text/javascript" src="<c:url value='/modules/tui-grid/dist/tui-grid.js'/>" ></script>
     <script type="text/javascript" src="<c:url value='/js/tpssm/com/com.js'/>" ></script>
     <script type="text/javascript" src="<c:url value="/cmm/init/validator.do"/>"></script>
     <validator:javascript formName="progrmManageVO" staticJavascript="false" xhtml="true" cdata="false"/>
@@ -37,16 +37,16 @@ $(document).ready(function()
 	//1.프로그램목록
 	gridProgrm = new tui.Grid({
 		el: document.getElementById('gridProgrm'), // Container element
-		scrollX: false,
-		bodyHeight: 200,
+		bodyHeight: 200, scrollX: false,
 		rowHeaders: ['rowNum'],
+		data: setReadData("<c:url value='/cmm/progrmmngList.do'/>"),
 		columns: 
 		[
-			{header:'<spring:message code="comSymPrm.programListManage.programFileName" />',    name:'progrmFileNm',    align:'center'},
-			{header:'<spring:message code="comSymPrm.programListManage.programName" />',        name:'progrmKoreanNm',  align:'center'},
-			{header:'<spring:message code="comSymPrm.programListManage.ProgramDescription" />', name:'progrmDc',        align:'center'},
-			{header:'<spring:message code="comSymPrm.programListManage.url" />',                name:'url',             align:'center'},
-			{header:'<spring:message code="comSymPrm.programListManage.useAt" />',              name:'useAt',           align:'center'}
+			{header:'<spring:message code="comSymPrm.progrmManageVO.programFileName" />',    name:'progrmFileNm',    align:'center'},
+			{header:'<spring:message code="comSymPrm.progrmManageVO.programName" />',        name:'progrmKoreanNm',  align:'center'},
+			{header:'<spring:message code="comSymPrm.progrmManageVO.ProgramDescription" />', name:'progrmDc',        align:'center'},
+			{header:'<spring:message code="comSymPrm.progrmManageVO.url" />',                name:'url',             align:'center'},
+			{header:'<spring:message code="comSymPrm.progrmManageVO.useAt" />',              name:'useAt',           align:'center'}
 		]
 	});
 	
@@ -69,19 +69,8 @@ $(document).ready(function()
 function searchProgrmList() {
 	//화면처리
 	setViewSearch();
-	
-	const programFileName = document.progrmManageVO.searchKeyword.value;
-	$.ajax({
-		url : "<c:url value='/cmm/progrmmngList.do'/>",
-		method :"POST",
-		data : {"programFileName":programFileName},
-		dataType : "JSON",
-		success : function(result){
-			if (result['egovMapList'] != null) {
-				gridProgrm.resetData(result['egovMapList']);
-			}
-		} 
-	});
+	const params = {"searchKeyword":$("#searchKeyword").val()};
+	gridProgrm.readData(1, params);
 }
 
 /* ********************************************************
@@ -202,12 +191,14 @@ function setViewNewClick()  {
 <form:form commandName="progrmManageVO" name="progrmManageVO" method="post">
 
 <div class="board">
-	<h1 style="background-position:left 3px"><spring:message code="comSymPrm.programListManage.pageTop.title" /></h1><!-- 프로그램목록 -->
-	<div class="search_box" title="<spring:message code="common.searchCondition.msg" />"><!-- 이 레이아웃은 하단 정보를 대한 검색 정보로 구성되어 있습니다. -->
+	<h1 style="background-position:left 3px"><spring:message code="comSymPrm.progrmManageVO.pageTop.title" /></h1>
+	<div class="search_box" title="<spring:message code="common.searchCondition.msg" />">
 		<ul>
-			<li><div style="line-height:4px;">&nbsp;</div><div><spring:message code="comSymPrm.programListManage.programName" /> : </div></li><!-- 프로그램명 -->
+			<li><div style="line-height:4px;">&nbsp;</div><div><spring:message code="comSymPrm.progrmManageVO.programName" /> : </div></li>
 			<li>
-				<input class="s_input" name="searchKeyword" type="text"  size="35" title="<spring:message code="title.search" /> <spring:message code="input.input" />" value='<c:out value="${searchVO.searchKeyword}"/>'  maxlength="155" >
+				<input class="s_input" name="searchKeyword" id="searchKeyword" type="text" size="35" 
+					title="<spring:message code="title.search" /> <spring:message code="input.input" />" 
+					value='<c:out value="${searchVO.searchKeyword}"/>'  maxlength="155" >
 				<span class="btn_b" onclick="searchProgrmList(); return false;">
 					<a href="#"><spring:message code="button.inquire" /></a>
 				</span>				
@@ -249,31 +240,31 @@ function setViewNewClick()  {
 				<col style="" />
 			</colgroup>
 			<tr>
-				<th><spring:message code="comSymPrm.programListManage.programFileName" /> <span class="pilsu">*</span></th><!-- 프로그램파일명 -->
+				<th><spring:message code="comSymPrm.progrmManageVO.programFileName" /> <span class="pilsu">*</span></th>
 				<td class="left">
-				<input name="progrmFileNm" id="progrmFileNm" type="text" value=""  maxlength="50" title="<spring:message code="comSymPrm.programListManage.programFileName" />" style="width:190px"/>
+				<input name="progrmFileNm" id="progrmFileNm" type="text" maxlength="50" title="<spring:message code="comSymPrm.progrmManageVO.programFileName" />" style="width:190px"/>
 				</td>
 			</tr>
 			<tr>
-				<th><spring:message code="comSymPrm.programListManage.programName" /> <span class="pilsu">*</span></th><!-- 프로그램명 -->
+				<th><spring:message code="comSymPrm.progrmManageVO.programName" /> <span class="pilsu">*</span></th>
 				<td class="left">
-				<input name="progrmKoreanNm" type="text" value=""  maxlength="50" title="<spring:message code="comSymPrm.programListManage.programName" />" style="width:190px"/>
+				<input name="progrmKoreanNm" type="text" maxlength="50" title="<spring:message code="comSymPrm.progrmManageVO.programName" />" style="width:190px"/>
 				</td>
 			</tr>
 			<tr>
-				<th><spring:message code="comSymPrm.programListManage.url" /></th><!-- URL -->
+				<th><spring:message code="comSymPrm.progrmManageVO.url" /> <span class="pilsu">*</span></th>
 				<td width="70%" class="left">
-				<input name="URL" type="text" value=""  maxlength="100" title="<spring:message code="comSymPrm.programListManage.url" />" style="width:190px"/>
+				<input name="URL" type="text" maxlength="100" title="<spring:message code="comSymPrm.progrmManageVO.url" />" style="width:190px"/>
 				</td>
 			</tr>			
 			<tr>
-				<th><spring:message code="comSymPrm.programListManage.ProgramDescription" /></th><!-- 프로그램설명 -->
+				<th><spring:message code="comSymPrm.progrmManageVO.ProgramDescription" /></th>
 				<td width="70%" class="left">
-				<textarea name="progrmDc" class="textarea"  cols="45" rows="8"  style="width:350px;" title="<spring:message code="comSymPrm.programListManage.ProgramDescription" />"></textarea>
+				<textarea name="progrmDc" class="textarea" cols="45" rows="8"  style="width:350px;" title="<spring:message code="comSymPrm.progrmManageVO.ProgramDescription" />"></textarea>
 				</td>
 			</tr>
 			<tr>
-				<th><spring:message code="comSymPrm.programListManage.useAt" /></th><!-- 사용여부 -->
+				<th><spring:message code="comSymPrm.progrmManageVO.useAt" /></th>
 				<td width="70%" class="left">
 				<select name="useAt" title="<spring:message code="input.input" />" >
 					<option value="Y"  label="<spring:message code="input.yes" />"/>
