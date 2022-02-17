@@ -180,4 +180,31 @@ public class BBSController {
 		
 		return modelAndView;
     }
+    
+    /**
+     * 공지사항을 저장한다.
+     * 
+     * @param boardMasterVO
+     * @param bindingResult
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/cmm/noticeInsert.do")
+    public ModelAndView insertNoticeInfs(
+    		@ModelAttribute("boardVO") BoardVO boardVO,
+    		BindingResult bindingResult) throws Exception {
+    	ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("jsonView");
+		
+    	//beanValidator.validate(boardMasterVO, bindingResult); //validation 수행
+		//if (bindingResult.hasErrors()) { 
+		//	modelAndView.addObject("message", egovMessageSource.getMessage("fail.common.save"));
+		//} else {
+	    	LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
+	    	boardVO.setFrstRegisterId((user == null || user.getUniqId() == null) ? "" : user.getUniqId());
+	    	egovArticleService.insertArticle(boardVO);
+		//}
+		
+		return modelAndView;
+    }    
 }

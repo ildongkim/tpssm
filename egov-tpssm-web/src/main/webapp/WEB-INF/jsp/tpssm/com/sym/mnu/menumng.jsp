@@ -20,7 +20,7 @@
     <link href="<c:url value="/css/egovframework/com/button.css"/>" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/jquery.js'/>" ></script>
     <script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/jqueryui.js'/>" ></script>
-    <script type="text/javascript" src="<c:url value='/modules/tui-grid/dist/tui-grid.js'/>" ></script>
+    <script type="text/javascript" src="<c:url value='/modules/tui-grid/dist/tui-grid.min.js'/>" ></script>
     <script type="text/javascript" src="<c:url value='/js/tpssm/com/com.js'/>" ></script>
     <script type="text/javascript" src="<c:url value="/cmm/init/validator.do"/>"></script>
     <validator:javascript formName="menuManageVO" staticJavascript="false" xhtml="true" cdata="false"/>
@@ -148,6 +148,7 @@ function setMenuList(data) {
  * 하위메뉴목록의 데이터검색 처리 함수
  ******************************************************** */
 function searchMenuMngList(menuNo) {
+	if (menuNo == null) { return; }
 	const params = {"menuNo":menuNo};
 	gridMenuDtl.readData(1, params);
 	gridMenuDtl.on('beforeRequest', function(ev) {

@@ -24,7 +24,7 @@
 			LEFT OUTER JOIN
 				(SELECT ESNTL_ID, USER_ID, USER_NM FROM COMVNUSERMASTER) d
 				ON a.FRST_REGISTER_ID = d.ESNTL_ID
-			WHERE AND A.BBS_NM LIKE '%' || #{searchKeyword} || '%'
+			WHERE A.BBS_NM LIKE '%' || #{searchKeyword} || '%'
 	</select>
  
 	<insert id="insertBBSMaster">
@@ -47,11 +47,11 @@
 					(BBS_ID, BBS_TY_CODE, BBS_NM, BBS_INTRCN, 
 					 REPLY_POSBL_AT, FILE_ATCH_POSBL_AT, ATCH_POSBL_FILE_NUMBER,
 					 TMPLAT_ID, USE_AT, CMMNTY_ID,
-					 FRST_REGISTER_ID, FRST_REGIST_PNTTM, BLOG_ID, BLOG_AT )
+					 FRST_REGISTER_ID, FRST_REGIST_PNTTM )
 				VALUES
 					( #{bbsId}, #{bbsTyCode}, #{bbsNm}, #{bbsIntrcn}, 
 					  #{replyPosblAt}, #{fileAtchPosblAt}, #{atchPosblFileNumber}, 
-					  #{tmplatId}, #{useAt}, #{cmmntyId}, #{frstRegisterId}, SYSDATETIME, #{blogId}, #{blogAt}  
+					  #{tmplatId}, #{useAt}, #{cmmntyId}, #{frstRegisterId}, SYSDATETIME 
 					 )	
 	</insert>
 

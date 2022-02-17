@@ -31,7 +31,7 @@
     
     <select id="selectNoticeArticleList" parameterType="egovframework.com.cop.bbs.service.BoardVO" resultMap="boardMap">
         	SELECT #{perPage}*#{page}-#{perPage} AS P_ROWNO, #{page} AS P_PAGE, #{perPage} AS P_PERPAGE, #{bbsId} AS P_BBSID, #{searchWrd} AS P_SEARCHWRD
-        	FROM DUAL
+        	FROM db_root
     </select>
     
  	<select id="selecArticleContents" resultType="egovMap">

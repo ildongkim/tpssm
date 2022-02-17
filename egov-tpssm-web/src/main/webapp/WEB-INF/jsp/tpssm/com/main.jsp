@@ -18,7 +18,7 @@
 </head>
 <frameset frameborder="0" framespacing="0" rows="75, *, 45">
 	<frame name="_top" src="${pageContext.request.contextPath}/cmm/maintop.do" scrolling="no" title="헤더">
-		<frameset frameborder="0" framespacing="0" cols="20%, 80%">
+		<frameset frameborder="0" framespacing="0" cols="10%, 90%">
 			<frame name="_left" src="${pageContext.request.contextPath}/cmm/mainleft.do" scrolling="no" title="메뉴페이지">
 			<frame name="_content" src="${pageContext.request.contextPath}/cmm/maincontent.do" title="메인페이지">
 		</frameset>
