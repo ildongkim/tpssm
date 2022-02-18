@@ -84,6 +84,38 @@ function searchAuthMberList() {
 }
 
 /* ********************************************************
+ * 권한그룹 등록 처리 함수
+ ******************************************************** */
+function insertAuthGrpList() {
+	if(confirm("<spring:message code="common.save.msg" />")){
+		$.ajax({
+			url : "<c:url value='/cmm/authgroupInsert.do'/>",
+			method :"POST",
+			data : {data : gridAuth.getCheckedRows()},
+			dataType : "application/json",
+			success : function(result) {
+				if (result['message'] != null) {
+					confirm(result['message']);	
+				} else {
+					searchAuthMberList();
+				}
+			},
+			error : function(xhr, status) {
+				confirm("<spring:message code='fail.common.save' />");
+			},
+			complete : function() {
+				$('.btn_b.save').css('pointer-events','auto');
+			}
+		});
+	}
+	
+	//console.log(gridAuth.getCheckedRows());
+	//var gridData = JSON.stringify(gridAuth.getCheckedRows());
+	//console.log(gridData);
+	//console.log(JSON.parse(gridData));
+}
+
+/* ********************************************************
  * 권한목록의 데이터검색 처리 함수
  ******************************************************** */
 function setAuthMberList(data) {
@@ -120,7 +152,7 @@ function setViewSearch() {
 				</span>				
 			</li>
 			<li>
-				<span class="btn_b save" onclick="insertAuthList(document.forms[0]); return false;">
+				<span class="btn_b save" onclick="insertAuthGrpList(); return false;">
 					<a href="#"><spring:message code="button.save" /></a>
 				</span>
 			</li>

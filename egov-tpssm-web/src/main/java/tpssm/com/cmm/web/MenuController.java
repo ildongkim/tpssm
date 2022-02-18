@@ -13,6 +13,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -24,6 +25,7 @@ import egovframework.com.cmm.LoginVO;
 import egovframework.com.cmm.util.EgovUserDetailsHelper;
 import egovframework.com.sec.ram.service.AuthorManageVO;
 import egovframework.com.sec.ram.service.EgovAuthorManageService;
+import egovframework.com.sec.rgm.service.AuthorGroup;
 import egovframework.com.sec.rgm.service.AuthorGroupVO;
 import egovframework.com.sec.rgm.service.EgovAuthorGroupService;
 import egovframework.com.sym.ccm.cca.service.CmmnCodeVO;
@@ -496,5 +498,26 @@ public class MenuController {
 		modelAndView.addObject("result", true);
 		
 		return modelAndView;
+	}
+	
+    /**
+     * 권한그룹 정보를 등록한다
+     * 권한그룹 화면으로 이동한다
+     * @param authorGroupVO    AuthorGroupVO
+	 * @return result - List
+	 * @exception Exception
+	 */
+    @PostMapping(value="/cmm/authgroupInsert.do")
+    public ModelAndView insertAuthGroupManage(@RequestBody AuthorGroupVO authorGroupVO) throws Exception {
+    	
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("jsonView");
+		
+    	LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
+    	//menuManageVO.setRegisterId((user == null || user.getUniqId() == null) ? "" : user.getUniqId());
+    	//menuManageService.insertMenuManage(menuManageVO);
+    	//modelAndView.addObject("upperMenuId", menuManageVO.getUpperMenuId());
+    	
+    	return modelAndView;
 	}
 }
