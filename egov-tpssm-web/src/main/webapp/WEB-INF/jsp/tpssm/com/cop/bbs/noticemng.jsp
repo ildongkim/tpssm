@@ -15,15 +15,18 @@
 	<meta name="author" content="" />
     <title>${pageTitle}<spring:message code="title.list" /></title>
     <link href="<c:url value="/css/egovframework/com/cmm/jqueryui.css"/>" rel="stylesheet" type="text/css">
+    <link href="<c:url value='/modules/smarteditor2.10/dist/css/ko_KR/smart_editor2.css' />" rel="stylesheet" type="text/css">
+    <link href="<c:url value='/modules/tui-file-uploader/dist/tui-file-uploader.css' />" rel="stylesheet" type="text/css">
     <link href="<c:url value='/modules/tui-pagination/dist/tui-pagination.min.css' />" rel="stylesheet" type="text/css">
     <link href="<c:url value='/modules/tui-grid/dist/tui-grid.min.css' />" rel="stylesheet" type="text/css">
-    <link href="<c:url value='/modules/smarteditor2.10/dist/css/ko_KR/smart_editor2.css' />" rel="stylesheet" type="text/css">
     <link href="<c:url value="/css/egovframework/com/com.css"/>" rel="stylesheet" type="text/css">
     <link href="<c:url value="/css/egovframework/com/button.css"/>" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/jquery.js'/>" ></script>
     <script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/jqueryui.js'/>" ></script>
-    <script type="text/javascript" src="<c:url value='/modules/tui-pagination/dist/tui-pagination.min.js'/>" ></script>
     <script type="text/javascript" src="<c:url value='/modules/smarteditor2.10/dist/js/service/HuskyEZCreator.js'/>" charset="utf-8"></script>
+    <script type="text/javascript" src="<c:url value='/modules/tui-file-uploader/dist/tui-code-snippet.js'/>" ></script>
+    <script type="text/javascript" src="<c:url value='/modules/tui-file-uploader/dist/tui-file-uploader.min.js'/>" ></script>
+    <script type="text/javascript" src="<c:url value='/modules/tui-pagination/dist/tui-pagination.min.js'/>" ></script>
     <script type="text/javascript" src="<c:url value='/modules/tui-grid/dist/tui-grid.min.js'/>" ></script>
 	<script type="text/javascript" src="<c:url value='/js/tpssm/com/com.js'/>" ></script>
     <script type="text/javascript" src="<c:url value="/cmm/init/validator.do"/>"></script>
@@ -65,6 +68,9 @@ $(document).ready(function()
 	
 	//4.게시판목록의 데이터검색
 	searchNoticeList();
+	
+	//5.파일업로더
+	setFileUploader();
 });
 
 /* ********************************************************
@@ -82,10 +88,10 @@ function searchNoticeList() {
  ******************************************************** */
 function setBBSList(data) {
 	if (data != null) {
-		document.boardVO.nttSj.value=isNullToString(data["nttSj"]);
-		document.boardVO.frstRegistPnttm.value=isNullToString(data["frstRegistPnttm"]);
-		document.boardVO.frstRegisterNm.value=isNullToString(data["frstRegisterNm"]);
-		document.boardVO.nttCn.value=isNullToString(data["nttCn"]);
+		document.getElementById('nttSj').value=isNullToString(data["nttSj"]);
+		document.getElementById('frstRegistPnttm').value=isNullToString(data["frstRegistPnttm"]);
+		document.getElementById('frstRegisterNm').value=isNullToString(data["frstRegisterNm"]);
+		document.getElementById('nttCn').value=isNullToString(data["nttCn"]);
 		$(".wTable input").attr("readonly",true);
 		oEditors.getById["nttCn"].exec("SET_IR", [""]);
 		oEditors.getById["nttCn"].exec("PASTE_HTML", [data["nttCn"]]);
@@ -98,27 +104,9 @@ function setBBSList(data) {
 function insertContents(form) {
 	oEditors.getById["nttCn"].exec("UPDATE_CONTENTS_FIELD", []);
 	
-	if(confirm("<spring:message code="common.save.msg" />")){
-		$('.btn_b.save').css('pointer-events','none');
-		$.ajax({
-			url : "<c:url value='/cmm/noticeInsert.do'/>",
-			method :"POST",
-			data : $("#boardVO").serialize(),
-			dataType : "JSON",
-			success : function(result) {
-				if (result['message'] != null) {
-					confirm(result['message']);	
-				} else {
-					searchNoticeList();
-				}
-			},
-			error : function(xhr, status) {
-				confirm("<spring:message code='fail.common.save' />");
-			},
-			complete : function() {
-				$('.btn_b.save').css('pointer-events','auto');
-			}
-		});
+	if(confirm("<spring:message code="common.save.msg" />"))
+	{
+		$('#tui-uploader-form').submit();
 	}
 }
 
@@ -129,7 +117,7 @@ function setViewSearch() {
 	
 	//입력값공백처리
 	$('.wTable input[type=text]').val('');
-	if (document.boardVO.nttCn.value != "") {
+	if (document.getElementById('nttCn').value != "") {
 		oEditors.getById["nttCn"].exec("SET_IR", [""]);
 	}
 	
@@ -173,7 +161,7 @@ function setViewSearch() {
 	</div>
 </div>
 
-<div id="main" style="display:">
+<div id="uploader" class="tui-file-uploader">
 
 <body>
     <!-- Page content-->
@@ -203,13 +191,13 @@ function setViewSearch() {
 			<tr>
 				<th><spring:message code="comCopBbs.boardVO.Notice.frstRegistPnttm" /> </th>
 				<td class="left">
-				<input name="frstRegistPnttm" type="text" maxlength="50" title="<spring:message code="comCopBbs.boardVO.Notice.frstRegistPnttm" />" style="width:190px"/>
+				<input name="frstRegistPnttm" id="frstRegistPnttm" type="text" maxlength="50" title="<spring:message code="comCopBbs.boardVO.Notice.frstRegistPnttm" />" style="width:190px"/>
 				</td>
 			</tr>
 			<tr>
 				<th><spring:message code="comCopBbs.boardVO.Notice.frstRegisterNm" /> </th>
 				<td class="left">
-				<input name="frstRegisterNm" type="text" maxlength="50" title="<spring:message code="comCopBbs.boardVO.Notice.frstRegisterNm" />" style="width:190px"/>
+				<input name="frstRegisterNm" id="frstRegisterNm" type="text" maxlength="50" title="<spring:message code="comCopBbs.boardVO.Notice.frstRegisterNm" />" style="width:190px"/>
 				</td>
 			</tr>			
 			<tr>
@@ -221,7 +209,26 @@ function setViewSearch() {
 			<tr>
 				<th><spring:message code="comCopBbs.boardVO.Notice.atchFile" /> </th>
 				<td class="left">
-				<input name="atchFile" type="text" maxlength="50" title="<spring:message code="comCopBbs.boardVO.Notice.atchFile" />" style="width:95%"/>
+					<div class="tui-file-uploader-header">
+						<span class="tui-file-uploader-tit">File Uploader</span>
+						<span class="tui-file-upload-msg"><span id="uploadedCount">0</span> files successfully uploaded</span>
+						<div class="tui-btn-area">
+							<button type="button" class="tui-btn tui-btn-cancel tui-is-disabled" disabled>Remove</button>
+							<label class="tui-btn tui-btn-upload">
+								<span class="tui-btn-txt">Add files</span>
+								<input type="file" name="userfile[]" class="tui-input-file">
+							</label>
+						</div>
+					</div>
+					<div class="tui-js-file-uploader-list tui-js-file-uploader-dropzone tui-file-uploader-area tui-has-scroll">
+					<div class="tui-dropzone-contents">
+						<span class="tui-dropzone-msg">Drop files here.</span>
+					</div>
+					</div>
+					<div class="tui-file-uploader-info">
+						<span class="tui-info-txt">Selected <em class="tui-spec"><span id="checkedItemCount">0</span> files</em> (<span id="checkedItemSize">0 KB</span>)</span>
+						<span class="tui-info-txt">Total <span id="itemTotalSize">0 KB</span></span>
+					</div>
 				</td>
 			</tr>
 		</table>
@@ -247,5 +254,114 @@ nhn.husky.EZCreator.createInIFrame({
 		oEditors.getById["nttCn"].setDefaultFont(sFont, 12);
 	}
 });
+
+/*********************************************************
+ * TUI.UPLOADER Set
+ ******************************************************** */
+var $uploadedCount = $('#uploadedCount');
+var $itemTotalSize = $('#itemTotalSize');
+var $checkedItemCount = $('#checkedItemCount');
+var $checkedItemSize = $('#checkedItemSize');
+var $removeButton = $('.tui-btn-cancel');
+
+function setFileUploader() {
+	var uploader = new tui.FileUploader($('#uploader'), {
+		url: { send: "<c:url value='/cmm/noticeInsert.do'/>" },
+		isMultiple: true, isBatchTransfer: true,
+	    listUI: {
+	        type: 'table',
+	        columnList: [
+	            { header: '{{checkbox}}', body: '{{checkbox}}', width: 32 },
+	            { header: 'File Name',  width: 500, 
+	                body: '<span class="tui-filename-area"><span class="tui-file-name" style="max-width:480px;">{{filename}}</span></span>'
+				},
+	            { header: 'File Size', body: '{{filesize}}' }
+	        ]
+	    }
+	});
+
+    uploader.on('update', function(evt) { // This event is only fired when using batch transfer
+        var items = evt.filelist;
+        var totalSize = uploader.getTotalSize(items);
+
+        $itemTotalSize.html(totalSize);
+    });
+
+    uploader.on('check', function(evt) {
+        var checkedItems = uploader.getCheckedList();
+        var checkedItemSize = uploader.getTotalSize(checkedItems);
+        var checkedItemCount = checkedItems.length;
+        var removeButtonState = (checkedItemCount === 0);
+		
+        disableRemoveButton(removeButtonState);
+        updateCheckedInfo(checkedItemSize, checkedItemCount);
+    });
+
+    uploader.on('checkAll', function(evt) {
+        var checkedItems = uploader.getCheckedList();
+        var checkedItemSize = uploader.getTotalSize(checkedItems);
+        var checkedItemCount = checkedItems.length;
+        var removeButtonState = (checkedItemCount === 0);
+
+        disableRemoveButton(removeButtonState);
+        updateCheckedInfo(checkedItemSize, checkedItemCount);
+    });
+
+    uploader.on('remove', function(evt) {
+        var checkedItems = uploader.getCheckedList();
+        var removeButtonState = (checkedItems.length === 0);
+
+        disableRemoveButton(removeButtonState);
+        setUploadedCountInfo(0);
+        resetInfo();
+    });
+
+    uploader.on('success', function(evt) {
+        var successCount = evt.success;
+        var removeButtonState = (successCount > 0);
+
+        $uploadedCount.html(successCount);
+
+        disableRemoveButton(removeButtonState);
+        setUploadedCountInfo(successCount);
+        resetInfo();
+        
+        console.log("저장완료!!")
+        
+        searchNoticeList();
+    });
+
+    $removeButton.on('click', function() {
+        var checkedItems = uploader.getCheckedList();
+
+        uploader.removeList(checkedItems);
+    });
+ }
+ 
+ // below service code
+function disableRemoveButton(state) {
+    var className = 'tui-is-disabled';
+    if (state) {
+        $removeButton.addClass(className);
+    } else {
+        $removeButton.removeClass(className);
+    }
+    $removeButton.prop('disabled', false);
+}
+
+function updateCheckedInfo(size, count) {
+    $checkedItemSize.html(size);
+    $checkedItemCount.html(count);
+}
+
+function setUploadedCountInfo(count) {
+    $uploadedCount.html(count);
+}
+
+function resetInfo() {
+    $itemTotalSize.html('0 KB');
+    $checkedItemSize.html('0 KB');
+    $checkedItemCount.html('0');
+}
 -->
 </script>

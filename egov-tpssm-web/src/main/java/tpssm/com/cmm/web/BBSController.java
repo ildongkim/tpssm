@@ -1,6 +1,5 @@
 package tpssm.com.cmm.web;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springmodules.validation.commons.DefaultBeanValidator;
 
@@ -24,13 +24,13 @@ import egovframework.com.cmm.ComDefaultVO;
 import egovframework.com.cmm.EgovMessageSource;
 import egovframework.com.cmm.LoginVO;
 import egovframework.com.cmm.service.EgovCmmUseService;
+import egovframework.com.cmm.service.EgovFileMngUtil;
+import egovframework.com.cmm.service.FileVO;
 import egovframework.com.cmm.util.EgovUserDetailsHelper;
-import egovframework.com.cop.bbs.service.BoardMaster;
 import egovframework.com.cop.bbs.service.BoardMasterVO;
 import egovframework.com.cop.bbs.service.BoardVO;
 import egovframework.com.cop.bbs.service.EgovArticleService;
 import egovframework.com.cop.bbs.service.EgovBBSMasterService;
-import egovframework.com.sym.ccm.cca.service.CmmnCodeVO;
 import egovframework.com.utl.fcc.service.EgovNumberUtil;
 import egovframework.com.utl.fcc.service.EgovStringUtil;
 import egovframework.rte.psl.dataaccess.util.EgovMap;
@@ -69,6 +69,9 @@ public class BBSController {
     
 	@Resource(name = "EgovArticleService")
 	private EgovArticleService egovArticleService;
+	
+	@Resource(name="EgovFileMngUtil")
+	private EgovFileMngUtil fileUtil;
 	
     @Autowired
 	private DefaultBeanValidator beanValidator;
@@ -191,10 +194,15 @@ public class BBSController {
      */
     @PostMapping("/cmm/noticeInsert.do")
     public ModelAndView insertNoticeInfs(
+    		@RequestParam(name="userfile[]") List<MultipartFile> multipartFiles,
     		@ModelAttribute("boardVO") BoardVO boardVO,
     		BindingResult bindingResult) throws Exception {
     	ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("jsonView");
+		
+		final List<MultipartFile> files = multipartFiles;
+		String _atchFileId = "0000000001";
+		List<FileVO> _result = fileUtil.parseFileInf(files, "NOTICE_", 0, _atchFileId, "");	
 		
     	//beanValidator.validate(boardMasterVO, bindingResult); //validation 수행
 		//if (bindingResult.hasErrors()) { 
@@ -202,7 +210,7 @@ public class BBSController {
 		//} else {
 	    	LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
 	    	boardVO.setFrstRegisterId((user == null || user.getUniqId() == null) ? "" : user.getUniqId());
-	    	egovArticleService.insertArticle(boardVO);
+	    	//egovArticleService.insertArticle(boardVO);
 		//}
 		
 		return modelAndView;
