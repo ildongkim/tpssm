@@ -1,5 +1,7 @@
 package egovframework.com.sym.mnu.mcm.service;
- 
+
+import egovframework.com.cmm.DefaultVO;
+
 /** 
  * 메뉴생성 처리를 위한 VO 클래스르를 정의한다
  * @author 개발환경 개발팀 이용
@@ -16,7 +18,7 @@ package egovframework.com.sym.mnu.mcm.service;
  *
  * </pre>
  */
-public class MenuCreatVO{
+public class MenuCreatVO extends DefaultVO {
 
 
    /** 메뉴번호 */

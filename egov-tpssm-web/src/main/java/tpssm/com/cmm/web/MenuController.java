@@ -28,7 +28,6 @@ import egovframework.com.sec.ram.service.EgovAuthorManageService;
 import egovframework.com.sec.rgm.service.AuthorGroup;
 import egovframework.com.sec.rgm.service.AuthorGroupVO;
 import egovframework.com.sec.rgm.service.EgovAuthorGroupService;
-import egovframework.com.sym.ccm.cca.service.CmmnCodeVO;
 import egovframework.com.sym.mnu.mcm.service.EgovMenuCreateManageService;
 import egovframework.com.sym.mnu.mcm.service.MenuCreatVO;
 import egovframework.com.sym.mnu.mpm.service.EgovMenuManageService;
@@ -164,6 +163,8 @@ public class MenuController {
 		MenuManageVO menuManageVO = new MenuManageVO();
     	menuManageVO.setMenuNo(Integer.parseInt(EgovStringUtil.isNullToString(commandMap.get("menuNo"))));
     	menuManageVO.setAuthorCode(EgovStringUtil.isNullToString(commandMap.get("authorCode")));
+    	LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
+    	menuManageVO.setRegisterId((user == null || user.getUniqId() == null) ? "" : user.getUniqId());
     	List<?> menulist = menuManageService.selectHierarchyMenuList(menuManageVO);
 		modelAndView.addObject(menulist);
 		
@@ -440,21 +441,32 @@ public class MenuController {
     /**
      * 메뉴생성정보를 등록한다
      * 메뉴생성정보 화면으로 이동한다
-     * @param menuManageVO    MenuManageVO
+     * @param menuCreatList    List
 	 * @return result - List
 	 * @exception Exception
 	 */
     @PostMapping(value="/cmm/menucreateInsert.do")
-    public ModelAndView insertMenuCreateManage (@RequestParam String data) throws Exception {
-    	
+    public ModelAndView insertMenuCreateManage (@RequestBody List<MenuCreatVO> menuCreatList) throws Exception {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("jsonView");
-		
+		menuManageService.insertMenuCreat(menuCreatList);
+    	return modelAndView;
+	}
+    
+    /**
+     * 메뉴생성 정보를 삭제한다
+     * 메뉴생성 화면으로 이동한다
+     * @param menuCreatVO    MenuCreatVO
+	 * @return result - List
+	 * @exception Exception
+	 */
+    @PostMapping(value="/cmm/menucreateUpdate.do")
+    public ModelAndView menucreateUpdate(@RequestBody MenuCreatVO menuCreatVO) throws Exception {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("jsonView");
     	LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
-    	//menuManageVO.setRegisterId((user == null || user.getUniqId() == null) ? "" : user.getUniqId());
-    	//menuManageService.insertMenuManage(menuManageVO);
-    	//modelAndView.addObject("upperMenuId", menuManageVO.getUpperMenuId());
-    	
+    	menuCreatVO.setRegisterId((user == null || user.getUniqId() == null) ? "" : user.getUniqId());
+    	menuManageService.updateMenuCreat(menuCreatVO);
     	return modelAndView;
 	}
     
@@ -489,8 +501,12 @@ public class MenuController {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("jsonView");
 		
+    	LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
+    	
 		AuthorGroupVO authorGroupVO = new AuthorGroupVO();
 		authorGroupVO.setUniqId(EgovStringUtil.isNullToString(commandMap.get("uniqId")));
+		authorGroupVO.setMberTyCode(EgovStringUtil.isNullToString(commandMap.get("mberTyCode")));
+		authorGroupVO.setRegisterId((user == null || user.getUniqId() == null) ? "" : user.getUniqId());
 		
 		EgovMap contents = new EgovMap();
 		contents.put("contents", egovAuthorGroupService.selectAuthorGroupList(authorGroupVO));
@@ -508,16 +524,27 @@ public class MenuController {
 	 * @exception Exception
 	 */
     @PostMapping(value="/cmm/authgroupInsert.do")
-    public ModelAndView insertAuthGroupManage(@RequestBody AuthorGroupVO authorGroupVO) throws Exception {
-    	
+    public ModelAndView insertAuthGroupManage(@RequestBody List<AuthorGroup> authorGroupList) throws Exception {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("jsonView");
-		
+		egovAuthorGroupService.insertAuthorGroup(authorGroupList);
+    	return modelAndView;
+	}
+    
+    /**
+     * 권한그룹 정보를 삭제한다
+     * 권한그룹 화면으로 이동한다
+     * @param authorGroup    AuthorGroup
+	 * @return result - List
+	 * @exception Exception
+	 */
+    @PostMapping(value="/cmm/authgroupUpdate.do")
+    public ModelAndView updateAuthGroupManage(@RequestBody AuthorGroup authorGroup) throws Exception {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("jsonView");
     	LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
-    	//menuManageVO.setRegisterId((user == null || user.getUniqId() == null) ? "" : user.getUniqId());
-    	//menuManageService.insertMenuManage(menuManageVO);
-    	//modelAndView.addObject("upperMenuId", menuManageVO.getUpperMenuId());
-    	
+    	authorGroup.setRegisterId((user == null || user.getUniqId() == null) ? "" : user.getUniqId());
+		egovAuthorGroupService.updateAuthorGroup(authorGroup);
     	return modelAndView;
 	}
 }

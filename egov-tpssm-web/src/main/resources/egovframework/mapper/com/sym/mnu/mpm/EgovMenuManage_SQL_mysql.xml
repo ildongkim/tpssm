@@ -24,6 +24,8 @@
 		<result property="progrmFileNm" column="A_PROGRM_FILE_NM"/>
 		<result property="menuDc" column="A_MENU_DC"/>
 		<result property="useAt" column="A_USE_AT"/>
+		<result property="authorCode" column="A_AUTHOR_CODE"/>
+		<result property="registerId" column="A_REGISTER_ID"/>
 		<collection property="_children" javaType="java.util.ArrayList" ofType="java.util.HashMap">
 			<id property="menuNo" column="B_MENU_NO" javaType="int"/>
 			<result property="menuNm" column="B_MENU_NM"/>
@@ -33,6 +35,7 @@
 			<result property="menuDc" column="B_MENU_DC"/>
 			<result property="useAt" column="B_USE_AT"/>
 			<result property="authorCode" column="B_AUTHOR_CODE"/>
+			<result property="registerId" column="B_REGISTER_ID"/>
 			<association property="_attributes" javaType="java.util.HashMap" column="{menuNo=B_MENU_NO, authorCode=B_AUTHOR_CODE}" select="selectMenuCreate"/>
 			<collection property="_children" javaType="java.util.ArrayList" ofType="java.util.HashMap">
 				<id property="menuNo" column="C_MENU_NO" javaType="int"/>
@@ -43,6 +46,7 @@
 				<result property="menuDc" column="C_MENU_DC"/>
 				<result property="useAt" column="C_USE_AT"/>
 				<result property="authorCode" column="C_AUTHOR_CODE"/>
+				<result property="registerId" column="C_REGISTER_ID"/>
 				<association property="_attributes" javaType="java.util.HashMap" column="{menuNo=C_MENU_NO, authorCode=C_AUTHOR_CODE}" select="selectMenuCreate"/>
 				<collection property="_children" javaType="java.util.ArrayList" ofType="java.util.HashMap">
 					<id property="menuNo" column="D_MENU_NO" javaType="int"/>
@@ -53,6 +57,7 @@
 					<result property="menuDc" column="D_MENU_DC"/>
 					<result property="useAt" column="D_USE_AT"/>
 					<result property="authorCode" column="D_AUTHOR_CODE"/>
+					<result property="registerId" column="D_REGISTER_ID"/>
 					<association property="_attributes" javaType="java.util.HashMap" column="{menuNo=D_MENU_NO, authorCode=D_AUTHOR_CODE}" select="selectMenuCreate"/>
 				</collection>
 			</collection>
@@ -61,7 +66,7 @@
 	
 	<select id="selectMenuCreate" resultType="java.util.HashMap">
 		SELECT CASE WHEN COUNT(B.AUTHOR_CODE) > 0 THEN 'true' ELSE 'false' END AS "checked"
-		  FROM COMTNMENUCREATDTLS B WHERE B.MENU_NO = #{menuNo} AND B.AUTHOR_CODE = #{authorCode}
+		  FROM COMTNMENUCREATDTLS B WHERE B.MENU_NO = #{menuNo} AND B.AUTHOR_CODE = #{authorCode} AND B.USE_AT = 'Y'
 	</select>
 	
 	<!-- Add Script : Harry 2022-02-03  -->
@@ -74,6 +79,8 @@
 				  A.PROGRM_FILE_NM AS A_PROGRM_FILE_NM, 
 				  A.MENU_DC AS A_MENU_DC,
 				  A.USE_AT AS A_USE_AT,
+				  #{authorCode} AS A_AUTHOR_CODE,
+				  #{registerId} AS A_REGISTER_ID,
 				  B.MENU_NO AS B_MENU_NO, 
 				  B.MENU_NM AS B_MENU_NM, 
 				  B.UPPER_MENU_NO AS B_UPPER_MENU_NO, 
@@ -82,6 +89,7 @@
 				  B.MENU_DC AS B_MENU_DC,
 				  B.USE_AT AS B_USE_AT,
 				  CASE WHEN B.MENU_NO IS NULL THEN NULL ELSE #{authorCode} END AS B_AUTHOR_CODE,
+				  CASE WHEN B.MENU_NO IS NULL THEN NULL ELSE #{registerId} END AS B_REGISTER_ID,
 				  C.MENU_NO AS C_MENU_NO, 
 				  C.MENU_NM AS C_MENU_NM, 
 				  C.UPPER_MENU_NO AS C_UPPER_MENU_NO, 
@@ -90,6 +98,7 @@
 				  C.MENU_DC AS C_MENU_DC,
 				  C.USE_AT AS C_USE_AT,
 				  CASE WHEN C.MENU_NO IS NULL THEN NULL ELSE #{authorCode} END AS C_AUTHOR_CODE,
+				  CASE WHEN C.MENU_NO IS NULL THEN NULL ELSE #{registerId} END AS C_REGISTER_ID,
 				  D.MENU_NO AS D_MENU_NO, 
 				  D.MENU_NM AS D_MENU_NM, 
 				  D.UPPER_MENU_NO AS D_UPPER_MENU_NO, 
@@ -97,7 +106,8 @@
 				  D.PROGRM_FILE_NM AS D_PROGRM_FILE_NM, 
 				  D.MENU_DC AS D_MENU_DC,
 				  D.USE_AT AS D_USE_AT,
-				  CASE WHEN D.MENU_NO IS NULL THEN NULL ELSE #{authorCode} END AS D_AUTHOR_CODE
+				  CASE WHEN D.MENU_NO IS NULL THEN NULL ELSE #{authorCode} END AS D_AUTHOR_CODE,
+				  CASE WHEN D.MENU_NO IS NULL THEN NULL ELSE #{registerId} END AS D_REGISTER_ID
 			FROM  COMTNMENUINFO A
 			LEFT  OUTER JOIN COMTNMENUINFO B
 			ON    A.MENU_NO = B.UPPER_MENU_NO
@@ -257,5 +267,30 @@
 		  FROM COMTNMENUINFO
 		
 	</select>
-
+    
+    <insert id="insertMenuCreat">
+			MERGE INTO COMTNMENUCREATDTLS A
+			USING db_root ON A.MENU_NO = #{menuNo} AND A.AUTHOR_CODE = #{authorCode}
+			WHEN MATCHED THEN
+				UPDATE SET 
+					USE_AT = 'Y',
+					LAST_UPDT_PNTTM = sysdate(), 
+					LAST_UPDUSR_ID = #{registerId}
+			WHEN NOT MATCHED THEN
+		    	INSERT ( MENU_NO, AUTHOR_CODE, USE_AT, 
+		    		FRST_REGIST_PNTTM, FRST_REGISTER_ID, LAST_UPDT_PNTTM, LAST_UPDUSR_ID)
+				VALUES ( #{menuNo}, #{authorCode}, 'Y',
+					sysdate(), #{registerId}, sysdate(), #{registerId})
+    </insert>
+    
+    <update id="updateMenuCreat">
+        
+		    UPDATE COMTNMENUCREATDTLS SET
+			    USE_AT = 'N',
+			    LAST_UPDT_PNTTM = sysdate(), 
+				LAST_UPDUSR_ID = #{registerId}
+			WHERE AUTHOR_CODE = #{authorCode}
+			  AND USE_AT = 'Y'
+    </update>
+    
 </mapper>

@@ -87,18 +87,27 @@ function searchAuthMberList() {
  * 권한그룹 등록 처리 함수
  ******************************************************** */
 function insertAuthGrpList() {
+	if(gridAuthMber.getFocusedCell()['rowKey']==null) { return; }
+	
+	var sendDate = "";
+	var sendUrl = "";
+	if (gridAuth.getCheckedRows()[0] == null) {
+		sendData = JSON.stringify({ "uniqId" : gridAuthMber.getRow(gridAuthMber.getFocusedCell()['rowKey'])['uniqId'] });
+		sendUrl = "<c:url value='/cmm/authgroupUpdate.do'/>";
+	} else {
+		sendData = JSON.stringify(gridAuth.getCheckedRows());
+		sendUrl = "<c:url value='/cmm/authgroupInsert.do'/>";
+	}
+	
 	if(confirm("<spring:message code="common.save.msg" />")){
 		$.ajax({
-			url : "<c:url value='/cmm/authgroupInsert.do'/>",
-			method :"POST",
-			data : {data : gridAuth.getCheckedRows()},
-			dataType : "application/json",
+			url : sendUrl,
+			method : "POST",
+			data : sendData,
+			dataType : "JSON",
+			contentType : "application/json",
 			success : function(result) {
-				if (result['message'] != null) {
-					confirm(result['message']);	
-				} else {
-					searchAuthMberList();
-				}
+				confirm("<spring:message code='success.common.save' />");
 			},
 			error : function(xhr, status) {
 				confirm("<spring:message code='fail.common.save' />");
@@ -109,10 +118,9 @@ function insertAuthGrpList() {
 		});
 	}
 	
-	//console.log(gridAuth.getCheckedRows());
-	//var gridData = JSON.stringify(gridAuth.getCheckedRows());
-	//console.log(gridData);
-	//console.log(JSON.parse(gridData));
+	return;
+	
+
 }
 
 /* ********************************************************
@@ -120,7 +128,7 @@ function insertAuthGrpList() {
  ******************************************************** */
 function setAuthMberList(data) {
 	if (data == null) { return; }
-	const params = {uniqId:isNullToString(data["esntlId"])};
+	const params = {uniqId:data["uniqId"],mberTyCode:data["mberTyCode"]};
 	gridAuth.readData(1, params);
 }
 

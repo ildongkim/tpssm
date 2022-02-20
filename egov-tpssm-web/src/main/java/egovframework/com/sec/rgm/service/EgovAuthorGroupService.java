@@ -38,6 +38,19 @@ public interface EgovAuthorGroupService {
 	 * @return List<AuthorGroupVO>
 	 * @exception Exception
 	 */
-	public List<?> selectAuthorGroupList(AuthorGroupVO authorGroupVO) throws Exception;	
+	public List<?> selectAuthorGroupList(AuthorGroupVO authorGroupVO) throws Exception;
+	
+	/**
+	 * 그룹에 권한정보를 할당하여 데이터베이스에 등록
+	 * @param authorGroup AuthorGroup
+	 * @exception Exception
+	 */
+	public void insertAuthorGroup(List<AuthorGroup> authorGroupList) throws Exception;
 
+	/**
+	 * 그룹에 권한정보를 할당하여 데이터베이스에 등록
+	 * @param authorGroup AuthorGroup
+	 * @exception Exception
+	 */
+	public void updateAuthorGroup(AuthorGroup authorGroupt) throws Exception;
 }

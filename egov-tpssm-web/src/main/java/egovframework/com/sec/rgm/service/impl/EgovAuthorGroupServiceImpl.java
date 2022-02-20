@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import egovframework.com.cmm.ComDefaultVO;
+import egovframework.com.sec.rgm.service.AuthorGroup;
 import egovframework.com.sec.rgm.service.AuthorGroupVO;
 import egovframework.com.sec.rgm.service.EgovAuthorGroupService;
 import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
@@ -54,4 +55,21 @@ public class EgovAuthorGroupServiceImpl  extends EgovAbstractServiceImpl impleme
 		return authorGroupDAO.selectAuthorGroupList(authorGroupVO);
 	}
 	
+	/**
+	 * 그룹에 권한정보를 할당하여 데이터베이스에 등록
+	 * @param authorGroupList List
+	 * @exception Exception
+	 */
+	public void insertAuthorGroup(List<AuthorGroup> authorGroupList) throws Exception{
+		authorGroupDAO.insertAuthorGroup(authorGroupList);
+	}
+	
+	/**
+	 * 그룹에 권한정보를 할당하여 데이터베이스에 등록
+	 * @param authorGroup AuthorGroup
+	 * @exception Exception
+	 */
+	public void updateAuthorGroup(AuthorGroup authorGroup) throws Exception{
+		authorGroupDAO.updateAuthorGroup(authorGroup);
+	}
 }

@@ -1,9 +1,9 @@
 package egovframework.com.sym.mnu.mpm.service;
 
-import java.io.InputStream;
 import java.util.List;
 
 import egovframework.com.cmm.ComDefaultVO;
+import egovframework.com.sym.mnu.mcm.service.MenuCreatVO;
 
 /**
  * 메뉴관리에 관한 서비스 인터페이스 클래스를 정의한다.
@@ -112,4 +112,18 @@ public interface EgovMenuManageService {
 	 * @exception Exception
 	 */
 	List<?> selectMainMenuLeft(MenuManageVO vo) throws Exception;
+	
+	/**
+	 * 권한에 메뉴정보를 할당하여 데이터베이스에 등록
+	 * @param menuCreatList List
+	 * @exception Exception
+	 */
+	public void insertMenuCreat(List<MenuCreatVO> menuCreatList) throws Exception;
+	
+	/**
+	 * 권한에 메뉴정보를 할당하여 데이터베이스에 등록
+	 * @param menuCreatList List
+	 * @exception Exception
+	 */
+	public void updateMenuCreat(MenuCreatVO menuCreatVO) throws Exception;	
 }

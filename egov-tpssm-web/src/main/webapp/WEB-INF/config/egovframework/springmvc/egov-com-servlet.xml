@@ -28,6 +28,17 @@
         <property name="webBindingInitializer">
             <bean class="egovframework.com.cmm.web.EgovBindingInitializer"/>
         </property>
+		<property name="messageConverters">
+		<list>
+			<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+				<property name="supportedMediaTypes">
+					<list>
+						<value>application/json;charset=UTF-8</value>
+					</list>
+				</property>
+			</bean>
+		</list>
+		</property>
     </bean>
     
     <!-- setting Locale Locale Interceptor 설정하기  -->
@@ -73,7 +84,7 @@
 	<bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
 		<property name="contentType" value="text/html;charset=UTF-8"/>
 	</bean>
-	
+
 	<!-- Facebook 설정 -->
 	<mvc:default-servlet-handler />
 	<!--

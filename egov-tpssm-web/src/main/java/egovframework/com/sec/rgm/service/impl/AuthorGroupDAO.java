@@ -1,11 +1,14 @@
 package egovframework.com.sec.rgm.service.impl;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
 import egovframework.com.cmm.ComDefaultVO;
+import egovframework.com.cmm.service.FileVO;
 import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
+import egovframework.com.sec.rgm.service.AuthorGroup;
 import egovframework.com.sec.rgm.service.AuthorGroupVO;
 
 /**
@@ -46,5 +49,30 @@ public class AuthorGroupDAO extends EgovComAbstractDAO {
 	 */
 	public List<?> selectAuthorGroupList(AuthorGroupVO authorGroupVO) throws Exception {
 		return list("authorGroupDAO.selectAuthorGroupList", authorGroupVO);
+	}
+	
+	/**
+	 * 그룹에 권한정보를 할당하여 데이터베이스에 등록
+	 * @param authorGroupList List
+	 * @exception Exception
+	 */
+	public void insertAuthorGroup(List<AuthorGroup> authorGroupList) throws Exception {
+		Iterator<?> iter = authorGroupList.iterator();
+		
+		AuthorGroup authorGroup = (AuthorGroup) authorGroupList.get(0);
+		update("authorGroupDAO.updateAuthorGroup", authorGroup);
+		
+		while (iter.hasNext()) {
+			insert("authorGroupDAO.insertAuthorGroup", (AuthorGroup) iter.next());
+		}
+	}
+	
+	/**
+	 * 그룹에 권한정보를 할당하여 데이터베이스에 등록
+	 * @param authorGroup AuthorGroup
+	 * @exception Exception
+	 */
+	public void updateAuthorGroup(AuthorGroup authorGroup) throws Exception {
+		update("authorGroupDAO.updateAuthorGroup", authorGroup);
 	}
 }

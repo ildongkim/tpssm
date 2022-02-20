@@ -1,27 +1,21 @@
 package egovframework.com.sym.mnu.mpm.service.impl;
 
-import java.io.InputStream;
-import java.sql.SQLException;
 import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import egovframework.com.cmm.ComDefaultVO;
+import egovframework.com.sym.mnu.mcm.service.MenuCreatVO;
 import egovframework.com.sym.mnu.mpm.service.EgovMenuManageService;
 import egovframework.com.sym.mnu.mpm.service.MenuManageVO;
 import egovframework.com.sym.prm.service.ProgrmManageVO;
 import egovframework.com.sym.prm.service.impl.ProgrmManageDAO;
 import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
-import egovframework.rte.fdl.cmmn.exception.BaseException;
 import egovframework.rte.fdl.excel.EgovExcelService;
 
 /**
@@ -286,5 +280,23 @@ public class EgovMenuManageServiceImpl extends EgovAbstractServiceImpl implement
 	private boolean insertProgrm(ProgrmManageVO vo) throws Exception {
 		progrmManageDAO.insertProgrm(vo);
 		return true;
+	}
+	
+	/**
+	 * 권한에 메뉴정보를 할당하여 데이터베이스에 등록
+	 * @param menuCreatList List
+	 * @exception Exception
+	 */
+	public void insertMenuCreat(List<MenuCreatVO> menuCreatList) throws Exception{
+		menuManageDAO.insertMenuCreat(menuCreatList);
+	}
+	
+	/**
+	 * 그룹에 권한정보를 할당하여 데이터베이스에 등록
+	 * @param authorGroup AuthorGroup
+	 * @exception Exception
+	 */
+	public void updateMenuCreat(MenuCreatVO menuCreatVO) throws Exception{
+		menuManageDAO.updateMenuCreat(menuCreatVO);
 	}
 }

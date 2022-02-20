@@ -65,6 +65,10 @@ public class AuthorGroup extends ComDefaultVO {
 	 * Uniq ID
 	 */
 	private String uniqId;
+	/**
+	 * 등록자 아이디
+	 */
+	private String registerId = "";
 	
 	/**
 	 * authorGroup attribute 를 리턴한다.
@@ -206,8 +210,19 @@ public class AuthorGroup extends ComDefaultVO {
 	public void setUniqId(String uniqId) {
 		this.uniqId = uniqId;
 	}
-	
-
-	
+	/**
+	 * registerId attribute 를 리턴한다.
+	 * @return String
+	 */	
+	public String getRegisterId() {
+		return registerId;
+	}
+	/**
+	 * registerId attribute 값을 설정한다.
+	 * @param registerId String 
+	 */	
+	public void setRegisterId(String registerId) {
+		this.registerId = registerId;
+	}
 	
 }

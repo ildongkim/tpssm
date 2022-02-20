@@ -72,7 +72,7 @@ $(document).ready(function()
  ******************************************************** */
 function searchNoticeList() {
 	//화면처리
-	//setViewSearch();
+	setViewSearch();
 	const params = {"bbsId":"BBS_NOTICE", "searchKeyword":$("#searchKeyword").val()};
 	gridNotice.readData(1, params);
 }
@@ -85,9 +85,10 @@ function setBBSList(data) {
 		document.boardVO.nttSj.value=isNullToString(data["nttSj"]);
 		document.boardVO.frstRegistPnttm.value=isNullToString(data["frstRegistPnttm"]);
 		document.boardVO.frstRegisterNm.value=isNullToString(data["frstRegisterNm"]);
+		document.boardVO.nttCn.value=isNullToString(data["nttCn"]);
 		$(".wTable input").attr("readonly",true);
-		
-		oEditors.getById["nttCn"].exec("PASTE_HTML", [data["nttCn"]])
+		oEditors.getById["nttCn"].exec("SET_IR", [""]);
+		oEditors.getById["nttCn"].exec("PASTE_HTML", [data["nttCn"]]);
 	}
 }
 
@@ -119,6 +120,24 @@ function insertContents(form) {
 			}
 		});
 	}
+}
+
+/* ********************************************************
+ * 조회 후 화면처리
+ ******************************************************** */
+function setViewSearch() {
+	
+	//입력값공백처리
+	$('.wTable input[type=text]').val('');
+	if (document.boardVO.nttCn.value != "") {
+		oEditors.getById["nttCn"].exec("SET_IR", [""]);
+	}
+	
+	//입력항목처리
+	$(".wTable input").attr("readonly",true);
+	
+	//그리드초기화처리
+	gridNotice.clear();
 }
 -->
 </script>

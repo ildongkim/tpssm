@@ -153,3 +153,13 @@ function getHierarchyMenuList(obj) {
 		}
 	}
 }
+
+/* ********************************************************
+ * Grid Selected Row Find Sample
+ ******************************************************** */
+//function setSendData(jarr) {
+//	for(idx in jarr) {
+//		jarr[idx].uniqId = grid.getRow(grid.getFocusedCell()['rowKey'])['uniqId'];
+//	}
+//	return jarr;
+//}

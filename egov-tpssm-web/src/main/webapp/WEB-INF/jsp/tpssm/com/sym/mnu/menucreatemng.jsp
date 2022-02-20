@@ -112,20 +112,27 @@ function setMenuCreatList(data) {
  * 메뉴생성등록 처리 함수
  ******************************************************** */
 function insertMenuCreatList() {
+	if(gridAuth.getFocusedCell()['rowKey']==null) { return; }
+	
+	var sendDate = "";
+	var sendUrl = "";
+	if (gridMenu.getCheckedRows()[0] == null) {
+		sendData = JSON.stringify({ "authorCode" : gridAuth.getRow(gridAuth.getFocusedCell()['rowKey'])['authorCode'] });
+		sendUrl = "<c:url value='/cmm/menucreateUpdate.do'/>";
+	} else {
+		sendData = JSON.stringify(gridMenu.getCheckedRows());
+		sendUrl = "<c:url value='/cmm/menucreateInsert.do'/>";
+	}
+	
 	if(confirm("<spring:message code="common.save.msg" />")){
 		$.ajax({
-			url : "<c:url value='/cmm/menucreateInsert.do'/>",
+			url : sendUrl,
 			method :"POST",
-			data : {data : JSON.stringify(gridMenu.getCheckedRows())},
+			data : sendData,
 			dataType : "JSON",
+			contentType : "application/json",
 			success : function(result) {
-				if (result['message'] != null) {
-					confirm(result['message']);	
-				} else {
-					if (result['upperMenuId'] != null) {
-						searchMenuMngList(result['upperMenuId'], 'I');
-					}
-				}
+				confirm("<spring:message code='success.common.save' />");
 			},
 			error : function(xhr, status) {
 				confirm("<spring:message code='fail.common.save' />");

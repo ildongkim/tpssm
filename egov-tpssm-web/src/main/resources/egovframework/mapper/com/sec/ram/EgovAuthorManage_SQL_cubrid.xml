@@ -8,6 +8,7 @@
             SELECT AUTHOR_CODE, AUTHOR_NM, AUTHOR_DC, AUTHOR_CREAT_DE, USE_AT
               FROM COMTNAUTHORINFO
              WHERE AUTHOR_NM LIKE '%'||#{searchKeyword}||'%'
+               AND AUTHOR_CODE NOT LIKE 'IS_%'
              ORDER BY AUTHOR_CREAT_DE DESC
     </select>
 
