@@ -4,11 +4,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.stereotype.Repository;
 
 import egovframework.com.cmm.ComDefaultVO;
 import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
-import egovframework.com.sym.mnu.mcm.service.MenuCreatVO;
 import egovframework.com.sym.mnu.mpm.service.MenuManageVO;
 /**
  * 메뉴관리, 메뉴생성, 사이트맵 생성에 대한 DAO 클래스를 정의한다.
@@ -45,16 +45,6 @@ public class MenuManageDAO extends EgovComAbstractDAO{
 	}
 	
 	/**
-	 * 계층형메뉴목록을 조회
-	 * @param vo MenuManageVO
-	 * @return List
-	 * @exception Exception
-	 */
-	public List<?> selectHierarchyMenuList(MenuManageVO vo) throws Exception{
-		return selectList("menuManageDAO.selectHierarchyMenuList", vo);
-	}
-	
-	/**
 	 * 메뉴관리목록을 조회
 	 * @param vo MenuManageVO
 	 * @return List
@@ -75,16 +65,6 @@ public class MenuManageDAO extends EgovComAbstractDAO{
 	}
 	
 	/** 하위 : 전자정부프레임워크 기본 로직 */
-	
-    /**
-	 * 메뉴목록관리 총건수를 조회한다.
-	 * @param vo ComDefaultVO
-	 * @return int
-	 * @exception Exception
-	 */
-    public int selectMenuManageListTotCnt(ComDefaultVO vo) {
-        return (Integer)selectOne("menuManageDAO.selectMenuManageListTotCnt_S", vo);
-    }
 
 	/**
 	 * 메뉴목록관리 기본정보를 조회
@@ -106,15 +86,6 @@ public class MenuManageDAO extends EgovComAbstractDAO{
 	}
 
 	/**
-	 * 메뉴목록 기본정보를 수정
-	 * @param vo MenuManageVO
-	 * @exception Exception
-	 */
-	public void updateMenuManage(MenuManageVO vo){
-		update("menuManageDAO.updateMenuManage_S", vo);
-	}
-
-	/**
 	 * 메뉴목록 기본정보를 삭제
 	 * @param vo MenuManageVO
 	 * @exception Exception
@@ -122,29 +93,6 @@ public class MenuManageDAO extends EgovComAbstractDAO{
 	public void deleteMenuManage(MenuManageVO vo){
 		delete("menuManageDAO.deleteMenuManage_S", vo);
 	}
-
-	/**
-	 * 메뉴 전체목록을 조회
-	 * @return list
-	 * @exception Exception
-	 */
-	public List<?> selectMenuList() throws Exception{
-		ComDefaultVO vo  = new ComDefaultVO();
-		return selectList("menuManageDAO.selectMenuListT_D", vo);
-	}
-
-
-	/**
-	 * 메뉴번호 존재여부를 조회
-	 * @param vo MenuManageVO
-	 * @return int
-	 * @exception Exception
-	 */
-	public int selectMenuNoByPk(MenuManageVO vo) throws Exception{
-		return (Integer)selectOne("menuManageDAO.selectMenuNoByPk", vo);
-	}
-
-
 
 	/**
 	 * 메뉴번호를 상위메뉴로 참조하고 있는 메뉴 존재여부를 조회
@@ -156,29 +104,17 @@ public class MenuManageDAO extends EgovComAbstractDAO{
 		return (Integer)selectOne("menuManageDAO.selectUpperMenuNoByPk", vo);
 	}
 
-
 	/**
-	 * 메뉴정보 전체삭제 초기화
-	 * @return boolean
+	 * 메뉴트리 목록을 조회
+	 * @param vo MenuManageVO
+	 * @return List
 	 * @exception Exception
 	 */
-	public boolean deleteAllMenuList(){
-		MenuManageVO vo = new MenuManageVO();
-		insert("menuManageDAO.deleteAllMenuList", vo);
-		return true;
+	public List<?> selectMenuTreeList(MenuManageVO vo) throws Exception{
+		int upperNenuId = (vo.getMenuNo()==0) ? 9999999 : 0;
+		return selectMenuTree(selectList("menuManageDAO.selectMenuTreeList", vo), upperNenuId);
 	}
-
-    /**
-	 * 메뉴정보 존재여부 조회한다.
-	 * @return int
-	 * @exception Exception
-	 */
-    public int selectMenuListTotCnt() {
-    	MenuManageVO vo = new MenuManageVO();
-        return (Integer)selectOne("menuManageDAO.selectMenuListTotCnt", vo);
-    }
-
-
+	
     /**
 	 * MainMenu Left Menu 조회
 	 * @param vo MenuManageVO
@@ -210,23 +146,23 @@ public class MenuManageDAO extends EgovComAbstractDAO{
 	 * @param menuCreatList List
 	 * @exception Exception
 	 */
-	public void insertMenuCreat(List<MenuCreatVO> menuCreatList) throws Exception {
+	public void insertMenuCreat(List<MenuManageVO> menuCreatList) throws Exception {
 		Iterator<?> iter = menuCreatList.iterator();
 		
-		MenuCreatVO menuCreatVO = (MenuCreatVO) menuCreatList.get(0);
-		update("menuManageDAO.updateMenuCreat", menuCreatVO);
+		MenuManageVO menuManageVO = (MenuManageVO) menuCreatList.get(0);
+		update("menuManageDAO.updateMenuCreat", menuManageVO);
 		
 		while (iter.hasNext()) {
-			insert("menuManageDAO.insertMenuCreat", (MenuCreatVO) iter.next());
+			insert("menuManageDAO.insertMenuCreat", (MenuManageVO) iter.next());
 		}
 	}
 	
 	/**
 	 * 권한에 메뉴정보를 할당하여 데이터베이스에 등록
-	 * @param menuCreatVO MenuCreatVO
+	 * @param menuManageVO MenuManageVO
 	 * @exception Exception
 	 */
-	public void updateMenuCreat(MenuCreatVO menuCreatVO) throws Exception {
-		update("menuManageDAO.updateMenuCreat", menuCreatVO);
+	public void updateMenuCreat(MenuManageVO menuManageVO) throws Exception {
+		update("menuManageDAO.updateMenuCreat", menuManageVO);
 	}
 }

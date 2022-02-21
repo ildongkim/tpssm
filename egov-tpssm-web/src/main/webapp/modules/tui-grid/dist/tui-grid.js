@@ -3558,7 +3558,12 @@ function getRowHeaderValue(row, columnName) {
         return row._attributes.rowNum;
     }
     if (column_1.isCheckboxColumn(columnName)) {
-        return row._attributes.checked;
+    	//Modify Script : Harry 2022-02-21
+    	var bChecked = row._attributes.checked;
+    	if (typeof bChecked === 'string') {
+    		bChecked = (bChecked == 'true') ? true : false;
+    	}
+        return bChecked;
     }
     return '';
 }
@@ -3892,7 +3897,14 @@ function create(_a) {
         viewData: viewData,
         sortState: sortState,
         pageOptions: pageOptions,
-        checkedAllRows: rawData.length ? !rawData.some(function (row) { return !row._attributes.checked; }) : false,
+        checkedAllRows: rawData.length ? !rawData.some(function (row) {
+			//Modify Script : Harry 2022-02-21
+			var bChecked = row._attributes.checked;
+			if (typeof bChecked === 'string') {
+				bChecked = (bChecked == 'true') ? true : false;
+			}
+        	return !bChecked;
+        }) : false,
         disabledAllCheckbox: disabled,
         filters: null,
         loadingState: rawData.length ? 'DONE' : 'EMPTY',
@@ -6051,7 +6063,12 @@ function collapse(store, row, recursive) {
 }
 function setCheckedState(row, state) {
     if (row && data_3.isUpdatableRowAttr('checked', row._attributes.checkDisabled)) {
-        row._attributes.checked = state;
+    	//Modify Script : Harry 2022-02-21
+    	var bChecked = state;
+    	if (typeof bChecked === 'string') {
+    		bChecked = (bChecked == 'true') ? true : false;
+    	}
+        row._attributes.checked = bChecked;
     }
 }
 function changeAncestorRowsCheckedState(store, rowKey) {
@@ -6063,7 +6080,12 @@ function changeAncestorRowsCheckedState(store, rowKey) {
             var childRowKeys = tree_1.getChildRowKeys(parentRow);
             var checkedChildRows = childRowKeys.filter(function (childRowKey) {
                 var childRow = data_2.findRowByRowKey(data, column, id, childRowKey);
-                return !!childRow && childRow._attributes.checked;
+                //Modify Script : Harry 2022-02-21
+                var bChecked = childRow._attributes.checked;
+                if (typeof bChecked === 'string') {
+                	bChecked = (bChecked == 'true') ? true : false;
+                }
+                return !!childRow && bChecked;
             });
             var checked = childRowKeys.length === checkedChildRows.length;
             setCheckedState(parentRow, checked);

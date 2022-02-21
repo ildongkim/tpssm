@@ -115,7 +115,7 @@ function searchMenuList() {
 	
 	const menuNo = $("#searchCondition option:selected").val();
 	$.ajax({
-		url : "<c:url value='/cmm/hierarchyMenuList.do'/>",
+		url : "<c:url value='/cmm/selectMenuTreeList.do'/>",
 		method :"POST",
 		data : {"menuNo":menuNo},
 		dataType : "JSON",

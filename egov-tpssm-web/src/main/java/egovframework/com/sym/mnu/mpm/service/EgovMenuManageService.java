@@ -3,7 +3,6 @@ package egovframework.com.sym.mnu.mpm.service;
 import java.util.List;
 
 import egovframework.com.cmm.ComDefaultVO;
-import egovframework.com.sym.mnu.mcm.service.MenuCreatVO;
 
 /**
  * 메뉴관리에 관한 서비스 인터페이스 클래스를 정의한다.
@@ -27,6 +26,14 @@ import egovframework.com.sym.mnu.mcm.service.MenuCreatVO;
 public interface EgovMenuManageService {
 
 	/**
+	 * 메뉴관리 목록을 조회
+	 * @param vo MenuManageVO
+	 * @return List
+	 * @exception Exception
+	 */
+	List<?> selectMenuManageList(MenuManageVO vo) throws Exception;
+	
+	/**
 	 * 하위 메뉴 목록을 조회
 	 * @param vo MenuManageVO
 	 * @return List
@@ -35,20 +42,20 @@ public interface EgovMenuManageService {
 	List<?> selectSubMenuList(MenuManageVO vo) throws Exception;
 	
 	/**
-	 * 계층형 메뉴 목록을 조회
+	 * MainMenu Head Left 조회
 	 * @param vo MenuManageVO
 	 * @return List
 	 * @exception Exception
 	 */
-	List<?> selectHierarchyMenuList(MenuManageVO vo) throws Exception;
+	List<?> selectMainMenuLeft(MenuManageVO vo) throws Exception;
 	
 	/**
-	 * 메뉴관리 목록을 조회
+	 * 메뉴트리 목록을 조회
 	 * @param vo MenuManageVO
 	 * @return List
 	 * @exception Exception
 	 */
-	List<?> selectMenuManageList(MenuManageVO vo) throws Exception;
+	List<?> selectMenuTreeList(MenuManageVO vo) throws Exception;
 	
 	/**
 	 * 신규 메뉴 번호를 조회
@@ -67,21 +74,11 @@ public interface EgovMenuManageService {
 	MenuManageVO selectMenuManage(ComDefaultVO vo) throws Exception;
 
 	/**
-	 * 메뉴목록 총건수를 조회한다.
+	 * 상위메뉴 존재 여부를 조회한다.
 	 * @param vo ComDefaultVO
 	 * @return int
 	 * @exception Exception
 	 */
-	int selectMenuManageListTotCnt(ComDefaultVO vo) throws Exception;
-
-	/**
-	 * 메뉴번호 존재 여부를 조회한다.
-	 * @param vo ComDefaultVO
-	 * @return int
-	 * @exception Exception
-	 */
-	int selectMenuNoByPk(MenuManageVO vo) throws Exception;
-
 	int selectUpperMenuNoByPk(MenuManageVO vo) throws Exception;
 
 	/**
@@ -99,31 +96,16 @@ public interface EgovMenuManageService {
 	void deleteMenuManage(MenuManageVO vo) throws Exception;
 	
 	/**
-	 * 메뉴 목록을 조회
-	 * @return List
+	 * 권한에 메뉴정보를 할당하여 데이터베이스에 등록
+	 * @param menuCreatList List
 	 * @exception Exception
 	 */
-	List<?> selectMenuList() throws Exception;
-	
-	/**
-	 * MainMenu Head Left 조회
-	 * @param vo MenuManageVO
-	 * @return List
-	 * @exception Exception
-	 */
-	List<?> selectMainMenuLeft(MenuManageVO vo) throws Exception;
+	public void insertMenuCreat(List<MenuManageVO> menuCreatList) throws Exception;
 	
 	/**
 	 * 권한에 메뉴정보를 할당하여 데이터베이스에 등록
 	 * @param menuCreatList List
 	 * @exception Exception
 	 */
-	public void insertMenuCreat(List<MenuCreatVO> menuCreatList) throws Exception;
-	
-	/**
-	 * 권한에 메뉴정보를 할당하여 데이터베이스에 등록
-	 * @param menuCreatList List
-	 * @exception Exception
-	 */
-	public void updateMenuCreat(MenuCreatVO menuCreatVO) throws Exception;	
+	public void updateMenuCreat(MenuManageVO menuManageVO) throws Exception;	
 }

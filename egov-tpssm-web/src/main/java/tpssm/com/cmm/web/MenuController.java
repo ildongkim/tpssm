@@ -28,8 +28,6 @@ import egovframework.com.sec.ram.service.EgovAuthorManageService;
 import egovframework.com.sec.rgm.service.AuthorGroup;
 import egovframework.com.sec.rgm.service.AuthorGroupVO;
 import egovframework.com.sec.rgm.service.EgovAuthorGroupService;
-import egovframework.com.sym.mnu.mcm.service.EgovMenuCreateManageService;
-import egovframework.com.sym.mnu.mcm.service.MenuCreatVO;
 import egovframework.com.sym.mnu.mpm.service.EgovMenuManageService;
 import egovframework.com.sym.mnu.mpm.service.MenuManageVO;
 import egovframework.com.sym.prm.service.EgovProgrmManageService;
@@ -79,10 +77,6 @@ public class MenuController {
     /** EgovAuthorManageService */
 	@Resource(name = "egovAuthorManageService")
 	private EgovAuthorManageService egovAuthorManageService;
-	
-	/** EgovMenuManageService */
-	@Resource(name = "meunCreateManageService")
-	private EgovMenuCreateManageService menuCreateManageService;
 	
     @Resource(name = "egovAuthorGroupService")
     private EgovAuthorGroupService egovAuthorGroupService;
@@ -151,21 +145,21 @@ public class MenuController {
 	}
 	
 	/**
-	 * 상위 메뉴 목록을 조회
+	 * 메뉴트리 목록을 조회
 	 * @return result - List
 	 * @exception Exception
 	 */
-	@PostMapping(value="/cmm/hierarchyMenuList.do")
-	public ModelAndView selectHierarchyMenuList(@RequestParam Map<String, Object> commandMap) throws Exception {
+	@PostMapping(value="/cmm/selectMenuTreeList.do")
+	public ModelAndView selectMenuTreeList(@RequestParam Map<String, Object> commandMap) throws Exception {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("jsonView");
 
 		MenuManageVO menuManageVO = new MenuManageVO();
-    	menuManageVO.setMenuNo(Integer.parseInt(EgovStringUtil.isNullToString(commandMap.get("menuNo"))));
     	menuManageVO.setAuthorCode(EgovStringUtil.isNullToString(commandMap.get("authorCode")));
+    	menuManageVO.setMenuNo(Integer.parseInt(EgovStringUtil.isNullToString(commandMap.get("menuNo"))));
     	LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
     	menuManageVO.setRegisterId((user == null || user.getUniqId() == null) ? "" : user.getUniqId());
-    	List<?> menulist = menuManageService.selectHierarchyMenuList(menuManageVO);
+    	List<?> menulist = menuManageService.selectMenuTreeList(menuManageVO);
 		modelAndView.addObject(menulist);
 		
 		return modelAndView;
@@ -422,22 +416,6 @@ public class MenuController {
     	return modelAndView;
     }
     
-	/**
-	 * 메뉴생성 정보를 조회
-	 * @return result - List
-	 * @exception Exception
-	 */
-	@PostMapping(value="/cmm/menuCreatList.do")
-	public ModelAndView selectMenuCreatList(@RequestParam Map<String, Object> commandMap) throws Exception {
-		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("jsonView");
-		MenuCreatVO menuCreatVO = new MenuCreatVO();
-		menuCreatVO.setAuthorCode(EgovStringUtil.isNullToString(commandMap.get("authorCode")));
-    	List<?> menuCreatList = menuCreateManageService.selectMenuCreatList(menuCreatVO);
-		modelAndView.addObject(menuCreatList);
-		return modelAndView;
-	}
-    
     /**
      * 메뉴생성정보를 등록한다
      * 메뉴생성정보 화면으로 이동한다
@@ -446,7 +424,7 @@ public class MenuController {
 	 * @exception Exception
 	 */
     @PostMapping(value="/cmm/menucreateInsert.do")
-    public ModelAndView insertMenuCreateManage (@RequestBody List<MenuCreatVO> menuCreatList) throws Exception {
+    public ModelAndView insertMenuCreateManage (@RequestBody List<MenuManageVO> menuCreatList) throws Exception {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("jsonView");
 		menuManageService.insertMenuCreat(menuCreatList);
@@ -456,17 +434,17 @@ public class MenuController {
     /**
      * 메뉴생성 정보를 삭제한다
      * 메뉴생성 화면으로 이동한다
-     * @param menuCreatVO    MenuCreatVO
+     * @param menuManageVO    MenuManageVO
 	 * @return result - List
 	 * @exception Exception
 	 */
     @PostMapping(value="/cmm/menucreateUpdate.do")
-    public ModelAndView menucreateUpdate(@RequestBody MenuCreatVO menuCreatVO) throws Exception {
+    public ModelAndView menucreateUpdate(@RequestBody MenuManageVO menuManageVO) throws Exception {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("jsonView");
     	LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
-    	menuCreatVO.setRegisterId((user == null || user.getUniqId() == null) ? "" : user.getUniqId());
-    	menuManageService.updateMenuCreat(menuCreatVO);
+    	menuManageVO.setRegisterId((user == null || user.getUniqId() == null) ? "" : user.getUniqId());
+    	menuManageService.updateMenuCreat(menuManageVO);
     	return modelAndView;
 	}
     

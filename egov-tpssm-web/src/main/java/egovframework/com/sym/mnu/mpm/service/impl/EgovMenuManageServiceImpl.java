@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import egovframework.com.cmm.ComDefaultVO;
-import egovframework.com.sym.mnu.mcm.service.MenuCreatVO;
 import egovframework.com.sym.mnu.mpm.service.EgovMenuManageService;
 import egovframework.com.sym.mnu.mpm.service.MenuManageVO;
 import egovframework.com.sym.prm.service.ProgrmManageVO;
@@ -54,7 +53,15 @@ public class EgovMenuManageServiceImpl extends EgovAbstractServiceImpl implement
 	@Resource(name = "multipartResolver")
 	CommonsMultipartResolver mailmultipartResolver;
 
-	/** 하위 : 개발 시스템 추가 로직 */
+	/**
+	 * 메뉴관리 목록을 조회
+	 * @param vo MenuManageVO
+	 * @return List
+	 * @exception Exception
+	 */
+	public List<?> selectMenuManageList(MenuManageVO vo) throws Exception {
+		return menuManageDAO.selectMenuManageList(vo);
+	}
 	
 	/**
 	 * 하위 메뉴 목록을 조회
@@ -67,23 +74,23 @@ public class EgovMenuManageServiceImpl extends EgovAbstractServiceImpl implement
 	}
 	
 	/**
-	 * 계층형 메뉴 목록을 조회
+	 * MainMenu Head Left 조회
 	 * @param vo MenuManageVO
 	 * @return List
 	 * @exception Exception
 	 */
-	public List<?> selectHierarchyMenuList(MenuManageVO vo) throws Exception {
-		return menuManageDAO.selectHierarchyMenuList(vo);
+	public List<?> selectMainMenuLeft(MenuManageVO vo) throws Exception {
+		return menuManageDAO.selectMainMenuLeft(vo);
 	}
 	
 	/**
-	 * 메뉴관리 목록을 조회
+	 * 메뉴트리 목록을 조회
 	 * @param vo MenuManageVO
 	 * @return List
 	 * @exception Exception
 	 */
-	public List<?> selectMenuManageList(MenuManageVO vo) throws Exception {
-		return menuManageDAO.selectMenuManageList(vo);
+	public List<?> selectMenuTreeList(MenuManageVO vo) throws Exception {
+		return menuManageDAO.selectMenuTreeList(vo);
 	}
 	
 	/**
@@ -96,8 +103,6 @@ public class EgovMenuManageServiceImpl extends EgovAbstractServiceImpl implement
 		return menuManageDAO.selectNextMenuInfo(vo);
 	}
 	
-	/** 하위 : 전자정부프레임워크 기본 로직 */
-	
 	/**
 	 * 메뉴 상세정보를 조회
 	 * @param vo ComDefaultVO
@@ -106,16 +111,6 @@ public class EgovMenuManageServiceImpl extends EgovAbstractServiceImpl implement
 	 */
 	public MenuManageVO selectMenuManage(ComDefaultVO vo) throws Exception {
 		return menuManageDAO.selectMenuManage(vo);
-	}
-
-	/**
-	 * 메뉴목록 총건수를 조회한다.
-	 * @param vo ComDefaultVO
-	 * @return int
-	 * @exception Exception
-	 */
-	public int selectMenuManageListTotCnt(ComDefaultVO vo) throws Exception {
-		return menuManageDAO.selectMenuManageListTotCnt(vo);
 	}
 
 	/**
@@ -129,31 +124,12 @@ public class EgovMenuManageServiceImpl extends EgovAbstractServiceImpl implement
 	}
 
 	/**
-	 * 메뉴번호 존재 여부를 조회한다.
-	 * @param vo ComDefaultVO
-	 * @return int
-	 * @exception Exception
-	 */
-	public int selectMenuNoByPk(MenuManageVO vo) throws Exception {
-		return menuManageDAO.selectMenuNoByPk(vo);
-	}
-
-	/**
 	 * 메뉴 정보를 등록
 	 * @param vo MenuManageVO
 	 * @exception Exception
 	 */
 	public void insertMenuManage(MenuManageVO vo) throws Exception {
 		menuManageDAO.insertMenuManage(vo);
-	}
-
-	/**
-	 * 메뉴 정보를 수정
-	 * @param vo MenuManageVO
-	 * @exception Exception
-	 */
-	public void updateMenuManage(MenuManageVO vo) throws Exception {
-		menuManageDAO.updateMenuManage(vo);
 	}
 
 	/**
@@ -185,29 +161,6 @@ public class EgovMenuManageServiceImpl extends EgovAbstractServiceImpl implement
 		}
 	}
 
-	/*  메뉴 생성 관리  */
-
-	/**
-	 * 메뉴 목록을 조회
-	 * @return List
-	 * @exception Exception
-	 */
-	public List<?> selectMenuList() throws Exception {
-		return menuManageDAO.selectMenuList();
-	}
-
-	/*### 메뉴관련 프로세스 ###*/
-
-	/**
-	 * MainMenu Head Left 조회
-	 * @param vo MenuManageVO
-	 * @return List
-	 * @exception Exception
-	 */
-	public List<?> selectMainMenuLeft(MenuManageVO vo) throws Exception {
-		return menuManageDAO.selectMainMenuLeft(vo);
-	}
-
 	/**
 	 * 프로그램 정보를 등록
 	 * @param  vo ProgrmManageVO
@@ -224,7 +177,7 @@ public class EgovMenuManageServiceImpl extends EgovAbstractServiceImpl implement
 	 * @param menuCreatList List
 	 * @exception Exception
 	 */
-	public void insertMenuCreat(List<MenuCreatVO> menuCreatList) throws Exception{
+	public void insertMenuCreat(List<MenuManageVO> menuCreatList) throws Exception{
 		menuManageDAO.insertMenuCreat(menuCreatList);
 	}
 	
@@ -233,7 +186,7 @@ public class EgovMenuManageServiceImpl extends EgovAbstractServiceImpl implement
 	 * @param authorGroup AuthorGroup
 	 * @exception Exception
 	 */
-	public void updateMenuCreat(MenuCreatVO menuCreatVO) throws Exception{
-		menuManageDAO.updateMenuCreat(menuCreatVO);
+	public void updateMenuCreat(MenuManageVO menuManageVO) throws Exception{
+		menuManageDAO.updateMenuCreat(menuManageVO);
 	}
 }
