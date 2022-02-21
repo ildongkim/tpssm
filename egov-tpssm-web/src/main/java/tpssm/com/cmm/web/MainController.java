@@ -99,19 +99,10 @@ public class MainController implements ApplicationContextAware, InitializingBean
 	 */
 	@RequestMapping("/cmm/mainleft.do")
 	public String left(ModelMap model) throws Exception {
-    	LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
-    	
 		MenuManageVO menuManageVO = new MenuManageVO();
-    	menuManageVO.setTmpId(user == null ? "" : EgovStringUtil.isNullToString(user.getId()));
-    	menuManageVO.setTmpPassword(user == null ? "" : EgovStringUtil.isNullToString(user.getPassword()));
-    	menuManageVO.setTmpUserSe(user == null ? "" : EgovStringUtil.isNullToString(user.getUserSe()));
-    	menuManageVO.setTmpName(user == null ? "" : EgovStringUtil.isNullToString(user.getName()));
-    	menuManageVO.setTmpEmail(user == null ? "" : EgovStringUtil.isNullToString(user.getEmail()));
-    	menuManageVO.setTmpOrgnztId(user == null ? "" : EgovStringUtil.isNullToString(user.getOrgnztId()));
+		LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
     	menuManageVO.setTmpUniqId(user == null ? "" : EgovStringUtil.isNullToString(user.getUniqId()));
-    	List<?> list_menulist = menuManageService.selectMainMenuLeft(menuManageVO);
-		model.addAttribute("list_menulist", list_menulist);
-		
+		model.addAttribute("list_menulist", menuManageService.selectMainMenuLeft(menuManageVO));
 		return "tpssm/com/main_left";
 	}
 	

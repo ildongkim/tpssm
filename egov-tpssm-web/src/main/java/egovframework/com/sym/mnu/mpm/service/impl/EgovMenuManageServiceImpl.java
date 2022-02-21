@@ -197,15 +197,6 @@ public class EgovMenuManageServiceImpl extends EgovAbstractServiceImpl implement
 	}
 
 	/*### 메뉴관련 프로세스 ###*/
-	/**
-	 * MainMenu Head Menu 조회
-	 * @param vo MenuManageVO
-	 * @return List
-	 * @exception Exception
-	 */
-	public List<?> selectMainMenuHead(MenuManageVO vo) throws Exception {
-		return menuManageDAO.selectMainMenuHead(vo);
-	}
 
 	/**
 	 * MainMenu Head Left 조회
@@ -215,60 +206,6 @@ public class EgovMenuManageServiceImpl extends EgovAbstractServiceImpl implement
 	 */
 	public List<?> selectMainMenuLeft(MenuManageVO vo) throws Exception {
 		return menuManageDAO.selectMainMenuLeft(vo);
-	}
-
-	/**
-	 * MainMenu Head MenuURL 조회
-	 * @param  iMenuNo  int
-	 * @param  sUniqId  String
-	 * @return String
-	 * @exception Exception
-	 */
-	public String selectLastMenuURL(int iMenuNo, String sUniqId) throws Exception {
-		MenuManageVO vo = new MenuManageVO();
-		vo.setMenuNo(selectLastMenuNo(iMenuNo, sUniqId));
-		return menuManageDAO.selectLastMenuURL(vo);
-	}
-
-	/**
-	 * MainMenu Head Menu MenuNo 조회
-	 * @param  iMenuNo  int
-	 * @param  sUniqId  String
-	 * @return String
-	 * @exception Exception
-	 */
-	private int selectLastMenuNo(int iMenuNo, String sUniqId) throws Exception {
-		int chkMenuNo = iMenuNo;
-		int cntMenuNo = 0;
-		for (; chkMenuNo > -1;) {
-			chkMenuNo = selectLastMenuNoChk(chkMenuNo, sUniqId);
-			if (chkMenuNo > 0) {
-				cntMenuNo = chkMenuNo;
-			}
-		}
-		return cntMenuNo;
-	}
-
-	/**
-	 * MainMenu Head Menu Last MenuNo 조회
-	 * @param  iMenuNo  int
-	 * @param  sUniqId  String
-	 * @return String
-	 * @exception Exception
-	 */
-	private int selectLastMenuNoChk(int iMenuNo, String sUniqId) throws Exception {
-		MenuManageVO vo = new MenuManageVO();
-		vo.setMenuNo(iMenuNo);
-		vo.setTempValue(sUniqId);
-		int chkMenuNo = 0;
-		int cntMenuNo = 0;
-		cntMenuNo = menuManageDAO.selectLastMenuNoCnt(vo);
-		if (cntMenuNo > 0) {
-			chkMenuNo = menuManageDAO.selectLastMenuNo(vo);
-		} else {
-			chkMenuNo = -1;
-		}
-		return chkMenuNo;
 	}
 
 	/**

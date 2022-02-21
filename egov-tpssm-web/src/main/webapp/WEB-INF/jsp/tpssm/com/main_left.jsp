@@ -26,12 +26,14 @@ $(function() {
 <div id="wrap">
 <div class="lnb">
 <h1>전체메뉴</h1>
-<div class="subtitle"><a href="#">환경설정</a></div>
-<ul class="sub" style="display:none;">
 <c:forEach var="result" items="${list_menulist}" varStatus="status" >
-<li><a href="${pageContext.request.contextPath}<c:out value="${result.chkURL}"/>" target="_content" class="link">${result.menuNm}</a></li>
-</c:forEach>
+<div class="subtitle"><a href="#">${result.menuNm}</a></div>
+<ul class="sub" style="display:none;">
+	<c:forEach var="result" items="${result._children}" varStatus="status" >
+	<li><a href="${pageContext.request.contextPath}<c:out value="${result.linkUrl}"/>" target="_content" class="link">${result.menuNm}</a></li>
+	</c:forEach>
 </ul>
+</c:forEach>
 </div>
 </div>
 </body>

@@ -43,6 +43,8 @@ public class MenuManageVO extends DefaultVO {
    private   String   progrmFileNm;
    /** 프로그램명 */
    private   String   progrmNm;
+   /** 메뉴URL */
+   private   String   linkUrl;
    
    /** 하위메뉴 */
    private List<?> _children;
@@ -372,6 +374,20 @@ public class MenuManageVO extends DefaultVO {
 	 */	
 	public void setProgrmNm(String progrmNm) {
 		this.progrmNm = progrmNm;
+	}
+	/**
+	 * linkUrl attribute를 리턴한다.
+	 * @return String
+	 */
+	public String getLinkUrl() {
+		return linkUrl;
+	}
+	/**
+	 * linkUrl attribute 값을 설정한다.
+	 * @param linkUrl String
+	 */	
+	public void setLinkUrl(String linkUrl) {
+		this.linkUrl = linkUrl;
 	}
 	/**
 	 * _children attribute를 리턴한다.

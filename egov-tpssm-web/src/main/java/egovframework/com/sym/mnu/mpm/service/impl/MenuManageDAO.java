@@ -2,12 +2,12 @@ package egovframework.com.sym.mnu.mpm.service.impl;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 
 import egovframework.com.cmm.ComDefaultVO;
 import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
-import egovframework.com.sec.rgm.service.AuthorGroup;
 import egovframework.com.sym.mnu.mcm.service.MenuCreatVO;
 import egovframework.com.sym.mnu.mpm.service.MenuManageVO;
 /**
@@ -179,58 +179,33 @@ public class MenuManageDAO extends EgovComAbstractDAO{
     }
 
 
-	/*### 메뉴관련 프로세스 ###*/
-	/**
-	 * MainMenu Head Menu 조회
-	 * @param vo MenuManageVO
-	 * @return List
-	 * @exception Exception
-	 */
-	public List<?> selectMainMenuHead(MenuManageVO vo) throws Exception{
-		return selectList("menuManageDAO.selectMainMenuHead", vo);
-	}
-
-	/**
+    /**
 	 * MainMenu Left Menu 조회
 	 * @param vo MenuManageVO
 	 * @return List
 	 * @exception Exception
 	 */
 	public List<?> selectMainMenuLeft(MenuManageVO vo) throws Exception{
-		return selectList("menuManageDAO.selectMainMenuLeft", vo);
-	}
-
-	/**
-	 * MainMenu Head MenuURL 조회
-	 * @param vo MenuManageVO
-	 * @return  String
-	 * @exception Exception
-	 */
-	public String selectLastMenuURL(MenuManageVO vo) throws Exception{
-		return (String)selectOne("menuManageDAO.selectLastMenuURL", vo);
-	}
-
-	/**
-	 * MainMenu Left Menu 조회
-	 * @param vo MenuManageVO
-	 * @return int
-	 * @exception Exception
-	 */
-	public int selectLastMenuNo(MenuManageVO vo) throws Exception{
-		return (Integer)selectOne("menuManageDAO.selectLastMenuNo", vo);
-	}
-
-	/**
-	 * MainMenu Left Menu 조회
-	 * @param vo MenuManageVO
-	 * @return int
-	 * @exception Exception
-	 */
-	public int selectLastMenuNoCnt(MenuManageVO vo) throws Exception{
-		return (Integer)selectOne("menuManageDAO.selectLastMenuNoCnt", vo);
+		return selectMenuTree(selectList("menuManageDAO.selectMainMenuLeft", vo), 0);
 	}
 	
-	/*
+    /**
+	 * Menu Tree 조회
+	 * @param vo List
+	 * @return List
+	 * @exception Exception
+	 */
+	private List<?> selectMenuTree(List<MenuManageVO> list, int uppperMenuId) throws Exception {
+		List<MenuManageVO> _chidren = list.stream()
+				.filter(s -> s.getUpperMenuId() == uppperMenuId)
+				.collect(Collectors.toList());
+		for (MenuManageVO _child : _chidren) {
+			_child.set_children(selectMenuTree(list, _child.getMenuNo()));
+		}
+		return _chidren;
+	}
+	
+	/**
 	 * 권한에 메뉴정보를 할당하여 데이터베이스에 등록
 	 * @param menuCreatList List
 	 * @exception Exception
