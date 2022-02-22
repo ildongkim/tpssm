@@ -94,13 +94,6 @@ public class MenuController {
 	 */
 	@RequestMapping("/cmm/menumng.do")
 	public String menuMng(ModelMap model) throws Exception  {
-
-		// 1. 상위메뉴정보
-		MenuManageVO menuManageVO = new MenuManageVO();
-		menuManageVO.setUpperMenuId(0);
-		List<?> menulist = menuManageService.selectSubMenuList(menuManageVO);
-		model.addAttribute("upperMenuList", menulist);
-		
 		return "tpssm/com/sym/mnu/menumng";
 	}
 	
@@ -156,7 +149,7 @@ public class MenuController {
 
 		MenuManageVO menuManageVO = new MenuManageVO();
     	menuManageVO.setAuthorCode(EgovStringUtil.isNullToString(commandMap.get("authorCode")));
-    	menuManageVO.setMenuNo(Integer.parseInt(EgovStringUtil.isNullToString(commandMap.get("menuNo"))));
+    	menuManageVO.setUpperMenuId(Integer.parseInt(EgovStringUtil.isNullToString(commandMap.get("upperMenuId"))));
     	LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
     	menuManageVO.setRegisterId((user == null || user.getUniqId() == null) ? "" : user.getUniqId());
     	List<?> menulist = menuManageService.selectMenuTreeList(menuManageVO);
@@ -428,23 +421,6 @@ public class MenuController {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("jsonView");
 		menuManageService.insertMenuCreat(menuCreatList);
-    	return modelAndView;
-	}
-    
-    /**
-     * 메뉴생성 정보를 삭제한다
-     * 메뉴생성 화면으로 이동한다
-     * @param menuManageVO    MenuManageVO
-	 * @return result - List
-	 * @exception Exception
-	 */
-    @PostMapping(value="/cmm/menucreateUpdate.do")
-    public ModelAndView menucreateUpdate(@RequestBody MenuManageVO menuManageVO) throws Exception {
-		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("jsonView");
-    	LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
-    	menuManageVO.setRegisterId((user == null || user.getUniqId() == null) ? "" : user.getUniqId());
-    	menuManageService.updateMenuCreat(menuManageVO);
     	return modelAndView;
 	}
     

@@ -64,16 +64,6 @@ public class EgovMenuManageServiceImpl extends EgovAbstractServiceImpl implement
 	}
 	
 	/**
-	 * 하위 메뉴 목록을 조회
-	 * @param vo MenuManageVO
-	 * @return List
-	 * @exception Exception
-	 */
-	public List<?> selectSubMenuList(MenuManageVO vo) throws Exception {
-		return menuManageDAO.selectSubMenuList(vo);
-	}
-	
-	/**
 	 * MainMenu Head Left 조회
 	 * @param vo MenuManageVO
 	 * @return List
@@ -179,14 +169,5 @@ public class EgovMenuManageServiceImpl extends EgovAbstractServiceImpl implement
 	 */
 	public void insertMenuCreat(List<MenuManageVO> menuCreatList) throws Exception{
 		menuManageDAO.insertMenuCreat(menuCreatList);
-	}
-	
-	/**
-	 * 그룹에 권한정보를 할당하여 데이터베이스에 등록
-	 * @param authorGroup AuthorGroup
-	 * @exception Exception
-	 */
-	public void updateMenuCreat(MenuManageVO menuManageVO) throws Exception{
-		menuManageDAO.updateMenuCreat(menuManageVO);
 	}
 }

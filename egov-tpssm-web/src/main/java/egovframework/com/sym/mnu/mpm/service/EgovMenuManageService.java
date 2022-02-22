@@ -34,14 +34,6 @@ public interface EgovMenuManageService {
 	List<?> selectMenuManageList(MenuManageVO vo) throws Exception;
 	
 	/**
-	 * 하위 메뉴 목록을 조회
-	 * @param vo MenuManageVO
-	 * @return List
-	 * @exception Exception
-	 */
-	List<?> selectSubMenuList(MenuManageVO vo) throws Exception;
-	
-	/**
 	 * MainMenu Head Left 조회
 	 * @param vo MenuManageVO
 	 * @return List
@@ -101,11 +93,4 @@ public interface EgovMenuManageService {
 	 * @exception Exception
 	 */
 	public void insertMenuCreat(List<MenuManageVO> menuCreatList) throws Exception;
-	
-	/**
-	 * 권한에 메뉴정보를 할당하여 데이터베이스에 등록
-	 * @param menuCreatList List
-	 * @exception Exception
-	 */
-	public void updateMenuCreat(MenuManageVO menuManageVO) throws Exception;	
 }

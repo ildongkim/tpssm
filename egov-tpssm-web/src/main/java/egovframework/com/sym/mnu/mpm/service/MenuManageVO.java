@@ -26,7 +26,7 @@ public class MenuManageVO extends DefaultVO {
 
    /** 메뉴정보 */
    /** 메뉴번호 */
-   private   int      menuNo=0;
+   private   int      menuNo;
    /** 메뉴순서 */
    private   int      menuOrdr;
    /** 메뉴명 */
@@ -48,8 +48,6 @@ public class MenuManageVO extends DefaultVO {
    
    /** 하위메뉴 */
    private List<?> _children;
-   /** 메뉴속성 */
-   private Map<?,?> _attributes;
 
    /** 사이트맵 */
    /** 생성자ID **/
@@ -404,20 +402,6 @@ public class MenuManageVO extends DefaultVO {
 	 */	
 	public void set_children(List<?> _children) {
 		this._children = _children;
-	}
-	/**
-	 * _attributes attribute를 리턴한다.
-	 * @return List
-	 */
-	public Map<?,?> get_attributes() {
-		return _attributes;
-	}
-	/**
-	 * _attributes attribute 값을 설정한다.
-	 * @param _attributes List
-	 */
-	public void set_attributes(Map<?,?> _attributes) {
-		this._attributes = _attributes;
 	}
 	
 }

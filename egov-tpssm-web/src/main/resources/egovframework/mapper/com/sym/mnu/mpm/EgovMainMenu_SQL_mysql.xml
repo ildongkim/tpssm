@@ -3,22 +3,7 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="menuManageDAO">
 	
-    <resultMap id="selectMenuTreeMap" type="egovframework.com.sym.mnu.mpm.service.MenuManageVO">
-        <result property="menuNo" column="MENU_NO"/>
-		<result property="menuOrdr" column="MENU_ORDR"/>
-		<result property="menuNm" column="MENU_NM"/>
-		<result property="upperMenuId" column="UPPER_MENU_ID"/>
-		<result property="authorCode" column="AUTHOR_CODE"/>
-		<result property="registerId" column="REGISTER_ID"/>
-		<association property="_attributes" javaType="java.util.HashMap" column="{menuNo=MENU_NO, authorCode=AUTHOR_CODE}" select="selectMenuChecked"/>
-    </resultMap>
-    
-	<select id="selectMenuChecked" resultType="java.util.HashMap">
-		SELECT CASE WHEN COUNT(B.AUTHOR_CODE) > 0 THEN 'true' ELSE 'false' END AS "checked"
-		  FROM COMTNMENUCREATDTLS B WHERE B.MENU_NO = #{menuNo} AND B.AUTHOR_CODE = #{authorCode} AND B.USE_AT = 'Y'
-	</select>
-	
-	<select id="selectMenuTreeList" parameterType="egovframework.com.sym.mnu.mpm.service.MenuManageVO" resultMap="selectMenuTreeMap">
+	<select id="selectMenuTreeList" parameterType="egovframework.com.sym.mnu.mpm.service.MenuManageVO" resultType="egovframework.com.sym.mnu.mpm.service.MenuManageVO">
 		 
 			SELECT
 			       A.MENU_NO
@@ -27,11 +12,10 @@
 				 , case when A.MENU_NO = 0 then 9999999 else A.UPPER_MENU_NO end AS UPPER_MENU_ID
 				 , #{authorCode} AS AUTHOR_CODE
 				 , #{registerId} AS REGISTER_ID
+				 , IFNULL(B.USE_AT, 'N') USE_AT
 			FROM   COMTNMENUINFO A
-			WHERE  A.USE_AT = 'Y'
-			<if test='menuNo != null and menuNo != ""'>
-			AND    ( A.MENU_NO = #{menuNo} OR A.UPPER_MENU_NO = #{menuNo} ) 
-			</if>
+			LEFT OUTER JOIN COMTNMENUCREATDTLS B
+			ON A.MENU_NO = B.MENU_NO AND B.AUTHOR_CODE = #{authorCode}
 			ORDER BY A.MENU_ORDR
 	</select>
 			
@@ -68,14 +52,9 @@
 				LAST_UPDUSR_ID = #{registerId}
     </insert>
     
-    <update id="updateMenuCreat">
-        
-		    UPDATE COMTNMENUCREATDTLS SET
-			    USE_AT = 'N',
-			    LAST_UPDT_PNTTM = sysdate(), 
-				LAST_UPDUSR_ID = #{registerId}
-			WHERE AUTHOR_CODE = #{authorCode}
-			  AND USE_AT = 'Y'
-    </update>
+    <delete id="deleteMenuCreat">
+		    DELETE FROM COMTNMENUCREATDTLS 
+		    WHERE AUTHOR_CODE = #{authorCode} AND MENU_NO = #{menuNo} AND MENU_NO != 0
+    </delete>
     
 </mapper>

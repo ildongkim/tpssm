@@ -32,18 +32,6 @@ import egovframework.com.sym.mnu.mpm.service.MenuManageVO;
 @Repository("menuManageDAO")
 public class MenuManageDAO extends EgovComAbstractDAO{
 
-	/** 하위 : 개발 시스템 추가 로직 */
-	
-	/**
-	 * 하위메뉴목록을 조회
-	 * @param vo MenuManageVO
-	 * @return List
-	 * @exception Exception
-	 */
-	public List<?> selectSubMenuList(MenuManageVO vo) throws Exception{
-		return selectList("menuManageDAO.selectSubMenuList", vo);
-	}
-	
 	/**
 	 * 메뉴관리목록을 조회
 	 * @param vo MenuManageVO
@@ -64,8 +52,6 @@ public class MenuManageDAO extends EgovComAbstractDAO{
 		return selectList("menuManageDAO.selectNextMenuInfo", vo);
 	}
 	
-	/** 하위 : 전자정부프레임워크 기본 로직 */
-
 	/**
 	 * 메뉴목록관리 기본정보를 조회
 	 * @param vo ComDefaultVO
@@ -111,8 +97,7 @@ public class MenuManageDAO extends EgovComAbstractDAO{
 	 * @exception Exception
 	 */
 	public List<?> selectMenuTreeList(MenuManageVO vo) throws Exception{
-		int upperNenuId = (vo.getMenuNo()==0) ? 9999999 : 0;
-		return selectMenuTree(selectList("menuManageDAO.selectMenuTreeList", vo), upperNenuId);
+		return selectMenuTree(selectList("menuManageDAO.selectMenuTreeList", vo), vo.getUpperMenuId());
 	}
 	
     /**
@@ -148,21 +133,14 @@ public class MenuManageDAO extends EgovComAbstractDAO{
 	 */
 	public void insertMenuCreat(List<MenuManageVO> menuCreatList) throws Exception {
 		Iterator<?> iter = menuCreatList.iterator();
-		
-		MenuManageVO menuManageVO = (MenuManageVO) menuCreatList.get(0);
-		update("menuManageDAO.updateMenuCreat", menuManageVO);
-		
+		MenuManageVO menuManageVO;
 		while (iter.hasNext()) {
-			insert("menuManageDAO.insertMenuCreat", (MenuManageVO) iter.next());
+			menuManageVO = (MenuManageVO) iter.next();
+			if ("Y".equals(menuManageVO.getUseAt())) {
+				insert("menuManageDAO.insertMenuCreat", menuManageVO);
+			} else {
+				delete("menuManageDAO.deleteMenuCreat", menuManageVO);
+			}
 		}
-	}
-	
-	/**
-	 * 권한에 메뉴정보를 할당하여 데이터베이스에 등록
-	 * @param menuManageVO MenuManageVO
-	 * @exception Exception
-	 */
-	public void updateMenuCreat(MenuManageVO menuManageVO) throws Exception {
-		update("menuManageDAO.updateMenuCreat", menuManageVO);
 	}
 }
