@@ -20,7 +20,7 @@
     <link href="<c:url value="/css/egovframework/com/button.css"/>" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/jquery.js'/>" ></script>
     <script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/jqueryui.js'/>" ></script>
-    <script type="text/javascript" src="<c:url value='/modules/tui-grid/dist/tui-grid.js'/>" ></script>
+    <script type="text/javascript" src="<c:url value='/modules/tui-grid/dist/tui-grid.min.js'/>" ></script>
     <script type="text/javascript" src="<c:url value='/js/tpssm/com/com.js'/>" ></script>
     <script type="text/javascript" src="<c:url value="/cmm/init/validator.do"/>"></script>
     <validator:javascript formName="menuManageVO" staticJavascript="false" xhtml="true" cdata="false"/>
@@ -58,47 +58,6 @@ $(document).ready(function()
 	});
 	
 	//4.트리메뉴목록
-	/*
-	gridMenu = new tui.Grid({
-		el: document.getElementById('gridUpperMenu'),
-		bodyHeight: 450, scrollX: false, 
-		treeColumnOptions: {
-			name: 'menuNm',
-			useIcon: true
-		},
-		columns: 
-		[
-			{header:'A', name: 'useAt', renderer: {type: CustomCheckBox}, width:10, align:'center'},
-			{header:'<spring:message code="comSymMnuMcm.menuManageVO.menuNm" />', name:'menuNm'}
-		]
-	});
-	*/
-	
-	class CustomHeaderCheckBox {
-		constructor(props) {
-			console.log('AAA');
-			const { grid, rowKey } = props;
-			const el = document.createElement('input');
-			el.type = 'checkbox';
-			el.className = 'hidden-input';
-			el.id = String(rowKey);
-			el.checked = grid.getRow(rowKey).useAt == "Y" ? true : false;
-			el.onchange = function (e) { 
-				console.log(e);
-				grid.setValue(rowKey, "useAt", this.checked ? "Y" : "N"); 
-			};
-			
-			this.el = el;
-		}
-		
-		getElement() {
-			console.log();
-			checkAll();
-	        return this.el;
-	    }
-		
-	}
-	
 	gridMenu = new tui.Grid({
 		el: document.getElementById('gridUpperMenu'),
 		bodyHeight: 450, scrollX: false, 
@@ -108,7 +67,7 @@ $(document).ready(function()
 		},
 		rowHeaders: [{
 			type: 'checkbox',
-			header: '<input type="checkbox" id="all-checkbox" onclick="checkAll();">',
+			header: '<input type="checkbox" id="all-checkbox" name="_checked" onclick="checkAll(this);">',
 			renderer: { type: CustomHeaderCheckBox }
 		}],
 		columns: [{
@@ -123,9 +82,10 @@ $(document).ready(function()
 /* ********************************************************
  * 전체 선택
  ******************************************************** */
-function checkAll() {
-	const all = document.getElementById('all-checkbox');
-	$('.hidden-input').prop("checked",all.checked);
+function checkAll(ev) {
+	gridMenu.getData().forEach(function(data, idx) {
+		gridMenu.setValue(idx, "useAt", ev.checked == true ? "Y" : "N");
+	});
 }
 
 /* ********************************************************

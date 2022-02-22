@@ -280,14 +280,10 @@ function setFileUploader() {
 	    }
 	});
 
-    uploader.on('update', function(evt) { // This event is only fired when using batch transfer
-        var items = evt.filelist;
-        var totalSize = uploader.getTotalSize(items);
-
-        $itemTotalSize.html(totalSize);
-    });
-
     uploader.on('check', function(evt) {
+    	alert('추가할수없습니다1');
+    	return;
+    	
         var checkedItems = uploader.getCheckedList();
         var checkedItemSize = uploader.getTotalSize(checkedItems);
         var checkedItemCount = checkedItems.length;
@@ -298,6 +294,9 @@ function setFileUploader() {
     });
 
     uploader.on('checkAll', function(evt) {
+    	alert('추가할수없습니다2');
+    	return;
+    	
         var checkedItems = uploader.getCheckedList();
         var checkedItemSize = uploader.getTotalSize(checkedItems);
         var checkedItemCount = checkedItems.length;
@@ -308,6 +307,9 @@ function setFileUploader() {
     });
 
     uploader.on('remove', function(evt) {
+    	alert('추가할수없습니다3');
+    	return;
+    	
         var checkedItems = uploader.getCheckedList();
         var removeButtonState = (checkedItems.length === 0);
 
@@ -317,6 +319,9 @@ function setFileUploader() {
     });
 
     uploader.on('success', function(evt) {
+    	alert('추가할수없습니다4');
+    	return;
+    	
         var successCount = evt.success;
         var removeButtonState = (successCount > 0);
 
@@ -332,10 +337,22 @@ function setFileUploader() {
     });
 
     $removeButton.on('click', function() {
+    	alert('추가할수없습니다5');
+    	return;
+    	
         var checkedItems = uploader.getCheckedList();
-
         uploader.removeList(checkedItems);
     });
+    
+	//업로드 파일 체크
+    uploader.on('update', function(evt) { // This event is only fired when using batch transfer
+    	alert('추가할수없습니다7');
+    	return;
+    	
+        var items = evt.filelist;
+        var totalSize = uploader.getTotalSize(items);
+        $itemTotalSize.html(totalSize);
+    });    
  }
  
  // below service code

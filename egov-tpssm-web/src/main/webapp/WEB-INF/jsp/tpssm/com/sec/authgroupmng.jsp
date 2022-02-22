@@ -88,22 +88,18 @@ function searchAuthMberList() {
  ******************************************************** */
 function insertAuthGrpList() {
 	if(gridAuthMber.getFocusedCell()['rowKey']==null) { return; }
-	
-	var sendDate = "";
-	var sendUrl = "";
-	if (gridAuth.getCheckedRows()[0] == null) {
-		sendData = JSON.stringify({ "uniqId" : gridAuthMber.getRow(gridAuthMber.getFocusedCell()['rowKey'])['uniqId'] });
-		sendUrl = "<c:url value='/cmm/authgroupUpdate.do'/>";
-	} else {
-		sendData = JSON.stringify(gridAuth.getCheckedRows());
-		sendUrl = "<c:url value='/cmm/authgroupInsert.do'/>";
-	}
-	
 	if(confirm("<spring:message code="common.save.msg" />")){
+		//체크값설정
+		gridAuth.getData().forEach(function(data, idx) {
+			gridAuth.setValue(idx, "regYn", 
+				data["_attributes"]["checked"] == "true" || 
+				data["_attributes"]["checked"] == true ? "Y" : "N"
+			);
+		});
 		$.ajax({
-			url : sendUrl,
+			url : "<c:url value='/cmm/authgroupInsert.do'/>",
 			method : "POST",
-			data : sendData,
+			data : JSON.stringify(gridAuth.getData()),
 			dataType : "JSON",
 			contentType : "application/json",
 			success : function(result) {
@@ -117,10 +113,6 @@ function insertAuthGrpList() {
 			}
 		});
 	}
-	
-	return;
-	
-
 }
 
 /* ********************************************************
