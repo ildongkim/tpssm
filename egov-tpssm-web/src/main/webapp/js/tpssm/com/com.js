@@ -137,21 +137,33 @@ function isNullToString(obj) {
 /*********************************************************
 * Hierarchy MenuList delete empty folder
 ******************************************************** */
-function getHierarchyMenuList(obj) {
+function getHierarchyMenuList(array) {
 	//console.log('HierarchyMenuList');
-	var data = obj;
-	var idx = '';
-	if (data['_children'] != null) {
-		for (idx in data['_children']) {
-			if (data['_children'][idx]['_children'] != null) {
-				if (data['_children'][idx]['_children'].length == 0) {
-					delete data['_children'][idx]['_children'];
-				} else {
-					getHierarchyMenuList(data['_children'][idx]);
-				}
-			}
+	array.forEach(function(data, idx) {
+		if (data['_children'].length > 0) {
+			getHierarchyMenuList(data['_children']);
+		} else {
+			delete data['_children'];			
 		}
+	});
+}
+
+/* ********************************************************
+ * Grid Checkbox Renderer
+ ******************************************************** */
+class CustomCheckBox {
+	constructor(props) {
+		const el = document.createElement('input');
+		const { grid, rowKey, columnInfo } = props;
+		el.type = 'checkbox';
+		el.checked = props.value == "Y" ? true : false;
+		el.onchange = function (e) { grid.setValue(rowKey, columnInfo.name, this.checked ? "Y" : "N"); };
+		this.el = el;
 	}
+	
+	getElement() {
+        return this.el;
+    }
 }
 
 /* ********************************************************

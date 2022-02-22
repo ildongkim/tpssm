@@ -58,24 +58,75 @@ $(document).ready(function()
 	});
 	
 	//4.트리메뉴목록
+	/*
 	gridMenu = new tui.Grid({
 		el: document.getElementById('gridUpperMenu'),
-		bodyHeight: 450, scrollX: false,
-		rowHeaders: ['checkbox'],
+		bodyHeight: 450, scrollX: false, 
 		treeColumnOptions: {
 			name: 'menuNm',
-			useIcon: true,
-			useCascadingCheckbox: true
+			useIcon: true
 		},
 		columns: 
 		[
+			{header:'A', name: 'useAt', renderer: {type: CustomCheckBox}, width:10, align:'center'},
 			{header:'<spring:message code="comSymMnuMcm.menuManageVO.menuNm" />', name:'menuNm'}
 		]
+	});
+	*/
+	
+	class CustomHeaderCheckBox {
+		constructor(props) {
+			console.log('AAA');
+			const { grid, rowKey } = props;
+			const el = document.createElement('input');
+			el.type = 'checkbox';
+			el.className = 'hidden-input';
+			el.id = String(rowKey);
+			el.checked = grid.getRow(rowKey).useAt == "Y" ? true : false;
+			el.onchange = function (e) { 
+				console.log(e);
+				grid.setValue(rowKey, "useAt", this.checked ? "Y" : "N"); 
+			};
+			
+			this.el = el;
+		}
+		
+		getElement() {
+			console.log();
+			checkAll();
+	        return this.el;
+	    }
+		
+	}
+	
+	gridMenu = new tui.Grid({
+		el: document.getElementById('gridUpperMenu'),
+		bodyHeight: 450, scrollX: false, 
+		treeColumnOptions: {
+			name: 'menuNm',
+			useIcon: true
+		},
+		rowHeaders: [{
+			type: 'checkbox',
+			header: '<input type="checkbox" id="all-checkbox" onclick="checkAll();">',
+			renderer: { type: CustomHeaderCheckBox }
+		}],
+		columns: [{
+			header:'<spring:message code="comSymMnuMcm.menuManageVO.menuNm" />', name:'menuNm'
+		}]
 	});
 	
 	//5.권한목록의 데이터검색
 	searchAuthList();
 });
+
+/* ********************************************************
+ * 전체 선택
+ ******************************************************** */
+function checkAll() {
+	const all = document.getElementById('all-checkbox');
+	$('.hidden-input').prop("checked",all.checked);
+}
 
 /* ********************************************************
  * 권한목록의 데이터검색 처리 함수
@@ -96,11 +147,11 @@ function setMenuCreatList(data) {
 	$.ajax({
 		url : "<c:url value='/cmm/selectMenuTreeList.do'/>",
 		method :"POST",
-		data : {menuNo:0, authorCode:isNullToString(data["authorCode"])},
+		data : {upperMenuId:0, authorCode:isNullToString(data["authorCode"])},
 		dataType : "JSON",
 		success : function(result){
 			if (result['menuManageVOList'] != null) {
-				getHierarchyMenuList(result['menuManageVOList'][0]);
+				getHierarchyMenuList(result['menuManageVOList']);
 				gridMenu.resetData(result['menuManageVOList']);
 				gridMenu.expandAll();
 			}
@@ -113,22 +164,11 @@ function setMenuCreatList(data) {
  ******************************************************** */
 function insertMenuCreatList() {
 	if(gridAuth.getFocusedCell()['rowKey']==null) { return; }
-	
-	var sendDate = "";
-	var sendUrl = "";
-	if (gridMenu.getCheckedRows()[0] == null) {
-		sendData = JSON.stringify({ "authorCode" : gridAuth.getRow(gridAuth.getFocusedCell()['rowKey'])['authorCode'] });
-		sendUrl = "<c:url value='/cmm/menucreateUpdate.do'/>";
-	} else {
-		sendData = JSON.stringify(gridMenu.getCheckedRows());
-		sendUrl = "<c:url value='/cmm/menucreateInsert.do'/>";
-	}
-	
 	if(confirm("<spring:message code="common.save.msg" />")){
 		$.ajax({
-			url : sendUrl,
+			url : "<c:url value='/cmm/menucreateInsert.do'/>",
 			method :"POST",
-			data : sendData,
+			data : JSON.stringify(gridMenu.getData()),
 			dataType : "JSON",
 			contentType : "application/json",
 			success : function(result) {

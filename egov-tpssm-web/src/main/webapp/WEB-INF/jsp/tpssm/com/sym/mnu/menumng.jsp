@@ -113,15 +113,14 @@ function searchMenuList() {
 	//화면처리
 	setViewSearch();
 	
-	const menuNo = $("#searchCondition option:selected").val();
 	$.ajax({
 		url : "<c:url value='/cmm/selectMenuTreeList.do'/>",
 		method :"POST",
-		data : {"menuNo":menuNo},
+		data : {upperMenuId:9999999},
 		dataType : "JSON",
 		success : function(result){
 			if (result['menuManageVOList'] != null) {
-				getHierarchyMenuList(result['menuManageVOList'][0]);
+				getHierarchyMenuList(result['menuManageVOList']);
 				gridMenu.resetData(result['menuManageVOList']);
 				gridMenu.expandAll();
 			}
@@ -358,17 +357,6 @@ function setViewNewClick()  {
 	<h1 style="background-position:left 3px"><spring:message code="comSymMnuMpm.menuManageVO.pageTop.title" /></h1>
 	<div class="search_box" title="<spring:message code="common.searchCondition.msg" />">
 		<ul>
-			<li><div style="line-height:4px;">&nbsp;</div><div><spring:message code="comSymMnuMpm.menuManageVO.upperMenuNm" /> : </div></li>
-			<li>
-				<select name="searchCondition" id="searchCondition" title="<spring:message code="title.searchCondition" />">
-					<c:forEach var="menu" items="${upperMenuList}">
-			            <option value="<c:out value="${menu.menuNo}"/>"><c:out value="${menu.menuNm}"/></option>
-					</c:forEach>
-				</select>
-				<span class="btn_b" onclick="searchMenuList(); return false;">
-					<a href="#"><spring:message code="button.inquire" /></a>
-				</span>				
-			</li>
 			<li>
 				<span class="btn_b new" onclick="newMenuList(document.forms[0]); return false;">
 					<a href="#"><spring:message code="title.new" /></a>
