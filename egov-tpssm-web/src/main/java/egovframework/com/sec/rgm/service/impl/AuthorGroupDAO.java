@@ -58,21 +58,14 @@ public class AuthorGroupDAO extends EgovComAbstractDAO {
 	 */
 	public void insertAuthorGroup(List<AuthorGroup> authorGroupList) throws Exception {
 		Iterator<?> iter = authorGroupList.iterator();
-		
-		AuthorGroup authorGroup = (AuthorGroup) authorGroupList.get(0);
-		update("authorGroupDAO.updateAuthorGroup", authorGroup);
-		
+		AuthorGroup authorGroup;
 		while (iter.hasNext()) {
-			insert("authorGroupDAO.insertAuthorGroup", (AuthorGroup) iter.next());
+			authorGroup = (AuthorGroup) iter.next();
+			if ("Y".equals(authorGroup.getRegYn())) {
+				insert("authorGroupDAO.insertAuthorGroup", authorGroup);
+			} else {
+				insert("authorGroupDAO.deleteAuthorGroup", authorGroup);
+			}
 		}
-	}
-	
-	/**
-	 * 그룹에 권한정보를 할당하여 데이터베이스에 등록
-	 * @param authorGroup AuthorGroup
-	 * @exception Exception
-	 */
-	public void updateAuthorGroup(AuthorGroup authorGroup) throws Exception {
-		update("authorGroupDAO.updateAuthorGroup", authorGroup);
 	}
 }

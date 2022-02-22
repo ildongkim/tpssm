@@ -23,6 +23,7 @@
         <result property="uniqId" column="UNIQ_ID"/>
         <result property="registerId" column="REGISTER_ID"/>
         <result property="mberTyCode" column="MBER_TY_CODE"/>
+        <result property="regYn" column="REG_YN"/>
         <association property="_attributes" javaType="java.util.HashMap" column="{uniqId=UNIQ_ID, authorCode=AUTHOR_CODE}" select="selectAuthGroup"/>
     </resultMap>
 
@@ -32,7 +33,7 @@
 	</select>
 	
     <select id="selectAuthorGroupList" parameterType="egovframework.com.sec.rgm.service.AuthorGroupVO" resultMap="authorGroup">
-            SELECT A.AUTHOR_CODE, A.AUTHOR_NM, #{uniqId} UNIQ_ID, #{registerId} REGISTER_ID, #{mberTyCode} MBER_TY_CODE
+            SELECT A.AUTHOR_CODE, A.AUTHOR_NM, #{uniqId} UNIQ_ID, #{registerId} REGISTER_ID, #{mberTyCode} MBER_TY_CODE, 'N' AS REG_YN
 			  FROM COMTNAUTHORINFO A WHERE A.AUTHOR_CODE NOT LIKE 'IS_%'
     </select>
 
@@ -46,6 +47,7 @@
 					MBER_TY_CODE = #{mberTyCode},
 					LAST_UPDT_PNTTM = SYSDATETIME, 
 					LAST_UPDUSR_ID = #{registerId}
+				WHERE USE_AT != #{regYn}
 			WHEN NOT MATCHED THEN
 		    	INSERT ( SCRTY_DTRMN_TRGET_ID, MBER_TY_CODE, AUTHOR_CODE, USE_AT, 
 		    		FRST_REGIST_PNTTM, FRST_REGISTER_ID, LAST_UPDT_PNTTM, LAST_UPDUSR_ID)
@@ -53,13 +55,7 @@
 					SYSDATETIME, #{registerId}, SYSDATETIME, #{registerId})
     </insert>
     
-    <update id="updateAuthorGroup">
-        
-		    UPDATE COMTNEMPLYRSCRTYESTBS SET
-			    USE_AT = 'N',
-			    LAST_UPDT_PNTTM = SYSDATETIME, 
-				LAST_UPDUSR_ID = #{registerId}
-			WHERE SCRTY_DTRMN_TRGET_ID = #{uniqId}
-			  AND USE_AT = 'Y'
-    </update>  
+    <delete id="deleteAuthorGroup">
+		DELETE FROM COMTNEMPLYRSCRTYESTBS WHERE SCRTY_DTRMN_TRGET_ID = #{uniqId} AND AUTHOR_CODE = #{authorCode}
+    </delete>
 </mapper>

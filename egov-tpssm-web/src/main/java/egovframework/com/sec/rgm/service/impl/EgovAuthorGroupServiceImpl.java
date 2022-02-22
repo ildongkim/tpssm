@@ -63,13 +63,4 @@ public class EgovAuthorGroupServiceImpl  extends EgovAbstractServiceImpl impleme
 	public void insertAuthorGroup(List<AuthorGroup> authorGroupList) throws Exception{
 		authorGroupDAO.insertAuthorGroup(authorGroupList);
 	}
-	
-	/**
-	 * 그룹에 권한정보를 할당하여 데이터베이스에 등록
-	 * @param authorGroup AuthorGroup
-	 * @exception Exception
-	 */
-	public void updateAuthorGroup(AuthorGroup authorGroup) throws Exception{
-		authorGroupDAO.updateAuthorGroup(authorGroup);
-	}
 }

@@ -484,21 +484,4 @@ public class MenuController {
 		egovAuthorGroupService.insertAuthorGroup(authorGroupList);
     	return modelAndView;
 	}
-    
-    /**
-     * 권한그룹 정보를 삭제한다
-     * 권한그룹 화면으로 이동한다
-     * @param authorGroup    AuthorGroup
-	 * @return result - List
-	 * @exception Exception
-	 */
-    @PostMapping(value="/cmm/authgroupUpdate.do")
-    public ModelAndView updateAuthGroupManage(@RequestBody AuthorGroup authorGroup) throws Exception {
-		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("jsonView");
-    	LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
-    	authorGroup.setRegisterId((user == null || user.getUniqId() == null) ? "" : user.getUniqId());
-		egovAuthorGroupService.updateAuthorGroup(authorGroup);
-    	return modelAndView;
-	}
 }
