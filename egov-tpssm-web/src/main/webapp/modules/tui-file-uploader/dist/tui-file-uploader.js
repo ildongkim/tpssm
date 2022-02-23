@@ -508,11 +508,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @private
 	     */
 	    store: function(files) {
-	    	console.log('store');
-	    	console.log(this.fileUploadMaxSize);
-	    	console.log(this.fileUploadExtensions);
-	    	//return;
-	    	
 	        this._requester.store(files);
 	    },
 
@@ -2310,7 +2305,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    store: function(files) {
 	        var pool = this.pool;
+	        console.log(pool);
 	        var stamp = snippet.stamp;
+	        console.log(snippet.stamp);
 	        var data = [];
 
 	        files = snippet.toArray(files || this.formView.$fileInput[0].files);
@@ -2322,8 +2319,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	                name: file.name,
 	                size: file.size
 	            });
+	            
+	            var ext = file.name.split('.');
+	            //console.log(ext.length);
+	            
+	            /*
+	            if (fileUploadExtensions.includes(ext[1])) {
+	            	console.log('파일확장자통과');
+	            } else {
+	            	console.log('파일확장자실패');
+	            }
+	            	            
+	            if (file.size > fileUploadMaxSize) {
+	            	console.log('파일사이즈초과');
+	            } else {
+	            	console.log('파일사이즈통과');
+	            }
+	            */
 	        });
 
+	    	return;
+	    	
 	        this.formView.resetFileInput();
 	        this.fire('stored', data);
 	    },
