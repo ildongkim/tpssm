@@ -25,6 +25,7 @@ import egovframework.com.cmm.EgovMessageSource;
 import egovframework.com.cmm.LoginVO;
 import egovframework.com.cmm.service.EgovCmmUseService;
 import egovframework.com.cmm.service.EgovFileMngUtil;
+import egovframework.com.cmm.service.EgovProperties;
 import egovframework.com.cmm.service.FileVO;
 import egovframework.com.cmm.util.EgovUserDetailsHelper;
 import egovframework.com.cop.bbs.service.BoardMasterVO;
@@ -90,6 +91,10 @@ public class BBSController {
 	
 	@RequestMapping("/cmm/noticemng.do")
 	public String noticeMng(ModelMap model) throws Exception  {
+		String whiteListFileUploadExtensions = EgovProperties.getProperty("Globals.fileUpload.Extensions");
+		String fileUploadMaxSize = EgovProperties.getProperty("Globals.fileUpload.maxSize");
+		model.addAttribute("fileUploadExtensions", whiteListFileUploadExtensions);
+		model.addAttribute("fileUploadMaxSize", fileUploadMaxSize);
 		return "tpssm/com/cop/bbs/noticemng";
 	}
 	
