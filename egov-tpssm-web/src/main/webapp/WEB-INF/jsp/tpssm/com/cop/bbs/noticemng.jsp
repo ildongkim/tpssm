@@ -25,7 +25,7 @@
     <script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/jqueryui.js'/>" ></script>
     <script type="text/javascript" src="<c:url value='/modules/smarteditor2.10/dist/js/service/HuskyEZCreator.js'/>" charset="utf-8"></script>
     <script type="text/javascript" src="<c:url value='/modules/tui-file-uploader/dist/tui-code-snippet.js'/>" ></script>
-    <script type="text/javascript" src="<c:url value='/modules/tui-file-uploader/dist/tui-file-uploader.min.js'/>" ></script>
+    <script type="text/javascript" src="<c:url value='/modules/tui-file-uploader/dist/tui-file-uploader.js'/>" ></script>
     <script type="text/javascript" src="<c:url value='/modules/tui-pagination/dist/tui-pagination.min.js'/>" ></script>
     <script type="text/javascript" src="<c:url value='/modules/tui-grid/dist/tui-grid.min.js'/>" ></script>
 	<script type="text/javascript" src="<c:url value='/js/tpssm/com/com.js'/>" ></script>
@@ -277,7 +277,9 @@ function setFileUploader() {
 				},
 	            { header: 'File Size', body: '{{filesize}}' }
 	        ]
-	    }
+	    },
+	    fileUploadMaxSize: ${fileUploadMaxSize},
+	    fileUploadExtensions: '${fileUploadExtensions}'
 	});
 
     uploader.on('check', function(evt) {
@@ -295,7 +297,6 @@ function setFileUploader() {
 
     uploader.on('checkAll', function(evt) {
     	alert('추가할수없습니다2');
-    	return;
     	
         var checkedItems = uploader.getCheckedList();
         var checkedItemSize = uploader.getTotalSize(checkedItems);
@@ -319,8 +320,8 @@ function setFileUploader() {
     });
 
     uploader.on('success', function(evt) {
-    	alert('추가할수없습니다4');
-    	return;
+    	//alert('추가할수없습니다4');
+    	//return;
     	
         var successCount = evt.success;
         var removeButtonState = (successCount > 0);
@@ -338,7 +339,7 @@ function setFileUploader() {
 
     $removeButton.on('click', function() {
     	alert('추가할수없습니다5');
-    	return;
+    	//return;
     	
         var checkedItems = uploader.getCheckedList();
         uploader.removeList(checkedItems);

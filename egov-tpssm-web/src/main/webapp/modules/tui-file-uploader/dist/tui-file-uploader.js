@@ -232,6 +232,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.isMultiple = !!(options.isMultiple);
 
 	        /**
+	         * Whether the user uses file size check
+	         * @private
+	         * @type {int}
+	         */
+	        //Add Script : Harry 2022-02-23
+	        this.fileUploadMaxSize = options.fileUploadMaxSize;
+	        
+	        /**
+	         * Whether the user uses file type check
+	         * @private
+	         * @type {string}
+	         */
+	        //Add Script : Harry 2022-02-23
+	        this.fileUploadExtensions = options.fileUploadExtensions;
+	        
+	        /**
 	         * Whether the user uses folder upload
 	         * @private
 	         * @type {boolean}
@@ -492,6 +508,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @private
 	     */
 	    store: function(files) {
+	    	console.log('store');
+	    	console.log(this.fileUploadMaxSize);
+	    	console.log(this.fileUploadExtensions);
+	    	//return;
+	    	
 	        this._requester.store(files);
 	    },
 
