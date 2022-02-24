@@ -2305,11 +2305,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    store: function(files) {
 	        var pool = this.pool;
-	        console.log(pool);
 	        var stamp = snippet.stamp;
-	        console.log(snippet.stamp);
 	        var data = [];
-
+			var fileUploadMaxSize = this.uploader.fileUploadMaxSize;
+			var fileUploadExtensions = this.uploader.fileUploadExtensions;
+			var $form = this.formView.$el.clone();
+			
 	        files = snippet.toArray(files || this.formView.$fileInput[0].files);
 	        forEach(files, function(file) {
 	            var id = stamp(file);
@@ -2321,25 +2322,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	            });
 	            
 	            var ext = file.name.split('.');
-	            //console.log(ext.length);
 	            
-	            /*
-	            if (fileUploadExtensions.includes(ext[1])) {
-	            	console.log('파일확장자통과');
-	            } else {
+	            if (!fileUploadExtensions.includes(ext[1])) {
 	            	console.log('파일확장자실패');
+	            	return;
+	            } else {
+					console.log('파일확장자통과');
 	            }
 	            	            
 	            if (file.size > fileUploadMaxSize) {
 	            	console.log('파일사이즈초과');
+	            	return;
 	            } else {
 	            	console.log('파일사이즈통과');
 	            }
-	            */
 	        });
 
-	    	return;
-	    	
 	        this.formView.resetFileInput();
 	        this.fire('stored', data);
 	    },

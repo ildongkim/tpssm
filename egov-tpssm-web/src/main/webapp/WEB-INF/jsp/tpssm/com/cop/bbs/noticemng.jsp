@@ -283,8 +283,7 @@ function setFileUploader() {
 	});
 
     uploader.on('check', function(evt) {
-    	alert('추가할수없습니다1');
-    	return;
+    	console.log('추가할수없습니다1');
     	
         var checkedItems = uploader.getCheckedList();
         var checkedItemSize = uploader.getTotalSize(checkedItems);
@@ -296,7 +295,7 @@ function setFileUploader() {
     });
 
     uploader.on('checkAll', function(evt) {
-    	alert('추가할수없습니다2');
+    	console.log('추가할수없습니다2');
     	
         var checkedItems = uploader.getCheckedList();
         var checkedItemSize = uploader.getTotalSize(checkedItems);
@@ -308,8 +307,7 @@ function setFileUploader() {
     });
 
     uploader.on('remove', function(evt) {
-    	alert('추가할수없습니다3');
-    	return;
+    	console.log('추가할수없습니다3');
     	
         var checkedItems = uploader.getCheckedList();
         var removeButtonState = (checkedItems.length === 0);
@@ -320,8 +318,7 @@ function setFileUploader() {
     });
 
     uploader.on('success', function(evt) {
-    	//alert('추가할수없습니다4');
-    	//return;
+    	console.log('추가할수없습니다4');
     	
         var successCount = evt.success;
         var removeButtonState = (successCount > 0);
@@ -338,8 +335,7 @@ function setFileUploader() {
     });
 
     $removeButton.on('click', function() {
-    	alert('추가할수없습니다5');
-    	//return;
+    	console.log('추가할수없습니다5');
     	
         var checkedItems = uploader.getCheckedList();
         uploader.removeList(checkedItems);
@@ -347,8 +343,7 @@ function setFileUploader() {
     
 	//업로드 파일 체크
     uploader.on('update', function(evt) { // This event is only fired when using batch transfer
-    	alert('추가할수없습니다7');
-    	return;
+    	console.log('추가할수없습니다7');
     	
         var items = evt.filelist;
         var totalSize = uploader.getTotalSize(items);
