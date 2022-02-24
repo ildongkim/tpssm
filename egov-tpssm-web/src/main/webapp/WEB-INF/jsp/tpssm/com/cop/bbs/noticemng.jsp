@@ -31,10 +31,15 @@
 	<script type="text/javascript" src="<c:url value='/js/tpssm/com/com.js'/>" ></script>
     <script type="text/javascript" src="<c:url value="/cmm/init/validator.do"/>"></script>
     <validator:javascript formName="boardVO" staticJavascript="false" xhtml="true" cdata="false"/>
+    <style type="text/css">
+    .tui-file-uploader-area { min-height:100px; }
+    .tui-form-body { width:100%; min-height:100px; overflow-y:auto; overflow-x:hidden;}
+    </style>
 </head>
 <script type="text/javascript">
 <!--
 let gridNotice;
+let uploader;
 
 /* ********************************************************
  * document.ready 처리 함수
@@ -70,6 +75,29 @@ $(document).ready(function()
 	searchNoticeList();
 	
 	//5.파일업로더
+	uploader = new tui.FileUploader($('#uploader'), {
+		url: { send: "<c:url value='/cmm/noticeInsert.do'/>" },
+		isMultiple: true, isBatchTransfer: true,
+	    listUI: {
+	        type: 'table',
+	        columnList: [
+	            { header: '{{checkbox}}', body: '{{checkbox}}', width: 32 },
+	            { header: 'File Name',  width: 500, 
+	                body: '<span class="tui-filename-area"><span class="tui-file-name" style="max-width:480px;">{{filename}}</span></span>'
+				},
+	            { header: 'File Size', body: '{{filesize}}' }
+	        ]
+	    },
+	    fileUploadMaxSize: ${fileUploadMaxSize},
+	    fileUploadExtensions: '${fileUploadExtensions}'
+	});
+
+    uploader.on('success', function(evt) {
+    	console.log('저장완료2');
+        searchNoticeList();
+    });
+	
+	//5.파일업로더 이벤트 설정
 	setFileUploader();
 });
 
@@ -254,127 +282,5 @@ nhn.husky.EZCreator.createInIFrame({
 		oEditors.getById["nttCn"].setDefaultFont(sFont, 12);
 	}
 });
-
-/*********************************************************
- * TUI.UPLOADER Set
- ******************************************************** */
-var $uploadedCount = $('#uploadedCount');
-var $itemTotalSize = $('#itemTotalSize');
-var $checkedItemCount = $('#checkedItemCount');
-var $checkedItemSize = $('#checkedItemSize');
-var $removeButton = $('.tui-btn-cancel');
-
-function setFileUploader() {
-	var uploader = new tui.FileUploader($('#uploader'), {
-		url: { send: "<c:url value='/cmm/noticeInsert.do'/>" },
-		isMultiple: true, isBatchTransfer: true,
-	    listUI: {
-	        type: 'table',
-	        columnList: [
-	            { header: '{{checkbox}}', body: '{{checkbox}}', width: 32 },
-	            { header: 'File Name',  width: 500, 
-	                body: '<span class="tui-filename-area"><span class="tui-file-name" style="max-width:480px;">{{filename}}</span></span>'
-				},
-	            { header: 'File Size', body: '{{filesize}}' }
-	        ]
-	    },
-	    fileUploadMaxSize: ${fileUploadMaxSize},
-	    fileUploadExtensions: '${fileUploadExtensions}'
-	});
-
-    uploader.on('check', function(evt) {
-    	console.log('추가할수없습니다1');
-    	
-        var checkedItems = uploader.getCheckedList();
-        var checkedItemSize = uploader.getTotalSize(checkedItems);
-        var checkedItemCount = checkedItems.length;
-        var removeButtonState = (checkedItemCount === 0);
-		
-        disableRemoveButton(removeButtonState);
-        updateCheckedInfo(checkedItemSize, checkedItemCount);
-    });
-
-    uploader.on('checkAll', function(evt) {
-    	console.log('추가할수없습니다2');
-    	
-        var checkedItems = uploader.getCheckedList();
-        var checkedItemSize = uploader.getTotalSize(checkedItems);
-        var checkedItemCount = checkedItems.length;
-        var removeButtonState = (checkedItemCount === 0);
-
-        disableRemoveButton(removeButtonState);
-        updateCheckedInfo(checkedItemSize, checkedItemCount);
-    });
-
-    uploader.on('remove', function(evt) {
-    	console.log('추가할수없습니다3');
-    	
-        var checkedItems = uploader.getCheckedList();
-        var removeButtonState = (checkedItems.length === 0);
-
-        disableRemoveButton(removeButtonState);
-        setUploadedCountInfo(0);
-        resetInfo();
-    });
-
-    uploader.on('success', function(evt) {
-    	console.log('추가할수없습니다4');
-    	
-        var successCount = evt.success;
-        var removeButtonState = (successCount > 0);
-
-        $uploadedCount.html(successCount);
-
-        disableRemoveButton(removeButtonState);
-        setUploadedCountInfo(successCount);
-        resetInfo();
-        
-        console.log("저장완료!!")
-        
-        searchNoticeList();
-    });
-
-    $removeButton.on('click', function() {
-    	console.log('추가할수없습니다5');
-    	
-        var checkedItems = uploader.getCheckedList();
-        uploader.removeList(checkedItems);
-    });
-    
-	//업로드 파일 체크
-    uploader.on('update', function(evt) { // This event is only fired when using batch transfer
-    	console.log('추가할수없습니다7');
-    	
-        var items = evt.filelist;
-        var totalSize = uploader.getTotalSize(items);
-        $itemTotalSize.html(totalSize);
-    });    
- }
- 
- // below service code
-function disableRemoveButton(state) {
-    var className = 'tui-is-disabled';
-    if (state) {
-        $removeButton.addClass(className);
-    } else {
-        $removeButton.removeClass(className);
-    }
-    $removeButton.prop('disabled', false);
-}
-
-function updateCheckedInfo(size, count) {
-    $checkedItemSize.html(size);
-    $checkedItemCount.html(count);
-}
-
-function setUploadedCountInfo(count) {
-    $uploadedCount.html(count);
-}
-
-function resetInfo() {
-    $itemTotalSize.html('0 KB');
-    $checkedItemSize.html('0 KB');
-    $checkedItemCount.html('0');
-}
 -->
 </script>

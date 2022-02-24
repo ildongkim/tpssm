@@ -544,17 +544,30 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 
 	    /**
+	     * Add Script : Harry 2022-02-24
+	     * Get checked file's size
+	     * @param {object} items - File data list to get total size
+	     * @returns {string} Total size with unit
+	     */
+	    getCheckedSize: function(items) {
+	        var totalSize = 0;
+	        forEach(items, function(item) {
+	            totalSize += parseFloat(item.size);
+	        });
+	        return utils.getFileSizeWithUnit(totalSize);
+	    },
+	    
+	    /**
+	     * Modify Script : Harry 2022-02-24
 	     * Get file's total size
 	     * @param {object} items - File data list to get total size
 	     * @returns {string} Total size with unit
 	     */
-	    getTotalSize: function(items) {
+	    getTotalSize: function() {
 	        var totalSize = 0;
-
-	        forEach(items, function(item) {
+	        forEach(this.listView.items, function(item) {
 	            totalSize += parseFloat(item.size);
 	        });
-
 	        return utils.getFileSizeWithUnit(totalSize);
 	    }
 	});
@@ -2307,39 +2320,45 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var pool = this.pool;
 	        var stamp = snippet.stamp;
 	        var data = [];
+	        files = snippet.toArray(files || this.formView.$fileInput[0].files);
+	        
+	        //Add Script : Harry 2022-02-24 Start
 			var fileUploadMaxSize = this.uploader.fileUploadMaxSize;
 			var fileUploadExtensions = this.uploader.fileUploadExtensions;
 			var $form = this.formView.$el.clone();
-			
-	        files = snippet.toArray(files || this.formView.$fileInput[0].files);
+			var isError = false; 
+			var errType = '';
+			//Add Script : Harry 2022-02-24 End
+	        
 	        forEach(files, function(file) {
 	            var id = stamp(file);
-	            pool.push(file);
 	            data.push({
 	                id: id,
 	                name: file.name,
 	                size: file.size
 	            });
 	            
+	            //Add Script : Harry 2022-02-24 Start
 	            var ext = file.name.split('.');
-	            
 	            if (!fileUploadExtensions.includes(ext[1])) {
-	            	console.log('파일확장자실패');
-	            	return;
-	            } else {
-					console.log('파일확장자통과');
-	            }
-	            	            
+	            	isError=true; errType='EXT'; return false;
+	            }	           
 	            if (file.size > fileUploadMaxSize) {
-	            	console.log('파일사이즈초과');
-	            	return;
-	            } else {
-	            	console.log('파일사이즈통과');
+	            	isError=data; errType='CNT'; return false;
 	            }
+	            //Add Script : Harry 2022-02-24 End
+	            
+	            //set upload file
+	            pool.push(file);
 	        });
-
-	        this.formView.resetFileInput();
-	        this.fire('stored', data);
+			
+			//Modify Script : Harry 2022-02-24 Start
+			if (isError) {
+				this.fire('error', {message:errType});
+			} else {
+		        this.formView.resetFileInput();
+		        this.fire('stored', data);
+			}
 	    },
 
 	    /**

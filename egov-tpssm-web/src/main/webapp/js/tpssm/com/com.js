@@ -198,3 +198,125 @@ class CustomCheckBox {
 //	}
 //	return jarr;
 //}
+
+/*********************************************************
+ * TUI.UPLOADER Set
+ ******************************************************** */
+var $uploadedCount;
+var $itemTotalSize;
+var $checkedItemCount;
+var $checkedItemSize;
+var $removeButton;
+
+function setFileUploader() {
+	$uploadedCount = $('#uploadedCount');
+	$itemTotalSize = $('#itemTotalSize');
+	$checkedItemCount = $('#checkedItemCount');
+	$checkedItemSize = $('#checkedItemSize');
+	$removeButton = $('.tui-btn-cancel');
+	
+	//파일체크박스클릭이벤트
+    uploader.on('check', function(evt) {
+        var checkedItems = uploader.getCheckedList();
+        var checkedItemSize = uploader.getCheckedSize(checkedItems);
+        var checkedItemCount = checkedItems.length;
+        var removeButtonState = (checkedItemCount === 0);
+        disableRemoveButton(removeButtonState);
+        updateCheckedInfo(checkedItemSize, checkedItemCount);
+    });
+	
+	//파일체크박스 전체클릭이벤트
+    uploader.on('checkAll', function(evt) {
+        var checkedItems = uploader.getCheckedList();
+        var checkedItemSize = uploader.getCheckedSize(checkedItems);
+        var checkedItemCount = checkedItems.length;
+        var removeButtonState = (checkedItemCount === 0);
+        disableRemoveButton(removeButtonState);
+        updateCheckedInfo(checkedItemSize, checkedItemCount);
+    });
+    
+	//업로드 파일 체크
+    uploader.on('update', function(evt) { // This event is only fired when using batch transfer
+    	setTotalCountInfo();
+    });
+	
+	//파일첨부오류
+    uploader.on('error', function(evt) {
+    	switch (evt['message']) {
+	    	case 'EXT': confirm("지원되는 파일유형이 아닙니다."); break;
+	    	case 'CNT': confirm("첨부 가능 개수을 초과했습니다."); break;
+	    	case 'SIZE': confirm("첨부 가능 용량을 초과했습니다."); break;    		
+    	}
+    });
+    
+    //파일삭제
+    uploader.on('remove', function(evt) {
+        var checkedItems = uploader.getCheckedList();
+        var removeButtonState = (checkedItems.length === 0);
+        disableRemoveButton(removeButtonState);
+        setUploadedCountInfo(0);
+        resetInfo();
+        setTotalCountInfo();
+    });
+    
+    //파일첨부성공
+    uploader.on('success', function(evt) {
+        var successCount = evt.success;
+        var removeButtonState = (successCount > 0);
+        $uploadedCount.html(successCount);
+        disableRemoveButton(removeButtonState);
+        setUploadedCountInfo(successCount);
+        resetInfo();
+    });
+    
+    //삭제버튼클릭
+    $removeButton.on('click', function() {
+        var checkedItems = uploader.getCheckedList();
+        uploader.removeList(checkedItems);
+        setTotalCountInfo();
+    });    	
+}
+
+/*********************************************************
+ * TUI.UPLOADER disable remove button
+ ******************************************************** */
+function disableRemoveButton(state) {
+    var className = 'tui-is-disabled';
+    if (state) {
+        $removeButton.addClass(className);
+    } else {
+        $removeButton.removeClass(className);
+    }
+    $removeButton.prop('disabled', false);
+}
+
+/*********************************************************
+ * TUI.UPLOADER update checked info
+ ******************************************************** */
+function updateCheckedInfo(size, count) {
+    $checkedItemSize.html(size);
+    $checkedItemCount.html(count);
+}
+
+/*********************************************************
+ * TUI.UPLOADER set uploaded count info
+ ******************************************************** */
+function setUploadedCountInfo(count) {
+    $uploadedCount.html(count);
+}
+
+/*********************************************************
+ * TUI.UPLOADER set total count info
+ ******************************************************** */
+function setTotalCountInfo() {
+    $itemTotalSize.html(uploader.getTotalSize());
+}
+
+/*********************************************************
+ * TUI.UPLOADER reset info
+ ******************************************************** */
+function resetInfo() {
+    $itemTotalSize.html('0 KB');
+    $checkedItemSize.html('0 KB');
+    $checkedItemCount.html('0');
+}
