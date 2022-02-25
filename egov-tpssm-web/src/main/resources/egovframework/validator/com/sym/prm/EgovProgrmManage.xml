@@ -31,8 +31,8 @@
 				</var>
 			</field> 
 			 -->
-            <field property="URL" depends="required, maxlength">
-        		<arg0 key="URL" resource="true"/>
+            <field property="url" depends="required, maxlength">
+        		<arg0 key="url" resource="true"/>
         		<arg1 key="100" resource="true"/>
 				<var>
 				<var-name>maxlength</var-name>

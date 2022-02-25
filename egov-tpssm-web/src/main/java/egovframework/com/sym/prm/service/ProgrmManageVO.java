@@ -78,15 +78,15 @@ public class ProgrmManageVO extends DefaultVO{
 	 * url attribute를 리턴한다.
 	 * @return String
 	 */
-	public String getURL() {
+	public String getUrl() {
 		return url;
 	}
 	/**
-	 * URL attribute 값을 설정한다.
-	 * @param URL String
+	 * url attribute 값을 설정한다.
+	 * @param url String
 	 */
-	public void setURL(String URL) {
-		this.url = URL;
+	public void setUrl(String url) {
+		this.url = url;
 	}
 	/**
 	 * progrmDc attribute를 리턴한다.

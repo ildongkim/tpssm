@@ -11,7 +11,7 @@
 				, PROGRM_STRE_PATH  AS "progrmStrePath"
 				, PROGRM_KOREAN_NM  AS "progrmKoreanNm" 
 				, PROGRM_DC         AS "progrmDc" 
-				, URL               AS "URL"
+				, url               AS "url"
 				, USE_AT            AS "useAt" 
 			FROM COMTNPROGRMLIST
 			WHERE binary(PROGRM_KOREAN_NM) like  CONCAT('%', #{searchKeyword}, '%')
@@ -23,7 +23,7 @@
 		<result property="progrmStrePath" column="progrmStrePath"/>
 		<result property="progrmKoreanNm" column="progrmKoreanNm"/>
 		<result property="progrmDc" column="progrmDc"/>
-		<result property="URL" column="URL"/>
+		<result property="url" column="url"/>
 	</resultMap> 
 
 	<!-- Modify Script : Harry 2022-02-09  -->
@@ -34,7 +34,7 @@
 				, PROGRM_STRE_PATH AS "progrmStrePath"
 				, PROGRM_KOREAN_NM  AS "progrmKoreanNm" 
 				, PROGRM_DC        AS "progrmDc" 
-				, URL              AS "URL"
+				, url              AS "url"
 				, USE_AT AS "useAt" 
 			FROM COMTNPROGRMLIST
 			WHERE binary(PROGRM_KOREAN_NM) like  CONCAT('%', #{searchKeyword}, '%')
@@ -64,17 +64,17 @@
 	<insert id="insertProgrm_S">
 	
 			INSERT INTO COMTNPROGRMLIST 
-				(PROGRM_FILE_NM, PROGRM_STRE_PATH, PROGRM_KOREAN_NM, PROGRM_DC, URL, USE_AT,
+				(PROGRM_FILE_NM, PROGRM_STRE_PATH, PROGRM_KOREAN_NM, PROGRM_DC, url, USE_AT,
 				FRST_REGIST_PNTTM, FRST_REGISTER_ID, LAST_UPDT_PNTTM, LAST_UPDUSR_ID)			
 			VALUES 
-				(#{progrmFileNm}, #{URL}, #{progrmKoreanNm}, #{progrmDc}, #{URL}, #{useAt}, 
+				(#{progrmFileNm}, #{url}, #{progrmKoreanNm}, #{progrmDc}, #{url}, #{useAt}, 
 				sysdate(), #{registerId}, sysdate(), #{registerId})			
 			ON DUPLICATE KEY UPDATE
-				PROGRM_STRE_PATH = #{URL},
+				PROGRM_STRE_PATH = #{url},
 				PROGRM_KOREAN_NM = #{progrmKoreanNm},
 				PROGRM_DC = #{progrmDc},
 				PROGRM_FILE_NM = #{progrmFileNm},
-				URL = #{URL},
+				url = #{url},
 				USE_AT = #{useAt},
 				LAST_UPDT_PNTTM = sysdate(), 
 				LAST_UPDUSR_ID = #{registerId}
