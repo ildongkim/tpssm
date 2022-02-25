@@ -31,10 +31,14 @@
 	<script type="text/javascript" src="<c:url value='/js/tpssm/com/com.js'/>" ></script>
     <script type="text/javascript" src="<c:url value="/cmm/init/validator.do"/>"></script>
     <validator:javascript formName="boardVO" staticJavascript="false" xhtml="true" cdata="false"/>
+    <!-- 파일업로드사이즈설정
     <style type="text/css">
-    .tui-file-uploader-area { min-height:100px; }
+    .tui-js-file-uploader-list { width:500px; min-height:117px; }
+    .tui-has-scroll tbody { width:498px; max-height:100px; }
+    .tui-has-scroll thead { width:498px; }
     .tui-form-body { width:100%; min-height:100px; overflow-y:auto; overflow-x:hidden;}
     </style>
+     -->
 </head>
 <script type="text/javascript">
 <!--
@@ -74,31 +78,21 @@ $(document).ready(function()
 	//4.게시판목록의 데이터검색
 	searchNoticeList();
 	
-	//5.파일업로더
-	uploader = new tui.FileUploader($('#uploader'), {
-		url: { send: "<c:url value='/cmm/noticeInsert.do'/>" },
-		isMultiple: true, isBatchTransfer: true,
-	    listUI: {
-	        type: 'table',
-	        columnList: [
-	            { header: '{{checkbox}}', body: '{{checkbox}}', width: 32 },
-	            { header: 'File Name',  width: 500, 
-	                body: '<span class="tui-filename-area"><span class="tui-file-name" style="max-width:480px;">{{filename}}</span></span>'
-				},
-	            { header: 'File Size', body: '{{filesize}}' }
-	        ]
-	    },
-	    fileUploadMaxSize: ${fileUploadMaxSize},
-	    fileUploadExtensions: '${fileUploadExtensions}'
-	});
+	var pfile = {
+		url: "<c:url value='/cmm/noticeInsert.do'/>",
+		fileNameWidth: 500,
+		fileUploadMaxSize: parseInt('${fileUploadMaxSize}'),
+		fileUploadExtensions: '${fileUploadExtensions}'
+	};
+	
+	//5.파일업로더 이벤트 설정
+	setFileUploader(pfile);
 
     uploader.on('success', function(evt) {
     	console.log('저장완료2');
         searchNoticeList();
     });
-	
-	//5.파일업로더 이벤트 설정
-	setFileUploader();
+
 });
 
 /* ********************************************************
@@ -116,10 +110,7 @@ function searchNoticeList() {
  ******************************************************** */
 function setBBSList(data) {
 	if (data != null) {
-		document.getElementById('nttSj').value=isNullToString(data["nttSj"]);
-		document.getElementById('frstRegistPnttm').value=isNullToString(data["frstRegistPnttm"]);
-		document.getElementById('frstRegisterNm').value=isNullToString(data["frstRegisterNm"]);
-		document.getElementById('nttCn').value=isNullToString(data["nttCn"]);
+		setBindData(data);
 		$(".wTable input").attr("readonly",true);
 		oEditors.getById["nttCn"].exec("SET_IR", [""]);
 		oEditors.getById["nttCn"].exec("PASTE_HTML", [data["nttCn"]]);

@@ -59,7 +59,7 @@ $(document).ready(function()
 	gridMenu.on('click', function (ev) {
 		setViewMenuClick(); //화면처리
 		searchMenuMngList(gridMenu.getValue(ev.rowKey, 'menuNo'));
-		setMenuList(gridMenu.getRow(ev.rowKey));
+		setBindData(gridMenu.getRow(ev.rowKey));
 		gridMenuRowKey = ev.rowKey;
 	});
 	
@@ -86,7 +86,7 @@ $(document).ready(function()
 		if (ev.rowKey >= '0') {
 			setViewMenuDtlClick(); //화면처리
 		}
-		setMenuList(gridMenuDtl.getRow(ev.rowKey));
+		setBindData(gridMenuDtl.getRow(ev.rowKey));
 	});
 	
 	//7.트리메뉴목록의 데이터검색
@@ -126,21 +126,6 @@ function searchMenuList() {
 			}
 		} 
 	});
-}
-
-/* ********************************************************
- * 폼입력 정보의 데이터바인딩 처리 함수
- ******************************************************** */
-function setMenuList(data) {
-	if (data != null) {
-		document.menuManageVO.upperMenuId.value=isNullToString(data["upperMenuId"]);
-		document.menuManageVO.menuNo.value=isNullToString(data["menuNo"]);
-		document.menuManageVO.menuNm.value=isNullToString(data["menuNm"]);
-		document.menuManageVO.menuOrdr.value=isNullToString(data["menuOrdr"]);
-		document.menuManageVO.progrmFileNm.value=isNullToString(data["progrmFileNm"]);
-		document.menuManageVO.menuDc.value=isNullToString(data["menuDc"]);
-		document.menuManageVO.useAt.value=isNullToString(data["useAt"]);
-	}
 }
 
 /* ********************************************************
@@ -233,7 +218,7 @@ function newMenuList() {
 		data : $("#menuManageVO").serialize(),
 		dataType : "JSON",
 		success : function(result) {
-			setMenuList(result['menulist'][0]);
+			setBindData(result['menulist'][0]);
 		},
 		error : function(xhr, status) {
 			confirm("<spring:message code='fail.common.insert' />");

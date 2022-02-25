@@ -55,7 +55,7 @@ $(document).ready(function()
 	gridCode.on('click', function (ev) {
 		setViewCodeClick(); //화면처리
 		searchCodeDtlList(gridCode.getValue(ev.rowKey, 'codeId'));
-		setCodeList(gridCode.getRow(ev.rowKey));
+		setBindData(gridCode.getRow(ev.rowKey));
 	});
 	
 	//4.상세코드목록
@@ -81,7 +81,7 @@ $(document).ready(function()
 		if (ev.rowKey >= '0') {
 			setViewCodeDtlClick(); //화면처리
 		}
-		setCodeList(gridCodeDtl.getRow(ev.rowKey));
+		setBindData(gridCodeDtl.getRow(ev.rowKey));
 	});
 	
 	//7.코드목록의 데이터검색
@@ -168,20 +168,6 @@ function deleteCodeList(form) {
 				$('.btn_b.save').css('pointer-events','auto');
 			}
 		});
-	}
-}
-
-/* ********************************************************
- * 폼입력 정보의 데이터바인딩 처리 함수
- ******************************************************** */
-function setCodeList(data) {
-	if (data != null) {
-		document.cmmnDetailCodeVO.codeId.value=isNullToString(data["codeId"]);
-		document.cmmnDetailCodeVO.codeIdNm.value=isNullToString(data["codeIdNm"]);
-		document.cmmnDetailCodeVO.code.value=isNullToString(data["code"]);
-		document.cmmnDetailCodeVO.codeNm.value=isNullToString(data["codeNm"]);
-		document.cmmnDetailCodeVO.codeDc.value=isNullToString(data["codeDc"]);
-		document.cmmnDetailCodeVO.useAt.value=isNullToString(data["useAt"]);
 	}
 }
 

@@ -56,7 +56,7 @@ $(document).ready(function()
 	//3.프로그램목록의 Click 이벤트
 	gridProgrm.on('click', function (ev) {
 		setViewProgrmClick(); //화면처리
-		setProgrmList(gridProgrm.getRow(ev.rowKey));
+		setBindData(gridProgrm.getRow(ev.rowKey));
 	});
 	
 	//4.프로그램목록의 데이터검색
@@ -128,20 +128,6 @@ function deleteProgrmList(form) {
 				$('.btn_b.save').css('pointer-events','auto');
 			}
 		});
-	}
-}
-
-/* ********************************************************
- * 폼입력 정보의 데이터바인딩 처리 함수
- ******************************************************** */
-function setProgrmList(data) {
-	if (data != null) {
-		document.progrmManageVO.progrmFileNm.value=isNullToString(data["progrmFileNm"]);
-		document.progrmManageVO.progrmKoreanNm.value=isNullToString(data["progrmKoreanNm"]);
-		document.progrmManageVO.progrmDc.value=isNullToString(data["progrmDc"]);
-		document.progrmManageVO.URL.value=isNullToString(data["url"]);
-		document.progrmManageVO.useAt.value=isNullToString(data["useAt"]);
-		$("#progrmFileNm").attr("readonly",true);
 	}
 }
 
@@ -254,7 +240,7 @@ function setViewNewClick()  {
 			<tr>
 				<th><spring:message code="comSymPrm.progrmManageVO.url" /> <span class="pilsu">*</span></th>
 				<td width="70%" class="left">
-				<input name="URL" type="text" maxlength="100" title="<spring:message code="comSymPrm.progrmManageVO.url" />" style="width:190px"/>
+				<input name="url" type="text" maxlength="100" title="<spring:message code="comSymPrm.progrmManageVO.url" />" style="width:190px"/>
 				</td>
 			</tr>			
 			<tr>

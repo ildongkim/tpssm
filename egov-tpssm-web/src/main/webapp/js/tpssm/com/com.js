@@ -190,6 +190,19 @@ class CustomCheckBox {
 }
 
 /* ********************************************************
+ * Form set bind data 
+ ******************************************************** */
+function setBindData(data) {
+	if (data != null) {
+		for(key in data) {
+			$('input[name="'+key+'"]').val(data[key]);
+			$('textarea[name="'+key+'"]').val(data[key]);
+			$('select[name="'+key+'"]').val(data[key]);
+		}
+	}
+}
+
+/* ********************************************************
  * Grid Selected Row Find Sample
  ******************************************************** */
 //function setSendData(jarr) {
@@ -208,12 +221,30 @@ var $checkedItemCount;
 var $checkedItemSize;
 var $removeButton;
 
-function setFileUploader() {
+function setFileUploader(pfile) {
 	$uploadedCount = $('#uploadedCount');
 	$itemTotalSize = $('#itemTotalSize');
 	$checkedItemCount = $('#checkedItemCount');
 	$checkedItemSize = $('#checkedItemSize');
 	$removeButton = $('.tui-btn-cancel');
+	
+	//5.파일업로더
+	uploader = new tui.FileUploader($('#uploader'), {
+		url: { send: pfile['url'] },
+		isMultiple: true, isBatchTransfer: true,
+	    listUI: {
+	        type: 'table',
+	        columnList: [
+	            { header: '{{checkbox}}', body: '{{checkbox}}', width: 32 },
+	            { header: 'File Name',  width: pfile['fileNameWidth'], 
+	                body: '<span class="tui-filename-area"><span class="tui-file-name" style="max-width:'+pfile['fileNameWidth']+'px;">{{filename}}</span></span>'
+				},
+	            { header: 'File Size', body: '{{filesize}}' }
+	        ]
+	    },
+	    fileUploadMaxSize: pfile['fileUploadMaxSize'],
+	    fileUploadExtensions: pfile['fileUploadExtensions']
+	});
 	
 	//파일체크박스클릭이벤트
     uploader.on('check', function(evt) {

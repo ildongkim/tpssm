@@ -57,7 +57,7 @@ $(document).ready(function()
 	gridCode.on('click', function (ev) {
 		setViewCodeClick(); //화면처리
 		searchCodeDtlList(gridCode.getValue(ev.rowKey, 'codeId'));
-		setCodeList(gridCode.getRow(ev.rowKey));
+		setBindData(gridCode.getRow(ev.rowKey));
 	});
 	
 	//4.상세코드목록
@@ -153,18 +153,6 @@ function deleteCodeList(form) {
 				$('.btn_b.save').css('pointer-events','auto');
 			}
 		});
-	}
-}
-
-/* ********************************************************
- * 폼입력 정보의 데이터바인딩 처리 함수
- ******************************************************** */
-function setCodeList(data) {
-	if (data != null) {
-		document.cmmnCodeVO.codeId.value=isNullToString(data["codeId"]);
-		document.cmmnCodeVO.codeIdNm.value=isNullToString(data["codeIdNm"]);
-		document.cmmnCodeVO.codeIdDc.value=isNullToString(data["codeIdDc"]);
-		document.cmmnCodeVO.useAt.value=isNullToString(data["useAt"]);
 	}
 }
 

@@ -53,7 +53,7 @@ $(document).ready(function()
 	
 	//3.게시판목록의 Click 이벤트
 	gridBBS.on('click', function (ev) {
-		setBBSList(gridBBS.getRow(ev.rowKey));
+		setBindData(gridBBS.getRow(ev.rowKey));
 	});
 	
 	//4.게시판목록의 데이터검색
@@ -125,23 +125,6 @@ function deleteBBSList(form) {
 				$('.btn_b.save').css('pointer-events','auto');
 			}
 		});
-	}
-}
-
-/* ********************************************************
- * 폼입력 정보의 데이터바인딩 처리 함수
- ******************************************************** */
-function setBBSList(data) {
-	if (data != null) {
-		document.boardMasterVO.bbsId.value=isNullToString(data["bbsId"]);
-		document.boardMasterVO.bbsNm.value=isNullToString(data["bbsNm"]);
-		document.boardMasterVO.bbsTyCode.value=isNullToString(data["bbsTyCode"]);
-		document.boardMasterVO.bbsIntrcn.value=isNullToString(data["bbsIntrcn"]);
-		document.boardMasterVO.fileAtchPosblAt.value=isNullToString(data["fileAtchPosblAt"]);
-		document.boardMasterVO.atchPosblFileNumber.value=isNullToString(data["atchPosblFileNumber"]);
-		document.boardMasterVO.replyPosblAt.value=isNullToString(data["replyPosblAt"]);
-		document.boardMasterVO.useAt.value=isNullToString(data["useAt"]);
-		$("#bbsId").attr("readonly",true);
 	}
 }
 
