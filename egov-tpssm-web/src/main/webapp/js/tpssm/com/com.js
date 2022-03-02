@@ -151,43 +151,33 @@ function getHierarchyMenuList(array) {
 /* ********************************************************
  * Grid Checkbox Header Renderer
  ******************************************************** */
-const CustomHeaderCheckBox = class {
-	constructor(props) {
-		const { grid, rowKey } = props;
-		const el = document.createElement('input');
-		el.id = String(rowKey);
-		el.type = 'checkbox';
-		el.checked = grid.getRow(rowKey).useAt == "Y" ? true : false;
-		el.onchange = function (e) { 
-			grid.setValue(rowKey, "useAt", this.checked ? "Y" : "N"); 
-		};
-		this.el = el;
-		this.render(props);
-	}
-	getElement() { return this.el; }
-	render(props) {
-		const { grid, rowKey } = props;
-		this.el.checked = grid.getRow(rowKey).useAt == "Y" ? true : false;
-	}
+var CustomHeaderCheckBox = function(props)  {
+	const el = document.createElement('input');
+	el.id = String(rowKey);
+	el.type = 'checkbox';
+	el.checked = props.grid.getRow(props.rowKey).useAt == "Y" ? true : false;
+	el.onchange = function (e) { 
+		props.grid.setValue(props.rowKey, "useAt", this.checked ? "Y" : "N"); 
+	};
+	this.el = el;
+	this.render(props);
 }
-	
+CustomHeaderCheckBox.prototype.getElement = function() { return this.el; }
+CustomHeaderCheckBox.prototype.render = function(props) { 
+	this.el.checked = props.grid.getRow(props.rowKey).useAt == "Y" ? true : false;
+}
+
 /* ********************************************************
  * Grid Checkbox Renderer
  ******************************************************** */
-class CustomCheckBox {
-	constructor(props) {
-		const el = document.createElement('input');
-		const { grid, rowKey, columnInfo } = props;
-		el.type = 'checkbox';
-		el.checked = props.value == "Y" ? true : false;
-		el.onchange = function (e) { grid.setValue(rowKey, columnInfo.name, this.checked ? "Y" : "N"); };
-		this.el = el;
-	}
-	
-	getElement() {
-        return this.el;
-    }
+var CustomCheckBox = function(props)  {
+	const el = document.createElement('input');
+	el.type = 'checkbox';
+	el.checked = props.value == "Y" ? true : false;
+	el.onchange = function (e) { props.grid.setValue(props.rowKey, props.columnInfo.name, this.checked ? "Y" : "N"); };
+	this.el = el;
 }
+CustomCheckBox.prototype.getElement = function() { return this.el; }
 
 /* ********************************************************
  * Form set bind data 
